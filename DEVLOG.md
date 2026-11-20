@@ -325,3 +325,21 @@
 
 
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Built 6 new low-poly dead tree variants in Blender (`DeadTree_01_Fork`, `DeadTree_02_Spire`, `DeadTree_03_Leaner`, `DeadTree_04_Twin`, `DeadTree_05_Snag`, `DeadTree_06_Crook`; ~152–235 tris each) matching `Prop_DeadTree_A` / `Prop_DeadTree_B`, imported them into Roblox Studio, scaled 5.3× (`24.1–48.4` studs), matched their dark charcoal bark (`RGB(52, 54, 58)`, `Plastic`), anchored them beside the reference trees, and mirrored all 6 into `ReplicatedStorage.Assets.MapModels.HorrorKit_Props`.
+  - Upgraded the procedural map forest (`MapService` + `ChunkBuilder`) to spawn all 8 dead tree variants across a 3-cell-deep (`300` stud) forest border (`ChunkBuilder.FOREST_BORDER_RADIUS = 3`, `MAX_SPAWNS_PER_TICK = 8`) that scales progressively denser and larger farther from the road: Ring 1 roadside `6–9` trees (`0.88×–1.12×`, `CanCollide = false` within `95` studs of road center so the van never snags), Ring 2 mid-forest `14–18` trees (`~1.15×–1.55×`, solid blockers), and Ring 3 deep forest `22–28` trees (`~1.50×–2.00×`, up to ~97 studs tall, solid blockers) plus pooled invisible `ForestBoundary` walls along exposed Ring 3 outer edges to prevent running off the map.
+  - Added `Assets/Props/DeadTrees.blend` and `Assets/Props/DeadTrees.glb` to the repo and documented the deep forest containment and planned far-from-van hunter monster in `GAME_DESIGN.md` (monster not implemented).
+- **Studio Paths Modified/Created:**
+  - `Workspace.MapModels.HorrorKit_Props.DeadTree_01_Fork` .. `DeadTree_06_Crook` (created)
+  - `ReplicatedStorage.Assets.MapModels.HorrorKit_Props.DeadTree_01_Fork` .. `DeadTree_06_Crook` (created)
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+- **Repository Files Added/Modified:**
+  - `Assets/Props/DeadTrees.blend`, `Assets/Props/DeadTrees.glb` (created)
+  - `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md` (modified)
+- **New Dependencies:** None (uses existing `ProceduralMap` pooling; adds internal pool key `__BoundaryWall` and `ChunkBuilder.FOREST_BORDER_RADIUS = 3`).
+- **Next Steps / Known Issues:** Verified in live Play mode (`12` road chunks, `85` forest chunks, all 8 dead tree variants evenly distributed `141–180` each, `Ring1` avg `7.2` trees/chunk @ `45.1` studs → `Ring2` avg `15.1` @ `56.2` studs → `Ring3` avg `21.5` @ `65.5` studs max `96.7`, `0` colliding roadside trees, `1,204` solid deep-forest trees, `25` `ForestBoundary` outer walls, zero script errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ChunkBuilder`, `MapService`) and grant the group experience permission to use the 6 personal-account mesh assets (`119484560624615`, `133992692268823`, `136479370207102`, `90019402294940`, `101456467687813`, `98035104750823`) in Creator Dashboard before publishing.

@@ -49,6 +49,7 @@ it down a forest road to deliver packages to houses.
 ## Planned: Procedural Map
 - The map is generated as the player drives. Roads, intersections and houses spawn ahead of the van; old chunks behind it despawn or are pooled to stay memory-safe.
 - Uses the existing HorrorKit models in `ReplicatedStorage.Assets.MapModels` (Houses, Infrastructure, Props, Roads). Do not generate placeholder models; ask for missing ones.
+- **Dense Deep Forest & Map Containment:** Surrounding forest extends 3 cells (`300` studs) deep on every side of the road and grows progressively denser and taller farther from the road (`~0.88x–1.12x` roadside → `~1.50x–2.00x` deep woods) using 8 low-poly dead tree variants (`Prop_DeadTree_A/B` + `DeadTree_01_Fork`..`DeadTree_06_Crook`, source files in `Assets/Props/DeadTrees.blend` & `DeadTrees.glb`). Near-road trees (`< 95` studs from road center) remain non-collidable so the van never snags; deeper forest trees (`>= 95` studs) are solid blockers and outer Ring 3 edges are sealed with invisible `ForestBoundary` walls to slow down and contain players who wander off-road.
 - Generation is seeded so a shift can be reproduced, and always keeps at least one valid route to the current delivery address.
 - Delivery addresses are placed on houses that exist in the generated map; the tracker screen updates as new sections generate.
 - Generation must stay compatible with monsters (e.g. avoid dead ends right behind the player so the chaser has a path).
@@ -60,6 +61,7 @@ it down a forest road to deliver packages to houses.
 4. **Chaser (`Monster1_Chaser`):** a huge, hunched, long-limbed monster sprinting behind the van. Gets closer when the player slows down or crashes, falls back when they drive well.
 5. **Cargo monster (`Monster5_Cargo`):** twisted, spider-like stowaway crawler that sneaks into the back of the van. Player must check the rear camera and lock the cargo door, or packages get wrecked.
 6. **Skinwalker (`Monster6_Skinwalker`):** uncanny humanoid/deer-like hybrid that stands motionless in the middle of the road to bait drivers into swerving—or transforms into a relentless stalker if hit.
+7. **Deep-forest / Far-from-van hunter *(planned, not built yet)*:** kills players who stray too far away from the delivery van into the woods; pairs with the dense, solid deep forest designed to slow off-road players down.
 
 ### 3D Monster Assets (Blender → Roblox R15 FBX)
 - Source `.blend` and individual R15-rigged, UV-unwrapped `.fbx` exports (low-poly / retro PS1 atmospheric horror style) live in `Assets/Monsters/`:
