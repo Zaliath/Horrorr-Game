@@ -597,6 +597,24 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode (`chasemonster spawn 90`, `chasemonster devour`, `chasemonster clear`): `Ext=66.3x52.6x92.4`, `Toppled=8`, `Grabs=House(BinBack),LampPost(LiftPost)`, `LegDrag=true`, `State=Ramming Dist=12.0->5.6`, `VanLift_dY=4.43`, `FwdDelta=-14.91`, `JawPitch=-86.0`, `FingerCurl=-92.0`, `Hands=Van/Van`, and zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - Made the Colossal Skinwalker Chase Monster **much faster** and implemented full **Eat-the-Van** swallowing physics (`ChaseMonster`, `VanController`, `ChaseMonsterController`):
+    - **High-Speed Pursuit (`ChaseMonster` + `ChaseMonsterController`):** Raised `BaseChaseSpeed = 104` studs/s (`MaxBaseChaseSpeed = 122`, `CatchupBonusMax = 16`, `StoppedClosingCap = 82`, `SpawnIntroSeconds = 1.25`), forcing active `[Q]` Boost / `[H]` Horn counterplay, and doubled the client IK crawl cadence (`crawlFreq = 2.4..4.4` cycles/s, fast reach phase `u < 0.30`).
+    - **Full Eat-the-Van Sequence (`ChaseMonster` + `VanController`):**
+      - During `ChaseState == "Ramming"`, the server temporarily takes physics ownership of `DeliveryVan` (`AlignPosition` + `AlignOrientation`, zero anchored parts) while `VanController` zeroes wheel motor torque and yields velocity overrides (`beingDevoured`) without blocking `[Q]` Boost break-free.
+      - **`"Grabbing"` (`0.0s..1.0s`):** Lifts the van high up in front of the colossal open jaws (`LiftY ~ +18` studs) with a `0.25s..1.0s` Boost `[Q]` / Horn `[H]` break-free window during natural chases (`cm devour` forces full swallow).
+      - **`"Swallowing"` (`1.0s..2.7s`):** Pitches the van nose-up (`+28°..+52°`) and shoves it rear-first through the teeth straight into `GulletCavern` (`ChaseDistance = 8.0 -> -10.0`).
+      - **`"Swallowed"` (`2.7s..4.5s`):** Snaps the jaw shut (`JawPitch = -6°`), hides the swallowed van (`VanSwallowed = true` -> `LocalTransparencyModifier = 1` on `DeliveryVan`), deducts `25s`, kills players inside/near the van (`hum.Health = 0`), triggers `SwallowBlackout`, clutches/wipes around the bulging throat (`GrabKind = "Throat"`), and cleanly restores the van upright on the road upon departing (`_cleanupDevourConstraints`).
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: speed test closed `78.2` studs in `0.95s` (`101.5 -> 23.3`, `ChaseSpeed = 82.0`); full swallow curve verified across all 3 phases (`On_Grabbing: LiftY=18.02, JawPitch=-86.0`, `On_Swallowing: NoseY=0.45, AnchorZ=-28.1`, `On_Swallowed: VanSwallowed=true, VanLTM=1.0, JawPitch=-6.0, HandL=Throat, Dist=-10.0, AnchorZ=-8.5`), and clean constraint/visibility reset after `clear` (`AfterSw=false, AfterLTM=0.0, AfterAP=false`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
 
 
 ---
