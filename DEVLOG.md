@@ -476,3 +476,25 @@
 - **Next Steps / Known Issues:** Verified in live Play mode: all 22 workspace `ProximityPrompt`s converted to `Custom` (`Prompts=22, Custom=22, VanAttachmentPrompts=16`), live circular prompt UI verified on `Cab.DoorHandleL.PromptAttachment` (`CircularPrompt_ProximityPrompt(key=E, act=Open door, ring=true)`), and driver hand animations verified (`Base: R(-1.55,3.61,-8.85) L(-2.87,3.61,-8.85)` -> `Horn[H]: R(-2.09,3.56,-8.66) dR=0.59` -> `Headlights[L]: L(-3.10,3.43,-8.81) dL=0.30` -> `CabLight[K]: R(-0.61,3.20,-8.61) dR=1.05`). Zero script console errors. Studio returned to `Edit` mode. All 8 van tasks (#1–#8) are now complete! Remember to **Commit Drafts** in Team Create.
 
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Replaced the teleport-back-to-`(0,0)` shift reset with **endless forward Factory Depot progression** across `ProceduralRoadGraph`, `ChunkBuilder`, `MapService`, `ChuteService`, `ShiftService`, and `ShiftController`:
+    - **Roadside Factory Depot Reservation & Relocation (`ProceduralRoadGraph.ReserveDepotAhead` + `MapService.ReserveAndRelocateDepot`):** When a shift ends (triggered **both** on completing all deliveries AND on the timer hitting `00:00`), reserves a clear `4×4` roadside lot `~6–8` cells ahead on a straight main-spine cell (clearing overlapping forest chunks and blocking future forest trees/guardrails/poles from the driveway), relocates the existing `Workspace.Factory` (`150` parts), `Workspace.StartArea` (`3,070` parts: chute, shops, decor), `Workspace.SpawnLocation`, and `Workspace.StartAreaGround` via a single `workspace:BulkMoveTo` call (zero 3,220-part cloning bloat), lays a flush `DepotDrivewayApron` across the curb, refreshes `ChuteService:RefreshBindings()`, and places a glowing green `DepotBeaconAnchor` + billboard inside the bay.
+    - **Invisible Wall + Subtle Physical Barricade (`MapService:SetShiftGateActive`):** Spawns `Workspace.ShiftGateBarrier` (`ShiftGateWall` `130×36×4` invisible collision wall + 2 weathered steel/wood sawhorse barricades with slow-blinking amber warning beacons + 4 worn traffic cones) across the road just past the factory driveway exit (also active during initial Shift #1 Prep) so players can pull in and restock freely but cannot proceed until the next shift starts.
+    - **All-Alive-Players Ready-Up Button (`ShiftService` + `ShiftController`):** Replaced the old `Return to Depot` teleport button and `Z < 135` auto-start with a compact `StartNextShiftBtn` HUD button during `Prep` (`ShiftAction = "ToggleReady"`, requiring every currently alive player `Humanoid.Health > 0` to ready up, displaying `0/N` / `Ready ✓ (R/N) — Cancel`, and automatically re-evaluating on `Humanoid.Died`, `CharacterAdded`, and `PlayerRemoving`). Once all alive players are ready, the gate drops and the next shift's delivery stops generate further ahead on the continuing road.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.ProceduralRoadGraph` (modified)
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `ServerScriptService.Server.Services.ChuteService` (modified)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:**
+  - `ShiftAction` action: `"ToggleReady"` (replaces `"ReturnToWarehouse"` teleport; `"StartShift"` aliases to ready toggle).
+  - `ShiftState` snapshot fields added: `TimedOut`, `GateActive`, `ReadyCount`, `AliveCount`, `ReadyUserIds`.
+  - Runtime workspace instances: `Workspace.ShiftGateBarrier`, `Workspace.DepotBeaconAnchor`, `Workspace.ProceduralMap.DepotDrivewayApron`.
+- **Next Steps / Known Issues:** Verified end-to-end live in Play mode: Shift #1 initial Prep gate + `Start Shift #1 (0/1)` click dropped barrier cleanly; completed Stop #1 (`$100`) and let timer expire naturally at `00:00` → confirmed zero teleport back to `(0,0)`, Factory + StartArea + SpawnLocation + ChuteMouth relocated cleanly onto West roadside lot at `(460.9, -1109.6)` with `0` overlapping trees, `ShiftGateBarrier` (`39` parts, `wallCollide = true`) spawned past the driveway, visually verified via `RelocatedDepot_StreetView` and `RelocatedDepot_AerialView`, drove van into relocated bay → beacon cleared, `6` prompts intact inside relocated `StartArea`, `Start Next Shift (0/1)` appeared, clicking ready dropped `ShiftGateBarrier` and launched `SHIFT #2 (0/4 stops)` seamlessly down the continuing road with zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ProceduralRoadGraph`, `ChunkBuilder`, `MapService`, `ChuteService`, `ShiftService`, `ShiftController`).
