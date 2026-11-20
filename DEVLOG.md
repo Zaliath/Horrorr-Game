@@ -419,3 +419,23 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode: all 9 seats verified with `SeatPrompt` enabled and touch-to-sit disabled (`Seats=9, PromptsEnabled=9/9, NoTouch=9/9, DisabledEmpty=9/9`), standing directly over a rear cargo `PassengerSeat` does NOT auto-sit (`StandOverAutoSat=false`, `RearPromptDist=1.10/5.5`, `DriverDoorwayDist=3.42/6.5`), sitting via prompt works cleanly and hides the prompt while occupied (`AfterPromptSit: sat=true, ppEnabled=false`), and holding `[V]` in the van sets `ProximityPromptService.Enabled = false` (`HoldingV: keyDown=true ppsEnabled=false camType=Scriptable`). Zero game script errors. Studio returned to `Edit` mode; paused after #5–#6 awaiting user go-ahead for #7–#8. Remember to **Commit Drafts** in Team Create.
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Mirrored all 7 active new HorrorKit road models (`Road_CrossIntersection`, `Road_Roundabout`, `Road_Bridge`, `Road_PulloffBay`, `Road_DamagedRough`, `Road_SCurve`, `Road_WideTurn90` — excluding `Road_CulDeSac`) into `ReplicatedStorage.Assets.MapModels.HorrorKit_Roads` (`PreciseConvexDecomposition` collision, object-pooled in `ChunkBuilder`).
+  - Upgraded `ProceduralRoadGraph`, `ChunkBuilder`, and `MapService` to generate wider, longer multi-path looping road networks:
+    - Detour loops now swing `2–3` cells (`200–300` studs) sideways and rejoin `5–7` cells ahead using both single-side `Road_TIntersection` splits and dual-side 3-path splits via `Road_Roundabout` and `Road_CrossIntersection` (zero dead ends; 100% of paths loop back to the main road).
+    - Added full 2×2 multi-cell formation support (`WorldOffset`, `AnchorKey`, `MultiCellFiller` cells kept alive with their anchor in `MapService`) for sweeping `Road_SCurve` (`160×200`) and `Road_WideTurn90` (`180×180`) bends on both the main spine and wide detour corners.
+    - Mixed `Road_Bridge`, `Road_PulloffBay` (with `BaySide`-aware infrastructure/forest avoidance), `Road_DamagedRough`, and `Road_Cracked` across straight segments, and added landmark lighting on `Road_Roundabout` and `Road_CrossIntersection`.
+    - Kept 100% of delivery stop houses (`graph.Houses` + `DropoffPad`) strictly on straight main-spine cells while spawning optional decorative non-delivery `DecorHouse`s along side branches (with forest `avoidPoints` protection).
+    - Extended `MapService` graph lookahead (`+22` steps, initial `28`) so 5–7 cell detour splits finalize completely before chunks build.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Assets.MapModels.HorrorKit_Roads.Road_CrossIntersection` .. `Road_WideTurn90` (7 MeshParts mirrored)
+  - `ServerStorage.Modules.ProceduralRoadGraph` (modified)
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** None (uses existing `ProceduralMap` object pooling and road templates in `ReplicatedStorage.Assets.MapModels.HorrorKit_Roads`).
+- **Next Steps / Known Issues:** Verified live in Play mode across 5 seeds × 100 steps (all 7 active new road pieces spawning: `20` Roundabouts, `22` CrossIntersections, `38` TIntersections, `45` WideTurn90, `35` SCurves, `93` Bridges, `101` PulloffBays, `122` DamagedRough, `38` decorative branch houses; `0` CulDeSacs, `0` dead ends, `0/149` branch delivery violations) and visually verified both `Road_SCurve` (`ProcMap_SCurveAndBridge`) and a live 3-path `Road_Roundabout` → `Road_CrossIntersection` dual loop (`ProcMap_3PathLoopOverview`) with pixel-perfect road seams, clear pull-off bays/bridges, dense dead forest, and zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ProceduralRoadGraph`, `ChunkBuilder`, `MapService`).
