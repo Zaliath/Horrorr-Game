@@ -247,6 +247,17 @@
   - Optional custom SFX names supported in `ReplicatedStorage.Assets.Sounds`: `WindowMonsterAppear`, `WindowMonsterTap`, `WindowMonsterRepel`, `WindowMonsterAttack` (falls back cleanly to built-in `rbxasset://sounds/` spatial cues).
 - **Next Steps / Known Issues:** Verified visually in live Play mode via inside-cab screenshot: skull, glowing crimson eyes, unhinging needle-tooth jaw, ribs, and gripping spidery hands render cleanly through `SideGlassL` with zero glass clipping and zero console errors (the earlier `WindowMonster:290` syntax note above was immediately resolved during the same session). Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+## 2026-11-20 — Antigravity (Non-Collidable Roadside Infrastructure & Trees in Procedural Map)
+- **Summary of Changes:**
+  - Updated `ChunkBuilder` so all `HorrorKit_Infrastructure` (guardrails `Infra_Guardrail_Straight`/`Infra_Guardrail_Broken`, `Infra_Streetlamp`, `Infra_UtilityPole`, `Infra_RoadBollard_Glow`, `Infra_ChevronSign`, `Infra_PowerWire_20m`, plus any future assets in that kit) and all `HorrorKit_Props` (`Prop_DeadTree_A`, `Prop_DeadTree_B`, `Prop_DeadGrass_Cluster`, `Prop_Mailbox_Rusted`, `Prop_WoodFence_Segment`, `Prop_TrashDebris_Pile`, plus any future props) spawn with `CanCollide = false` and `CanQuery = false` (also prevents hold-`V` chase-cam and exit raycasts from snagging on poles/trees).
+  - Kept driveable surfaces (`GrassGround`, `HorrorKit_Roads`) and buildings (`HorrorKit_Houses` + `DropoffPad`s) fully collidable (`CanCollide = true`, `CanQuery = true`).
+  - Updated `MapService.archiveLegacyMap()` to also set `CanCollide = false` and `CanQuery = false` on the 9 loose hand-placed `Workspace.Tree` models that sit in/near the procedural road zone at runtime.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:** Verified in live Play mode across 36 active `ProceduralMap` chunks (`0` colliding roadside infrastructure, `0` colliding trees/props, `0` colliding loose `Workspace.Tree` parts; all roads, ground slabs, houses, and dropoff pads remain collidable; zero script errors). Studio returned cleanly to `Edit` mode.
+
 
 
 
