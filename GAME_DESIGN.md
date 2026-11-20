@@ -15,14 +15,12 @@ it down a forest road to deliver packages to houses.
 - `DeliveryChute`: loads boxes into the van (see Systems).
 - `VanUpgradeStation`, `PersonalUpgradeStation`: upgrade terminals.
 - `WarehouseLights`, `WarehouseDecor`: set dressing.
-- Shop ids wired to ProximityPrompts: `VanUpgrades` (garage terminal), `PersonalUpgrades` (counter terminal),
-  `Weapons` (gun rack), `Stamina` (vending machine), `Gear` (lockers).
+- Shop ids fwired to ProximityPrompts: `VanUpgrades` (garage terminal), `PersonalUpgrades` (counter terminal), `Weapons` (gun rack), `Stamina` (vending machine), `Gear` (lockers).
 
 ## Observed: Delivery Van (`Workspace.DeliveryVan`)
 - Model parts: Chassis, Body, Cab, CabDetail, CabInterior, Interior, Cameras, Seats (1 VehicleSeat + 1 Seat),
   Wheels, Cargo, Packages, Shelves, RearDoors, SlidingDoor, Steps, Lights, Details.
-- Driven by `VanDrive` (server, builds welds/hinges/doors/seat prompts) and `StarterPlayer.StarterPlayerScripts.VanDriverClient`
-  (client-side drive loop; the driver's client owns van physics for zero input lag).
+- Driven by `VanDrive` (server, builds welds/hinges/doors/seat prompts) and `StarterPlayer.StarterPlayerScripts.VanDriverClient`(client-side drive loop; the driver's client owns van physics for zero input lag).
 - Collision groups: `VanBody`, `VanWheel` (wheels do not collide with the body or each other).
 - Attributes read from the model: `Scale`, `DriveSign`, `SteerSign`. Set by the chute: `MaxCargoBoxes`, `CargoBoxes`.
 

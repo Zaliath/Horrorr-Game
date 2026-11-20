@@ -133,3 +133,10 @@
   - `GEMINI.md`, `CLAUDE.md`, `README.md`, `DEVLOG.md` (modified)
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:** Every future Antigravity and Claude session should read `LESSONS.md` on startup and keep it pruned and updated as new issues are discovered or resolved.
+
+## 2026-11-20 — Riplatki (via Claude) (Cab door furniture now rides with the doors)
+- **Summary of Changes:** Fixed door decorations on the delivery van not sticking to the doors. `VanDrive` now attaches all cab door furniture, door seam trim, and cab livery stripes to the appropriate door, and applies the existing door-open collision handling to the added parts. Body trim remains attached to the chassis; rear doors and the sliding door are unchanged. No parts are anchored at runtime; new parts are welded to door roots with `WeldConstraint`s.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.VanDrive` (modified, "The game part" placeId 93445054108906)
+- **New Dependencies:** None (no new remotes, tags, attributes or DataStore keys).
+- **Next Steps / Known Issues:** Verified in Play mode: all 68 door parts are welded to their own door and sampled furniture moved with zero drift; no van-related console errors. Not visually inspected in-game from a player camera. Rear hinge barrels (`RearDoors.RearHinge*`) and running boards (`Cab.StepL/R`) deliberately stay on the body.
