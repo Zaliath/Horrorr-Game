@@ -557,3 +557,19 @@
   - `Workspace.DeliveryVan.VanDrive` (modified — rear cargo doors pop open on `ChaseEvent == "Ram"`)
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode (`d0=80.0(Spawning) -> d1=70.1(Chasing) -> d2=46.9(Chasing)`, `ClientModel=SkinwalkerChaser3D (Parts=135)`, `RamReply=Forced Skinwalker Chase Monster rear-bumper ram attack. | Event=Ram | RamCount=1 | RearDoorPrompt='Close rear doors'`, `EvadeEvent=Evaded`). Zero console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:** Overhauled the Skinwalker Chase Monster into a **Colossal Broken-Legged Crawler**:
+  - **`ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker` (rebuilt, 168 parts, `ColossalCrawlerRig = true`):** ~38×28×29-stud crawler (bigger than the van) with a giant bleached deer skull, towering asymmetrical antlers, unhinging `Jaw` + crimson `GulletCavern`/neon `GulletCoreGlow` throat, 24-stud 2-bone arms (`UpperArm` 11.5 + `Forearm` 12.5, rest-aligned along -Z for zero-drift `CFrame.lookAt` IK), new articulated `FingersL/R` bones (4 curlable talons each + thumb talon), and fractured hind legs rest-aligned along +Z for ragdoll solving.
+  - **`ServerStorage.Modules.Monsters.ChaseMonster`:** New `ChaseSpawnSide` attribute; spawns `42` studs inside the woods on a random side and crawls onto the road over a `2.3s` emergence; hand-over-hand lurching haul speed (`0.78–1.22×` surge, same average); grab distance `4.5` studs; `Ramming` is now a `1.25s` van grab (van yanked backward + upward toward the maw, stunned) followed by a wrench-free forward jolt and rebound to `52` studs; bigger on-foot reach (`15.5`).
+  - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (rewritten):**
+    - Forest emergence: woods roar + tremor, topples the 3 nearest map trees toward the road and shoves flanking trees apart (non-destructive client-side tilt that restores afterward; spawns temporary fallen trees if the area is open).
+    - Environment anchor scanner over `ProceduralMap`, `StartAreaForest`, `StartArea`, `Factory`: classifies **House / LampPost / Tree / Guardrail** (fallback: road curb), solves 2-bone analytical arm IK to the prop surface, curls fingers −82° around it on plant, and bends trees/poles/guardrails back as it hauls past.
+    - Verlet ragdoll broken legs (gravity, road clamp, asphalt friction, fishtail chatter, twisted joint angles).
+    - Devour climax: rears up, jaw unhinges 82°, both hands clamp the van's sides (verified hands at van-local `(±5.0, 4.3, 4.6)`).
+  - **`chasemonster` Cmdr:** added `devour` / `eat` / `grab` aliases for the grab climax.
+- **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker` (rebuilt), `ServerStorage.Modules.Monsters.ChaseMonster`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController`, `ServerScriptService.Cmdr.Commands.chasemonster`, `ServerScriptService.Cmdr.Commands.chasemonsterServer`.
+- **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
+- **Next Steps / Known Issues:** Verified in Play mode: `State=Spawning Side=L Lat=-19.1`, `ToppledTreesCount=4`, `Ext=38.6×27.8×28.7`, live grabs `House:Bay_Wall_East / Road:RoadCurb` and `House:Window_East_Upper_02`, `LegDragVerified=true`, `cm devour` → `State=Ramming, GrabKind=Van, JawOpenDeg=82`, rear doors popped open, zero script errors. Play-mode `screen_capture` only rendered the UI layer, so the look still needs a visual pass in-game (`cm spawn`, `cm close`, `cm devour`). Fallback sounds are placeholders. Remember to **Commit Drafts** in Team Create.
