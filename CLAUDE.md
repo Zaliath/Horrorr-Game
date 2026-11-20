@@ -9,7 +9,11 @@ You are collaborating with a team of developers using both **Google Antigravity 
 - **Inspect Live Studio via MCP:** Because this project uses Roblox Studio Team Create without Rojo, always use the **Roblox Studio MCP** to inspect the live `Workspace`, `ServerScriptService`, `ServerStorage`, and `ReplicatedStorage` hierarchy before creating or modifying scripts.
 
 ## 2. Core Technical & Architectural Rules
-- **Luau Style:** Use `--!strict` at the top of new scripts and keep systems modular (`ModuleScript`s in `ServerStorage` / `ReplicatedStorage`).
+- **Luau Style & Service/Controller Architecture:** Use `--!strict` at the top of new scripts and build features as modular `ModuleScript`s managed by `ReplicatedStorage.Shared.Loader`:
+  - Put server systems in `ServerScriptService.Server.Services` and register them in `ServerScriptService.Server.Core.ServiceList` (e.g., `MapService`, `ChuteService`, `ShopService`, `ShiftService`, `PackageService`, `MonsterService`).
+  - Put client systems in `StarterPlayer.StarterPlayerScripts.Client.Controllers` and register them in `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (e.g., `VanController`, `ShiftController`, `CmdrController`, `WindowMonsterController`).
+  - Expose clean public methods and `Signal`s so other modules can call them via `Loader.Get("ServiceOrControllerName")` (for example, monster controllers calling `Loader.Get("VanController")`), and put shared/helper modules in `ServerStorage.Modules` or `ReplicatedStorage.Shared`.
+  - Only create standalone `Script` or `LocalScript` instances when literally required (such as bootstrap entry points or model-embedded scripts).
 - **Avoid Duplicate Systems:** Check `DEVLOG.md` and live Studio folders for existing `RemoteEvent`s, `CollectionService` tags, and DataStore keys before creating new ones.
 - **Moving Van Physics Rule:** Never anchor parts attached to the delivery van. Any player-placed upgrades (cameras, monitor screens, props) must be welded to the van's primary body using `WeldConstraint`s and saved as relative `CFrame` offsets (`vanRoot.CFrame:ToObjectSpace(...)`).
 - **Procedural Map Rule:** Keep infinite road/house generation memory-safe by despawning or pooling chunks behind the van.
