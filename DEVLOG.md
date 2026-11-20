@@ -258,6 +258,28 @@
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:** Verified in live Play mode across 36 active `ProceduralMap` chunks (`0` colliding roadside infrastructure, `0` colliding trees/props, `0` colliding loose `Workspace.Tree` parts; all roads, ground slabs, houses, and dropoff pads remain collidable; zero script errors). Studio returned cleanly to `Edit` mode.
 
+## 2026-11-20 — Riplatki (via Antigravity) (Window Monster Forced Look, Camera Shake, Head-Banging, Growing Cracks & Lethal In-Van Breach)
+- **Summary of Changes:**
+  - **Forced Camera Look & Escalating Camera Shake (`WindowMonsterController`):**
+    - Added `isLocalPlayerInsideVan()` detection covering seated cab occupants (`DriverSeat`, `FrontPassengerSeat`), rear cargo bench `PassengerSeat`s, and players standing anywhere inside the van hull.
+    - While `WindowMonster3D` is active (`Threat` or `Attack`) for players inside the van, `RunService:BindToRenderStep("WindowMonsterCam", Camera.Value + 25)` smoothly locks camera look onto the monster's skull (`VanController:SetChaseCamBlocked(true)`) while layering continuous terror tremor + heavy impact rotational/positional shake on every head-bang and shatter.
+    - Unlocks cleanly on repel (smooth blend back), van exit, death, or respawn (`CharacterAdded`), and removed `onStunChanged()`'s `hum.CameraOffset` override so `VanController`'s seated forward `CameraOffset` is never clobbered.
+  - **Violent Head-Banging & 4-Stage Growing Spiderweb Cracks (`WindowMonster` & `WindowMonsterController`):**
+    - Replaced idle tapping with synchronized `ClimbSeconds = 0.85` emergence followed by `BangCount = 5` violent skull windup-and-slam impacts over `ThreatSeconds = 9`, driving `WindowCrackL/R` (`0..4`) and `WindowBangSeq` from server `_tickThreat`.
+    - Added pre-built 4-stage crisp spiderweb fracture overlays (`CracksLayer` on `WindowCoverL/R`'s `SurfaceGui` at `ZIndex = 2` behind `Shade` `ZIndex = 10` with `LightInfluence = 0.55` to eliminate Bloom washout), 7-piece glass chips popping on each impact, layered thud + crack spatial cues, and 4s delayed crack cleanup when repelled.
+  - **Window Shatter, 3D Glass Shards & Lethal In-Van Rampage (`WindowMonster` & `WindowMonsterController`):**
+    - On the 5th head-bang (`_fail()` / `WindowThreatEvent = "Attack"`), the server breaks `SideGlassL/R` (`WindowBrokenL/R = true`, `Transparency = 1`, `CanCollide = false`), the client bursts 26 tumbling 3D `GlassShard` parts inward (inheriting van velocity, zero collisions/van-physics load), and the monster vaults straight through the broken window into `DeliveryVan` local space—mauling the closest cab seat (`0.72s`), slashing the opposite cab seat (`1.15s`), bursting past the bulkhead to sprint down the cargo aisle (`1.50s–2.45s`) with a final hull sweep at `2.35s` to kill everyone inside the van, and auto-repairing the broken window after `6.0s` so respawned players can continue the shift.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.Monsters.WindowMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.WindowMonsterController` (modified)
+- **Repository Files Modified:**
+  - `LESSONS.md` (modified)
+  - `DEVLOG.md` (modified)
+- **New Dependencies:**
+  - Replicated `DeliveryVan` attributes: `WindowCrackL`, `WindowCrackR`, `WindowBangSeq`, `WindowBrokenL`, `WindowBrokenR`, `WindowThreatClimb`, `WindowThreatBangCount`.
+  - Optional custom SFX names supported in `ReplicatedStorage.Assets.Sounds`: `WindowMonsterBang`, `WindowMonsterCrack`, `WindowMonsterShatter`.
+- **Next Steps / Known Issues:** Verified end-to-end in live Play mode: forced camera lock (`CamDot` up to `1.000`) in both cab & rear cargo bench, `WindowBangSeq` `0->4` and `Attack` shatter, visual `screen_capture` confirming razor-sharp Stage 3 spiderweb cracks over the monster's glowing skull with zero bloom washout, `26` flying 3D `GlassShard`s, monster pathing through cab (`X=3.3->-1.6`) and cargo (`Z=-1.1->+16.6`), lethal kills for both `DriverSeat` (`0.77s`) and rear cargo `PassengerSeat` (`1.67s`), `6.0s` glass auto-repair, and zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
 
 
 
