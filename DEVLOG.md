@@ -598,3 +598,30 @@
 - **Next Steps / Known Issues:** Verified in live Play mode (`chasemonster spawn 90`, `chasemonster devour`, `chasemonster clear`): `Ext=66.3x52.6x92.4`, `Toppled=8`, `Grabs=House(BinBack),LampPost(LiftPost)`, `LegDrag=true`, `State=Ramming Dist=12.0->5.6`, `VanLift_dY=4.43`, `FwdDelta=-14.91`, `JawPitch=-86.0`, `FingerCurl=-92.0`, `Hands=Van/Van`, and zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Expanded Procedural Road Generator with 6 Advanced 100%-Looping Macro Formations (`ProceduralRoadGraph`):**
+    - Replaced the single repetitive rectangular bypass loop with a balanced, non-repeating library of 6 distinct macro formations using only existing `HorrorKit_Roads` (zero dead ends; `Road_CulDeSac` never spawned) and existing `HorrorKit_Houses` (`House_A_Cabin`, `House_B_Suburban`, `House_C_Ranch`) strictly as non-delivery decorative houses (`DecorHouse`) along side branches:
+      1. `DeepForestWing` ("Out-and-Back Sweep"): `4–5` cells (`400–500` studs) deep into the dense woods around sweeping `Road_WideTurn90` bends with decorative cabins on outer & horizontal legs.
+      2. `StaggeredZSplit`: asymmetrical dual-side branches where one side splits early (`gz0..gz0+5`) and the opposite side splits 3 cells later (`gz0+3..gz0+8`).
+      3. `CrossroadsVillage`: compact `5×5` ghost-town neighborhood with alternating `Road_Roundabout` / `Road_CrossIntersection` hubs, parallel side streets, 3 cross-alleys, and `4–6` decorative abandoned houses.
+      4. `LongBackroadBailouts`: `9`-cell-long forest backroad (`300` studs out) with sweeping `Road_WideTurn90` ends, cabins, and a mid-way `Road_Bridge` bailout lane back to the main road.
+      5. `DoubleRoundaboutFigure8`: two asymmetric dual-loop `Road_Roundabout` / `Road_CrossIntersection` lobes separated by a center `Road_Bridge` straight stretch with alternating wide (`3`-cell) and tight (`2`-cell) sweeping outer arcs.
+      6. `SCurveChicaneSplit`: curvy outer route chaining `Road_WideTurn90` + `Road_SCurve` + `Road_WideTurn90` paired against a shorter `Road_DamagedRough` / `Road_Cracked` inner spine road.
+    - Widened lateral branch bounds (`BRANCH_MIN_GX = -11`, `BRANCH_MAX_GX = 11`), kept 100% of actual delivery stops (`graph.Houses` + `DropoffPad`) strictly on straight main-spine cells, extended house-eval buffer (`#SpineOrder - 13`) and `ReserveDepotAhead` lookahead (`+32`), and prevented `_straightRun` from counting `Turn90` or reusing prior formation cells.
+  - **Decorative Yard Accents & Gentle Forest Tree Trim (`ChunkBuilder`, `MapService`):**
+    - Added optional non-collidable `Prop_Mailbox_Rusted` and `Prop_WoodFence_Segment` yard accents to `DecorHouse` lots in `ChunkBuilder.BuildRoadChunk` (no `DropoffPad` or `StopHouseId`).
+    - Gently reduced forest tree counts by a couple trees per chunk (~18–20% lighter for smoother FPS while keeping the woods thick and ominous): Ring 1 `4–6` (`minTrunkSpacing = 19`), Ring 2 `8–11` (`16`), Ring 3 `12–16` (`13`), and trimmed `MapService.StartAreaForest` from `215` → `175` trees. Kept progressive height scaling, solid deep-forest collision (`>= 95` studs), Ring 3 `CastShadow = false`, and outer `ForestBoundary` walls intact.
+    - Extended `MapService` streaming window (`SPAWN_RADIUS = 850`, `DESPAWN_RADIUS = 950`, lookahead `currentSpine + 28`, initial `ExtendToStep(34)`).
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.ProceduralRoadGraph` (modified)
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:**
+  - Verified with a 10-seed × 120-step graph audit: all 6 formations spawned evenly (`DeepForestWing=15`, `StaggeredZSplit=11`, `CrossroadsVillage=17`, `LongBackroadBailouts=11`, `DoubleRoundaboutFigure8=14`, `SCurveChicaneSplit=15`), `0` dead ends, `0` CulDeSacs, `0` branch delivery violations, `0` seam/mask mismatches, `373` main-spine delivery houses, `202` decorative branch houses, and `10/10` `ReserveDepotAhead` passes.
+  - Verified live in Play mode with aerial `screen_capture`s of both `CrossroadsVillage` and `LongBackroadBailouts` (`StartAreaForest = 175` trees, `ProceduralMap` avg `8.6–8.7` trees/chunk, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
