@@ -406,3 +406,16 @@
   - `LESSONS.md`, `DEVLOG.md` (modified)
 - **New Dependencies:** Shared road atlas texture `rbxassetid://116369928377682` (plus the 8 MeshIds above; personal account `justhyne1205` — grant experience asset permissions in Creator Dashboard before publishing).
 - **Next Steps / Known Issues:** Visually verified in Studio side-by-side with `Road_Straight` (`NewRoads_Overview`, `NewRoads_CloseComparison`). Ready to mirror into `ReplicatedStorage.Assets.MapModels.HorrorKit_Roads` and wire into `ProceduralRoadGraph` + `ChunkBuilder` when requested.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** Van Tasks #5 & #6 — Stand-Over Seat Sitting + Small-Distance Seat ProximityPrompts & Hiding Van Prompts During `[V]` Chase Cam
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `Workspace.DeliveryVan.VanDrive`:
+    - **#5 Seat Sitting & Small-Distance Seat Prompts:** Added `SEAT_PROMPT_DISTANCE = 3.2` across all 9 van seats (`DriverSeat`, `FrontPassengerSeat`, and all 7 rear cargo `PassengerSeat`s). Kept `seat.CanTouch = true` and `seat.Disabled = false` on all seats so players can sit on any seat just by standing over it (with a brief `0.55s` `CanTouch = false` grace window when standing up from a rear cargo bench seat so jumping doesn't immediately re-touch the bench). Added a `SeatPrompt` (`ProximityPrompt`, `MaxActivationDistance = 3.2`, enabled whenever `seat.Occupant == nil`) to every rear cargo `PassengerSeat` (`"Sit"`) and updated `DriverSeat` (`"Drive"`) and `FrontPassengerSeat` (`"Ride shotgun"`) prompts to `MaxActivationDistance = 3.2` and enabled whenever unoccupied and unblocked (with an interior `math.abs(rel.X) <= 4.6` check when the exterior cab door is closed), preventing overlap with adjacent seats, door handles, or window switches.
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`:
+    - **#6 Hide Van Prompts While Holding `[V]` Perspective:** Imported `ProximityPromptService` and updated `updateChaseCamState`, `leaveVanCamera`, and the `camConn` `RenderStepped` loop to set `ProximityPromptService.Enabled = false` while holding `[V]` (`Chase Cam`) and restore `ProximityPromptService.Enabled = true` when returning to first person or exiting the van.
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: all 9 seats verified with `SeatPrompt` (`Seats=9, Prompts=9, Dist3.2=9, Touch=9`), standing over a rear cargo `PassengerSeat` automatically sits the player down and hides its prompt while occupied (`StandOverRearSit=true, RearPromptOccupied=false`), and holding `[V]` in the van sets `ProximityPromptService.Enabled = false` (`HoldingV: keyDown=true ppsEnabled=false camType=Scriptable`). Zero game script errors. Studio returned to `Edit` mode; paused after #5–#6 awaiting user go-ahead for #7–#8. Remember to **Commit Drafts** in Team Create.
+
