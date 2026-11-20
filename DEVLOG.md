@@ -280,6 +280,21 @@
   - Optional custom SFX names supported in `ReplicatedStorage.Assets.Sounds`: `WindowMonsterBang`, `WindowMonsterCrack`, `WindowMonsterShatter`.
 - **Next Steps / Known Issues:** Verified end-to-end in live Play mode: forced camera lock (`CamDot` up to `1.000`) in both cab & rear cargo bench, `WindowBangSeq` `0->4` and `Attack` shatter, visual `screen_capture` confirming razor-sharp Stage 3 spiderweb cracks over the monster's glowing skull with zero bloom washout, `26` flying 3D `GlassShard`s, monster pathing through cab (`X=3.3->-1.6`) and cargo (`Z=-1.1->+16.6`), lethal kills for both `DriverSeat` (`0.77s`) and rear cargo `PassengerSeat` (`1.67s`), `6.0s` glass auto-repair, and zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** `WindowMonster` Directional Pre-Arrival Audio/Visual Cues (Cargo Wall Denting) & Timed Forced-Look Release
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `game.ServerStorage.Modules.Monsters.WindowMonster`:
+    - Added synchronized `ApproachSeconds = 2.6` pre-arrival telegraph (`_startApproach`, `_clearApproach`, `_finishApproach`) replicating `WindowApproachSide`, `WindowApproachStart`, and `WindowApproachDuration` on `DeliveryVan` before the monster pops up at the cab glass.
+    - Added early cover repel during the `Approach` phase (`_finishApproach` resolves directly to `WindowThreatEvent = "Repelled"` when the threatened side's window cover is already held shut).
+    - Wired approach cleanup/transitions through `_trySpawn`, `ForceSpawn`, `ForceAttack`, `Update`, and `Reset`.
+  - `game.StarterPlayer.StarterPlayerScripts.Client.Controllers.WindowMonsterController`:
+    - Added 3D directional audio emitter `ApproachAudioAnchor_<Side>` racing strictly down the threatened side (`relX = -5.30` Left / `+5.30` Right, `relZ = 13.0 -> -7.5`) with EQ-filtered dull metallic thud (`t = 0`, `WindowMonsterApproachThud`) followed by 10 accelerating footsteps (`stepIdx 0..9`, `WindowMonsterFootstep` + `WindowMonsterStepThump`), synchronized with an exterior scrambling `Monster2_Window` at `relX = sx * 6.45`.
+    - Added rear-cargo inward-bending wall dents (`WallDent`, `WallDentCore`, `WallDentCreaseT`, `WallDentCreaseB`, `DentDust` via `spawnWallDent`, `applyDentFrame`, `stepWallDents`) on `Interior.LinerL`, `Interior.LinerR_Front`, `Interior.LinerR_Rear`, and closed `SlidingDoor.DoorPanel` (`maxDepth = 0.72` / `0.84` heavy, `curDepth * 1.15` thickness anchored inside the inner face to guarantee zero exterior poke-through, skipping open `SlidingDoor`), updated in `chassis.CFrame` space on `RenderStepped`.
+    - Updated `CAM_STEP_NAME` (`WindowMonsterCam`, `Camera.Value + 25`) with `INITIAL_LOOK_LOCK_DURATION = 0.95` (`threatLookStartedAt`, `forcedLookReleased`) so players inside the van are pulled to face the monster for the initial `0.95s` jump-pop and can freely look away afterward while camera shake continues, adding `CAM_PRE_STEP_NAME` (`WindowMonsterCamPre`, `Camera.Value - 5`) calling `stripAppliedShake()` before Roblox's `CameraModule` (`200`) to prevent camera aim drift.
+- **Next Steps / Known Issues:** Verified in live Play mode: Left/Right spatial emitters (`AppAnchorX = -5.30` / `RightDents = 7`), cargo bay visual `screen_capture` confirming inward `WallDent` / `WallDentCore` / `WallDentCreaseT/B` geometry cleanly bounded on `Interior.LinerL` with zero z-fighting or exterior poke-through, early cover repel from `FrontPassengerSeat` (`WindowApproachSide = "R"` -> `Remotes.WindowCover:FireServer("R")` -> `WindowThreatEvent = "Repelled"`), initial `0.95s` forced look -> free look away in `DriverSeat` (`InitialLockDot = 1.000`, `PulledBackDuringLockDot = 1.000`, `FreeLookAwayFwdDot = 0.950`), and zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
 
 
 
