@@ -419,7 +419,6 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode: all 9 seats verified with `SeatPrompt` enabled and touch-to-sit disabled (`Seats=9, PromptsEnabled=9/9, NoTouch=9/9, DisabledEmpty=9/9`), standing directly over a rear cargo `PassengerSeat` does NOT auto-sit (`StandOverAutoSat=false`, `RearPromptDist=1.10/5.5`, `DriverDoorwayDist=3.42/6.5`), sitting via prompt works cleanly and hides the prompt while occupied (`AfterPromptSit: sat=true, ppEnabled=false`), and holding `[V]` in the van sets `ProximityPromptService.Enabled = false` (`HoldingV: keyDown=true ppsEnabled=false camType=Scriptable`). Zero game script errors. Studio returned to `Edit` mode; paused after #5–#6 awaiting user go-ahead for #7–#8. Remember to **Commit Drafts** in Team Create.
 
-
 ---
 
 ## 2026-11-20 — justhyne1205 (via Antigravity)
@@ -439,3 +438,20 @@
 - **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
 - **New Dependencies:** None (uses existing `ProceduralMap` object pooling and road templates in `ReplicatedStorage.Assets.MapModels.HorrorKit_Roads`).
 - **Next Steps / Known Issues:** Verified live in Play mode across 5 seeds × 100 steps (all 7 active new road pieces spawning: `20` Roundabouts, `22` CrossIntersections, `38` TIntersections, `45` WideTurn90, `35` SCurves, `93` Bridges, `101` PulloffBays, `122` DamagedRough, `38` decorative branch houses; `0` CulDeSacs, `0` dead ends, `0/149` branch delivery violations) and visually verified both `Road_SCurve` (`ProcMap_SCurveAndBridge`) and a live 3-path `Road_Roundabout` → `Road_CrossIntersection` dual loop (`ProcMap_3PathLoopOverview`) with pixel-perfect road seams, clear pull-off bays/bridges, dense dead forest, and zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ProceduralRoadGraph`, `ChunkBuilder`, `MapService`).
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** Rear Cargo Passenger Seat `[C]` Switching to Looked-At / Mouse-Targeted Seat with Arm-Braced Bench Scoot Animation
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `Workspace.DeliveryVan.VanDrive`:
+    - Tagged all 7 rear cargo `PassengerSeat`s with `VanSeat = true` and `VanRearSeat = true`, wired `bindCabSeatShift(seat)` (using seat-local `Vector3.new(0, 0, -CAB_SEAT_SHIFT)` in `getCanonicalSeatC0(seat)` so both `-Z`-facing cab seats and `+X`-facing rear bench seats shift along their own forward `LookVector`), and replicated `VanSeatRole = "RearPassenger"` when occupied.
+    - Updated `SwitchSeat` (`switchRemote.OnServerEvent:Connect(function(player, requestedTarget))`) to accept a target rear cargo `PassengerSeat`, computing distance-scaled duration (`0.56s..1.05s`) and multi-hop lift arcs (`hops = 1..3`, `hopSin = math.abs(math.sin(u * math.pi * hops))`, `liftY = 0.60 * hopSin`) across `SwitchSlideWeld` and replicating `VanSwitchFromLocal`, `VanSwitchToLocal`, and `VanSwitchHops`.
+    - Updated `exitVanSeat` (`LeaveSeat`) so pressing `Space` in a rear cargo `PassengerSeat` steps the player `+1.85` studs inward into the interior cargo aisle (`relX ≈ -1.9`).
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`:
+    - Added `"RearPassenger"` to `SeatedRole` and implemented `findTargetSeatForSwitch(seat)` using both mouse-ray (`cam:ViewportPointToRay`) and camera-look raycast + cone alignment (`dot >= 0.78` or `perpDist <= 1.75` with `dot >= 0.40`) so pressing `[C]` in a rear cargo seat switches specifically to the unoccupied seat the player is looking at / pointing their mouse at (never a random seat).
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:
+    - Added seated lap/floor limb posing (`sCF * CFrame.new(±0.60, 0.45, -1.10)` / `sCF * CFrame.new(±0.50, -1.35, -1.65)`) and first-person limb unveiling for `RearPassenger` seats, plus multi-hop rear-bench seat-switch arm bracing (`curWorld ± benchRight * 0.70 + upVec * 0.36 + inwardVec * 0.55 + pushDip`) and floorboard foot stepping (`stepArcR/L`).
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: seated at rear cargo seat `z = -2.61`, aimed camera at `z = 5.65` (skipping 2 intermediate seats), pressed `[C]` -> landed directly on `seatRelZ = 5.65, hrp = (-3.62, 3.71, 5.65), role = RearPassenger`; then switched from `z = 5.65` to `z = 12.54` (`f0(z=5.65,y=3.71) -> f2(z=7.62,y=4.29,rY=3.07,lY=3.22) -> f4(z=11.67,y=4.10,rY=2.98,lY=2.73) -> f6(z=12.54,y=3.71,seatZ=12.54)`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
