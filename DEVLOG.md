@@ -386,3 +386,23 @@
 - **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode: early release at `0.55s` (`EarlyRelease_R: mid=0.38 -> dropped=0.00 (attr=false)`), full `1.48s` hold latch (`FullHoldLatch_L: top=1.00 -> afterRelease=1.00 (attr=true)`), and Passenger-to-Driver seat switch camera height (`P2D_CameraFix: beforeCamY=5.41 -> after(seat=DriverSeat,hrpY=3.71,headY=5.24,camY=5.42,subj=Humanoid,offY=0.05)`). Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Modeled 8 new modular HorrorKit-matching road formations & variants in Blender (`Assets/Roads/NewRoads.blend`, built at `1 stud = 0.28 m` matching `Road_Straight`'s `60`-stud width, `100`-stud cell, `0.85` deck / `1.20` curb profile, and `R=20` corner fillets): `Road_CrossIntersection` (`100×100`), `Road_Roundabout` (`100×100`), `Road_CulDeSac` (`92×100`), `Road_Bridge` (`61.1×100`), `Road_PulloffBay` (`86×100`), `Road_DamagedRough` (`60.7×100`), `Road_SCurve` (`160×200`, 2×2 cells), and `Road_WideTurn90` (`180×180`, 2×2 cells).
+  - Exported all 8 as single-primitive meshes sharing one embedded 512×512 textured palette atlas (`Assets/Roads/NewRoads.glb`, `HorrorKit_RoadAtlas.png`), imported into Roblox Studio (`TextureID = rbxassetid://116369928377682`), scaled exact `1/0.28×` to exact stud sizes, set `CollisionFidelity = PreciseConvexDecomposition`, anchored, and lined them up beside the 4 existing roads in `Workspace.MapModels.HorrorKit_Roads`. Procedural map scripts were intentionally not modified yet.
+- **Studio Paths Modified/Created:**
+  - `Workspace.MapModels.HorrorKit_Roads.Road_CrossIntersection` (`rbxassetid://113709470661740`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_Roundabout` (`rbxassetid://84769538109382`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_CulDeSac` (`rbxassetid://78377713387098`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_Bridge` (`rbxassetid://133376272696235`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_PulloffBay` (`rbxassetid://125518970140506`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_DamagedRough` (`rbxassetid://128238833357115`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_SCurve` (`rbxassetid://71595213981898`)
+  - `Workspace.MapModels.HorrorKit_Roads.Road_WideTurn90` (`rbxassetid://111725280710200`)
+- **Repository Files Added/Modified:**
+  - `Assets/Roads/NewRoads.blend`, `Assets/Roads/NewRoads.glb`, `Assets/Roads/HorrorKit_RoadAtlas.png` (created)
+  - `LESSONS.md`, `DEVLOG.md` (modified)
+- **New Dependencies:** Shared road atlas texture `rbxassetid://116369928377682` (plus the 8 MeshIds above; personal account `justhyne1205` — grant experience asset permissions in Creator Dashboard before publishing).
+- **Next Steps / Known Issues:** Visually verified in Studio side-by-side with `Road_Straight` (`NewRoads_Overview`, `NewRoads_CloseComparison`). Ready to mirror into `ReplicatedStorage.Assets.MapModels.HorrorKit_Roads` and wire into `ProceduralRoadGraph` + `ChunkBuilder` when requested.
