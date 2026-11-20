@@ -322,8 +322,23 @@
 - **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode after the final edit: Left window roll (`base=2.93 -> mid RollL=0.30, Sw=L, DistL=0.45, gripR=0.17 -> down RollL=1.00, relY=2.80 -> up RollL=0.00, relY=5.85`), rolled-down `windowmonster L` frame anchoring (`MonsterHeadRelY=5.76`), blocked door & `LeaveSeat` (`ActL="Door jammed!"`, `ActR="Open door"`, `SeatBlk=DriverSeat`, `DoorL=-0.7` mid-rattle, `"Something is blocking that door!"` toast, unjamming cleanly to `"Open door"` on clear), Passenger Right window roll (`base=2.48 -> mid RollR=0.36, Sw=R, DistR=0.35 -> down RollR=1.00, relY=2.80 -> up RollR=0.00`), plus prior visual `screen_capture` (`Van_RollDownWindow_FP`), `-68° -> 0°` open-door slam, `[R]` keybind test, and `SwitchSeat` -> Right exit. Zero script or audio errors in `LogService` / `get_console_output`. Studio returned to `Edit` mode; paused after #1–#2 awaiting user go-ahead for #3–#4. Remember to **Commit Drafts** in Team Create.
 
+---
 
-
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** Van Tasks #3 & #4 — Slower Window Cover Pull-Up & Arm-Braced Seat-Switch Lift-and-Slide Animation
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `ServerStorage.Modules.Monsters.WindowMonster`:
+    - **#3 Slower Window Cover Pull-Up:** Added `CoverPullUpSeconds = 1.35` and `Raising: boolean` to `CoverState`. When `RequestCover` is invoked from `FrontPassengerSeat`, `WindowCover<Side> = true` replicates immediately so every client starts the slower `1.35s` roller-blind pull-up animation, while `c.Up = true`, active threat `self:_repel()`, and the `CoverHoldSeconds = 8` hold timer engage once the `1.35s` pull-up completes (and `_finishApproach` / `_trySpawn` respect `c.Up or c.Raising`).
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.WindowMonsterController`:
+    - Replaced the instant `0.42s` blind tween with `BLIND_UP_TWEEN = TweenInfo.new(1.35, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)` for pulling covers up and `BLIND_DOWN_TWEEN = TweenInfo.new(0.75, Enum.EasingStyle.Quad, Enum.EasingDirection.In)` when dropping.
+  - `Workspace.DeliveryVan.VanDrive`:
+    - **#4 Arm-Braced Seat-Switch Lift & Slide:** Added replicated seat-switch hand bracing attachments on `chassis` (`VanAnimConsoleBraceL`, `VanAnimConsoleBraceR`, `VanAnimSeatBraceL`, `VanAnimSeatBraceR`). Replaced the stand-up-and-teleport `SwitchSeat` handler with a `0.68s` smooth lift-and-slide across the center console (`SwitchSlideWeld`, `+0.62` stud vertical lift arc `math.sin(u * math.pi)`, `-7°` forward pitch, `±5°` lateral roll). By transferring `SeatWeld` to `SwitchSlideWeld` and setting `hum.Sit = false` at `t = 0` while pre-assigning `VanSeatRole`, Roblox's `~0.18s` post-unsit cooldown expires during the `0.68s` slide so `target:Sit(hum)` attaches `target.SeatWeld` (`VanShifted = true`) immediately on completion with zero stand-up or teleport.
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`:
+    - Updated `refreshSeatState` and `hookCharacter` (`VanSwitchActive` listener) so first-person van camera (`LockFirstPerson`) and HUD remain completely uninterrupted throughout `[C]` seat switches.
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:
+    - Added `consoleBraceL/R`, `seatBraceL/R`, and dynamic `switchHandR/L` + `switchFootR/L` targets. While `VanSwitchActive == true`, both arms visibly plant and push down on the seat cushion and center console (`pushDip = -0.14 * sin(u*pi)`) to lift the player across to the steering wheel (when moving to Driver) or lap (when moving to Passenger), while feet step across the floorboard (`+0.38` stud step arc) and first-person limbs remain visible (`LocalTransparencyModifier = 0`).
+- **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: slower cover pull-up progression (`L_Cover: t=0.25:0.06 | t=0.70:0.52 | t=1.10:0.92 | t=1.50:1.00`; `CoverR_Repel: t=0.25:0.03 | t=0.70:0.41 | t=1.10:0.87 | t=1.48:1.00`), bidirectional `[C]` seat switch trajectories (`P2D`: `x = +2.21 -> +1.76 -> -0.51 -> -2.06 -> -2.21`, `y = 2.97 -> 3.15 -> 3.55 (+0.58 lift) -> 3.04 -> 2.97`, hands bracing at `rY=2.41..3.15, lY=2.52..2.98` before rising to wheel `3.66..3.76`, landing on `DriverSeat`; `D2P`: `x = -2.21 -> -1.97 -> +0.41 -> +1.30 -> +2.21`, `y = 2.97 -> 3.07 -> 3.56 (+0.59 lift) -> 3.35 -> 2.97`, hands dropping from wheel `3.60` to console brace `2.54..2.86` and settling on lap `2.35`, landing on `FrontPassengerSeat`, with `cam = LockFirstPerson` throughout). Zero game script errors. Studio returned to `Edit` mode; paused after #3–#4 awaiting user go-ahead for #5–#6. Remember to **Commit Drafts** in Team Create.
 
 
 ---
