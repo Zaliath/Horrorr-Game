@@ -532,3 +532,28 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **New Dependencies:** Runtime workspace folders `Workspace.StartAreaForest`, `Workspace.StartAreaBoundary`, and `Workspace.ProceduralMap.DepotGroundPad`.
 - **Next Steps / Known Issues:** Verified in Play mode: collision probes confirmed all 3 escape vectors blocked (`gapTest_EastPastWingL = StartBayWingSeal_L`, `gapTest_WestPastWingR = StartBayWingSeal_R`, `gapTest_NorthPastGate = ShiftGateWall`), `0` trees inside factory, visually verified full wrap-around dead forest behind and beside the factory (`StartFactory_ForestFullWrap`), zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`MapService`).
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - Built **Monster #2 — The Road Chase Monster** using the tall, antlered deer-skull **Skinwalker model (`Monster6_Skinwalker`)**:
+    - **Articulated 3D Skinwalker Model (`ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker`):** Constructed a 135-part, 15-bone articulated Skinwalker rig (`ProceduralSkinwalkerRig = true`, `HipHeight = 4.5`) with a bleached deer skull, asymmetrical branching antlers (`13` beam/tine segments), hollow eye sockets with glowing neon eyes + `PointLight`, hinged needle-toothed lower mandible (`Jaw`), tattered dark pelt shroud over an exposed ribcage & dorsal spine (`Torso`), overly long clawed arms (`UpperArmL/R`, `ForearmL/R`, `HandL/R`), and digitigrade cloven-hooved legs (`UpperLegL/R`, `LowerLegL/R`, `FootL/R`).
+    - **Server Chase Tug-of-War State Machine (`ServerStorage.Modules.Monsters.ChaseMonster` + `MonsterService`):**
+      - Spawns `115` studs behind the van's rear bumper (`Spawning` → `Chasing` → `Ramming` / `Evaded`) and syncs replicated attributes on `Workspace.DeliveryVan` (`ChaseActive`, `ChaseState`, `ChaseDistance`, `ChaseLateral`, `ChaseSpeed`, `ChaseStartTime`, `ChaseEvent`, `ChaseEventTime`, `ChaseEventSeq`, `ChaseRamCount`).
+      - Compares the van's signed forward velocity against the Skinwalker's sprint speed (`BaseChaseSpeed = 74` studs/s + shift scaling; van cruising top speed is `95` studs/s and Boost `[Q]` is `140` studs/s): closes in when the van slows down, stops, crashes, or is stunned, and falls back when the driver maintains high speed or boosts until evaded at `175` studs.
+      - Includes **Horn Flinch Counterplay (`[H]`)** once per chase within `48` studs (`ChaseEvent = "HornFlinch"`, slowing the Skinwalker and pushing it back `+9` studs), on-foot road slash hazard for players caught outside the van, and a **Rear-Bumper Ram Climax (`ChaseDistance <= 2.5`)** that physically jolts the van chassis, deducts `10s` from the shift clock, briefly stuns the van, and pops open the rear cargo doors (`VanDrive` listener on `ChaseEvent == "Ram"`).
+    - **Client 60 FPS Digitigrade Gallop Animator & Audio (`ChaseMonsterController` + `ControllerList`):**
+      - Drives a 60 FPS 15-bone procedural sprint/gallop cycle behind the van via `workspace:BulkMoveTo` with downward road-surface raycasting so cloven hooves track ground height, forward-reaching talons as `ChaseDistance` drops under `40` studs, 3D spatial hoofbeat thuds + antler clicks + deer-skull bellows, rear-proximity tension vignette & HUD pursuit meter, and zero-drift camera tremor (while leaving `[V]` Chase Cam completely unrestricted so players can look back at the pursuing Skinwalker).
+    - **Admin Testing Command (`chasemonster` / `cm` / `skinwalker`):** Added `ServerScriptService.Cmdr.Commands.chasemonster` and `chasemonsterServer` (`spawn`, `close`, `ram`, `evade`, `clear`).
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker` (created)
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (created)
+  - `ServerScriptService.Server.Services.MonsterService` (modified)
+  - `ServerScriptService.Cmdr.Commands.chasemonster` (created)
+  - `ServerScriptService.Cmdr.Commands.chasemonsterServer` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `Workspace.DeliveryVan.VanDrive` (modified — rear cargo doors pop open on `ChaseEvent == "Ram"`)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode (`d0=80.0(Spawning) -> d1=70.1(Chasing) -> d2=46.9(Chasing)`, `ClientModel=SkinwalkerChaser3D (Parts=135)`, `RamReply=Forced Skinwalker Chase Monster rear-bumper ram attack. | Event=Ram | RamCount=1 | RearDoorPrompt='Close rear doors'`, `EvadeEvent=Evaded`). Zero console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
