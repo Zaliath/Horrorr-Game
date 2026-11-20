@@ -643,3 +643,21 @@
 - **Next Steps / Known Issues:**
   - Verified with a 10-seed × 120-step graph audit: all 6 formations spawned evenly (`DeepForestWing=15`, `StaggeredZSplit=11`, `CrossroadsVillage=17`, `LongBackroadBailouts=11`, `DoubleRoundaboutFigure8=14`, `SCurveChicaneSplit=15`), `0` dead ends, `0` CulDeSacs, `0` branch delivery violations, `0` seam/mask mismatches, `373` main-spine delivery houses, `202` decorative branch houses, and `10/10` `ReserveDepotAhead` passes.
   - Verified live in Play mode with aerial `screen_capture`s of both `CrossroadsVillage` and `LongBackroadBailouts` (`StartAreaForest = 175` trees, `ProceduralMap` avg `8.6–8.7` trees/chunk, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - Upgraded the Colossal Skinwalker Chase Monster with **88-stud long-reach arms**, **much faster real pursuit speed**, deliberate **forward torso pull-lunges**, and a **full 3D destruction wake** (`Monster6_Skinwalker`, `ChaseMonster`, `ChaseMonsterController`):
+    - **88-Stud Reach IK Arms & Claws (`ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker`):** Rebuilt arms to `UpperArmLength = 42.0`, `ForearmLength = 46.0` (`172` descendants; `46.5 × 44.0 × 162.1` template extents; `108.1 × 63.7 × 100.4` live posed extents) with thickened `GiantPalm` (`6.0 × 2.2 × 7.8`), `ThumbTalon` (`8.5`), and `12`-stud articulated wrapping talons (`FingersL`/`FingersR`).
+    - **Faster Pursuit & Lunge Velocity (`ServerStorage.Modules.Monsters.ChaseMonster`):** Increased `SpawnDistance = 160`, `EvadeDistance = 240`, `ForestSpawnLateral = 72`, `BaseChaseSpeed = 124` studs/s (`MaxBaseChaseSpeed = 142`, `CatchupBonusMax = 24`, `StoppedClosingCap = 105`, `SpawnIntroSeconds = 1.15`, `HornFlinchSlow = 46`, `HornFlinchPushback = 18`), with stronger haul lunge pulses (`haulSurge = 0.62..1.38`).
+    - **Long-Reach Prop IK, Forward Pull-Lunge & 3D Destruction Engine (`ChaseMonsterController`):**
+      - Updated `ARM_L1 = 42.0`, `ARM_L2 = 46.0`, `crawlFreq = 1.15..1.85` Hz, `20`-stud high reach arcs (`u < 0.34`), `10.5`-stud forward torso lunge surges on each pull, and `92`-stud prop scanning (`86`-stud max IK reach, `58`-stud road fallback).
+      - Built 60 FPS `BulkMoveTo` client debris (`MAX_DEBRIS = 90` with gravity & spin) and fading 3D destruction scars (`MAX_SCARS = 36`) across houses (`HouseBreachHole`, `BrokenClawGash`, `3.5°` jolt, flying planks/masonry), trees (flat snap + bark splinters), lamp posts/poles (`80°–88°` snap + Neon spark streaks + flash light), guardrails (`68°–84°` tear + metal shards), and road surfaces (`RoadCrater`, `UpturnedAsphaltSlab`, continuous `22`-stud wake scarring & `0.18s` wake destruction sweep), all cleaned up cleanly on `clear` / despawn.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker` (rebuilt with 88-stud arms)
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode (`Ext = 108.1 × 63.7 × 100.4`, `Toppled = 8`, `Grabs = House(Window_East_Upper_03), Road(RoadCurb)`, `Scars = 5 (24 parts)`, `Debris = 90`, `Props = 5` -> clean `Scars = 0`, `Debris = 0` on `clear`, and active `"Chasing"` closing speed verified at `135.8 -> 37.3` = `98.5` closed in `1.01s` / `97.5` studs/s rate, `maxSpd = 105.0`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
