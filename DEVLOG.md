@@ -6,7 +6,7 @@
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:** `GAME_DESIGN.md` is currently empty and ready to be populated with the core game design doc.
 
-## 2026-11-19 — Claude
+## 2026-11-19 — Riplatki (via Claude)
 - **Summary of Changes:** Documentation only, no game code changed. Populated `GAME_DESIGN.md` with a draft based on the live Studio places (verified items only; TODO sections left for the team). Added the baseline of existing systems below so nobody duplicates them.
 - **Studio Paths Modified/Created:** None.
 - **Existing Systems Found (baseline, "The game part", placeId 93445054108906):**

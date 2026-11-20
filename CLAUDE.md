@@ -17,7 +17,7 @@ You are collaborating with a team of developers using both **Google Antigravity 
 ## 3. End of Session (Log & Push Changes)
 - **Remind to Commit Drafts:** Remind the user to commit any open script drafts in Roblox Studio's **Drafts** widget if Team Create Collaborative Editing is active.
 - **Update `DEVLOG.md`:** Before finishing your response, append a concise entry to `DEVLOG.md` containing:
-  - **Date & Developer/Agent** (e.g., Antigravity or Claude)
+  - **Date & Developer/Agent** (e.g., Antigravity or Claude). **When Claude makes changes on behalf of this user, log them as `Riplatki (via Claude)`** and put `(Riplatki)` in the commit message (e.g., `Update devlog (Riplatki)`), so teammates and their AIs know who made the change.
   - **Summary of Changes** (what feature or fix was built)
   - **Studio Paths Modified/Created** (exact hierarchy paths in Studio)
   - **New Dependencies** (any new RemoteEvents, tags, attributes, or DataStore keys)
