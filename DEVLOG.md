@@ -578,3 +578,23 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode via Cmdr (`chasemonster spawn 75`, `chasemonster devour`, `chasemonster clear`): confirmed forest spawn lateral ease (`41.97 -> 31.19`), `ToppledTrees=6`, 168-part colossal rig (`26.9 × 23.6 × 22.6` studs), environment prop IK tracking (`GrabL/GrabR`) & ragdoll leg dragging (`LegDrag=true`), devour climax (`State=Ramming`, `GrabL=Van`, `GrabR=Van`, `JawRelPitch=-82.0 deg`, `FingerRelCurl=-88.0 deg`, `RearAction='Close rear doors'`), and clean despawn/prop restore after `clear`. Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - Scaled the Colossal Skinwalker Chase Monster up ~2.5× larger (`46.5 × 44.0 × 127.4` template extents; `66.3 × 52.6 × 92.4` live posed extents) so it visibly dwarfs `DeliveryVan`, reaches deep into the treeline to grab trees/poles/houses, and physically lifts and shoves the van into its open throat instead of merely bumping the rear bumper:
+    - **True Colossal Rig (`ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker`):** Rebuilt with 172 descendants (`HipHeight = 8.2`, `UpperArmLength = 28.0`, `ForearmLength = 30.0`, `UpperLegLength = 15.0`, `LowerLegLength = 14.5`, `FootLength = 11.5`), a `14.5`-stud-wide deer skull with `44+`-stud branching antlers, a `13.5 × 12.5 × 14.0` `GulletCavern` throat cavity lined with `ThroatRibRing` arches, `8.8`-stud articulated `FingersL`/`FingersR` talons, and massive broken hind legs.
+    - **Van-Grab & Throat-Devour Physics (`ChaseMonster` + `VanDrive` + `VanController`):**
+      - Replaced the rear-bumper ram with a `2.4s` **Van Grab & Throat-Shove** sequence (`GrabDistance = 16.0`, pulling `ChaseDistance` from `12.0` down to `-5.5` studs inside the open throat).
+      - Added `BoostTriggeredAt` tracking on `BoostPrompt.Triggered` (`VanDrive`) and cooperative `ChaseState == "Ramming"` lifting/backward-pulling in `VanController` (`vel = -look * 18 + Vector3.new(0, 7.5, 0)`) while leaving Boost (`[Q]`) unblocked by `VanStunned` during the grab so the driver can blast free early with `[Q]` Boost or `[H]` Horn; otherwise the crunch deals `35` damage and hurls the van free before rebounding to `68` studs.
+    - **Colossal 58-Stud Arm IK & Emergence Scaling (`ChaseMonsterController`):** Expanded `triggerForestEmergence` (`110`-stud radius, up to `8` trees toppled/parted), `findEnvironmentAnchor` (`68`-stud scan ahead, `56.5`-stud IK reach, `18`-stud grab height, stronger `42°–48°` tree/pole bending), `-86°` jaw unhinge during devouring, and `-92°` claw wrap around the van roof/sides (`GrabKindL/R = "Van"`).
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Assets.Monsters.Monster6_Skinwalker` (rebuilt at colossal scale)
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode (`chasemonster spawn 90`, `chasemonster devour`, `chasemonster clear`): `Ext=66.3x52.6x92.4`, `Toppled=8`, `Grabs=House(BinBack),LampPost(LiftPost)`, `LegDrag=true`, `State=Ramming Dist=12.0->5.6`, `VanLift_dY=4.43`, `FwdDelta=-14.91`, `JawPitch=-86.0`, `FingerCurl=-92.0`, `Hands=Van/Van`, and zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+
