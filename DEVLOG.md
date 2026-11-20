@@ -64,3 +64,17 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
 - **New Dependencies:** None (uses existing `DeliveryBox` tag, `InVan`/`DroppedBox` attributes, and player `CarryingPackage` attribute).
 - **Next Steps / Known Issues:** Verified in Play mode across all 5 scenarios (outside van, roof, inside cargo, carrying, and dropped/returned); Studio returned to `Edit` mode.
+
+## 2026-11-20 — Antigravity (Cmdr admin commands & Backpack toggle)
+- **Summary of Changes:** Added Cmdr admin commands (`fly`/`togglefly`, `unfly`, `setspeed`/`speed`/`ws`/`walkspeed`, `setcash`/`cash`/`setmoney`), added `ShiftService:SetCash` so cash edits sync both `leaderstats.Cash` and `ShiftHUD`, exempted flying players and server-set `WalkSpeed` values in `AntiExploitService`, disabled Roblox's default `Enum.CoreGuiType.Backpack` inventory UI so pressing `` ` ``/`~` opens Cmdr cleanly, and guarded `CmdrController` startup until `StarterGui.Cmdr` finishes replicating so `Window` never yields on missing GUI children.
+- **Studio Paths Modified/Created:**
+  - `ServerScriptService.Cmdr.Commands.fly` & `flyServer` (created)
+  - `ServerScriptService.Cmdr.Commands.unfly` & `unflyServer` (created)
+  - `ServerScriptService.Cmdr.Commands.setspeed` & `setspeedServer` (created)
+  - `ServerScriptService.Cmdr.Commands.setcash` & `setcashServer` (created)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `ServerScriptService.Server.Services.AntiExploitService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.CmdrController` (modified)
+- **New Dependencies:**
+  - Player attributes: `AdminFly` (boolean), `AdminFlySpeed` (number), `AdminWalkSpeed` (number).
+- **Next Steps / Known Issues:** Verified in Play mode (`Backpack` CoreGui disabled, `setspeed`, `setcash`, `fly`, `unfly`) with zero console errors or warnings; Studio returned to `Edit` mode.
