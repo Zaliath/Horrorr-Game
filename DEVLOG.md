@@ -177,12 +177,22 @@
   - Attachments on van/chassis: `VanAnimPassGripR`, `VanAnimPassGripL`, `VanAnimPassFootR`, `VanAnimPassFootL`.
 - **Next Steps / Known Issues:** Verified in live Play mode across all scenarios: driver first-person hands turning steering wheel through 150° lock, pedal travel between gas/brake (3.2 stud foot shift), passenger lap pose and `CabR` reach, and outside sliding door reach. Studio returned cleanly to `Edit` mode.
 
-## 2026-11-20 — Riplatki (via Antigravity) (Restored GEMINI.md team-neutral attribution rule)
-- **Summary of Changes:** Reverted hardcoded user attribution rule in `GEMINI.md` to keep it team-neutral so other teammates running Antigravity log under their own respective developer names; personal attribution to Riplatki is retained exclusively for this user's sessions. Added self-improvement rule to `LESSONS.md`.
-- **Studio Paths Modified/Created:** None.
-- **Repository Files Added/Modified:** `GEMINI.md`, `LESSONS.md`, `DEVLOG.md`.
+## 2026-11-20 — Riplatki (via Antigravity) (Adjusted cab seating posture: torso back, head/camera forward)
+- **Summary of Changes:**
+  - Moved the seated torso back naturally against the seat backrest by reducing `CAB_SEAT_SHIFT` from `0.5` to `0.15` in `VanDrive`, stopping the chest from being shoved forward into the wheel and camera.
+  - Dynamically leaned the avatar's `Neck` joint forward (~`0.45` studs along `-Z` in torso space) in `VanAnimController` while seated, positioning the head and eyes naturally forward over the chest (like a real driver over the steering wheel) and smoothly returning to default standing posture upon getting out.
+  - Configured first-person camera in `VanController` to keep `CameraSubject` anchored to `Humanoid` with a forward eye offset (`hum.CameraOffset = Vector3.new(0, 0.05, -0.3)`), so looking down in first person looks cleanly past the chest and shows only the lower half of the torso (lap/waist) and the legs/pedals without occlusion.
+  - Kept `UpperTorso` hidden (`LTM = 1`) and `LowerTorso` visible (`LTM = 0`) for R15 avatars in first person.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+- **Repository Files Added/Modified:**
+  - `LESSONS.md` (modified)
+  - `DEVLOG.md` (modified)
 - **New Dependencies:** None.
-- **Next Steps / Known Issues:** Ready for next gameplay or Studio task.
+- **Next Steps / Known Issues:** Verified in Play mode: looking down now displays the lower torso, thighs, and pedals cleanly with zero chest obstruction; looking ahead frames the wheel, dashboard, and windshield naturally; standing up restores normal neck alignment.
+
 
 
 
