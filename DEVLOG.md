@@ -177,4 +177,12 @@
   - Attachments on van/chassis: `VanAnimPassGripR`, `VanAnimPassGripL`, `VanAnimPassFootR`, `VanAnimPassFootL`.
 - **Next Steps / Known Issues:** Verified in live Play mode across all scenarios: driver first-person hands turning steering wheel through 150° lock, pedal travel between gas/brake (3.2 stud foot shift), passenger lap pose and `CabR` reach, and outside sliding door reach. Studio returned cleanly to `Edit` mode.
 
+## 2026-11-20 — Riplatki (via Antigravity) (Restored GEMINI.md team-neutral attribution rule)
+- **Summary of Changes:** Reverted hardcoded user attribution rule in `GEMINI.md` to keep it team-neutral so other teammates running Antigravity log under their own respective developer names; personal attribution to Riplatki is retained exclusively for this user's sessions. Added self-improvement rule to `LESSONS.md`.
+- **Studio Paths Modified/Created:** None.
+- **Repository Files Added/Modified:** `GEMINI.md`, `LESSONS.md`, `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:** Ready for next gameplay or Studio task.
+
+
 

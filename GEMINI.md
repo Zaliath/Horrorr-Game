@@ -24,7 +24,7 @@ You are collaborating with a team of developers using both **Google Antigravity 
 - **Sync AI Instruction Files When Needed:** If a workflow convention, architectural rule, or cross-agent guideline changes in a way teammates' AIs should follow, update `GEMINI.md`, `CLAUDE.md`, and `README.md` together (preserving developer-specific notes like attribution lines). If no rule changes are needed, just continue updating `DEVLOG.md`.
 - **Self-Improvement Loop (`LESSONS.md`):** Every run or so, audit the saved logs of recent runs (`DEVLOG.md` plus your agent's saved run transcripts/logs when accessible) to find every place an agent failed, wasted tokens/time, or was corrected by the team. Add each new lesson to `LESSONS.md` as a short **rule + reason**. If an existing rule turns out wrong or outdated, fix or remove it—the next run should never repeat a mistake.
 - **Update `DEVLOG.md`:** Before finishing your response, append a concise entry to `DEVLOG.md` containing:
-  - **Date & Developer/Agent** (e.g., Antigravity or Claude). **Always log changes made on behalf of this user as `Riplatki (via Antigravity)`** and put `(Riplatki)` in the commit message (e.g., `Update devlog (Riplatki)`), so teammates and their AIs know who made the change.
+  - **Date & Developer/Agent** (e.g., DeveloperName (via Antigravity) or Antigravity/Claude so teammates know who made each change)
   - **Summary of Changes** (what feature or fix was built)
   - **Studio Paths Modified/Created** (exact hierarchy paths in Studio)
   - **New Dependencies** (any new RemoteEvents, tags, attributes, or DataStore keys)
