@@ -520,3 +520,15 @@
   - `ShiftState` snapshot fields added: `TimedOut`, `GateActive`, `ReadyCount`, `AliveCount`, `ReadyUserIds`.
   - Runtime workspace instances: `Workspace.ShiftGateBarrier`, `Workspace.DepotBeaconAnchor`, `Workspace.ProceduralMap.DepotDrivewayApron`.
 - **Next Steps / Known Issues:** Verified end-to-end live in Play mode: Shift #1 initial Prep gate + `Start Shift #1 (0/1)` click dropped barrier cleanly; completed Stop #1 (`$100`) and let timer expire naturally at `00:00` → confirmed zero teleport back to `(0,0)`, Factory + StartArea + SpawnLocation + ChuteMouth relocated cleanly onto West roadside lot at `(460.9, -1109.6)` with `0` overlapping trees, `ShiftGateBarrier` (`39` parts, `wallCollide = true`) spawned past the driveway, visually verified via `RelocatedDepot_StreetView` and `RelocatedDepot_AerialView`, drove van into relocated bay → beacon cleared, `6` prompts intact inside relocated `StartArea`, `Start Next Shift (0/1)` appeared, clicking ready dropped `ShiftGateBarrier` and launched `SHIFT #2 (0/4 stops)` seamlessly down the continuing road with zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ProceduralRoadGraph`, `ChunkBuilder`, `MapService`, `ChuteService`, `ShiftService`, `ShiftController`).
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Sealed out-of-bounds player escapes at the starting factory (`MapService`): widened `ShiftGateWall` to `180` studs, added `StartAreaBoundary` with tall invisible wing-wall seals (`StartBayWingSeal_L` / `StartBayWingSeal_R` spanning `Z = 136..180`, `36` studs tall) closing the 4-stud side gaps between `Bay_WingWall_L/R` and `ShiftGateWall`, plus tall South/West/East invisible perimeter walls around the expanded `680×540` `StartAreaGround`.
+  - Added `StartAreaForest` (`~215` dead trees across all 8 variants + dead grass clusters, growing denser and taller farther out, with zero trees inside the factory footprint) wrapping the left, right, and rear behind the starting factory; cleanly destroyed on Shift #2+ factory relocation (replaced by a right-sized `DepotGroundPad` cleanly behind the roadside anchor so grass never Z-fights across the road).
+- **Studio Paths Modified/Created:**
+  - `ServerScriptService.Server.Services.MapService` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **New Dependencies:** Runtime workspace folders `Workspace.StartAreaForest`, `Workspace.StartAreaBoundary`, and `Workspace.ProceduralMap.DepotGroundPad`.
+- **Next Steps / Known Issues:** Verified in Play mode: collision probes confirmed all 3 escape vectors blocked (`gapTest_EastPastWingL = StartBayWingSeal_L`, `gapTest_WestPastWingR = StartBayWingSeal_R`, `gapTest_NorthPastGate = ShiftGateWall`), `0` trees inside factory, visually verified full wrap-around dead forest behind and beside the factory (`StartFactory_ForestFullWrap`), zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`MapService`).
