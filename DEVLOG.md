@@ -369,3 +369,20 @@
   - `ServerScriptService.Server.Services.MapService` (modified)
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:** Verified in Play mode (`970` total active dead trees across `87` forest chunks — down ~25% from `1,295`; Ring 1 avg `5.9`, Ring 2 avg `10.9`, Ring 3 avg `14.8`; shadow casters cut from `1,295` to `542` with `428` far Ring 3 trees shadow-off; zero script errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ChunkBuilder`, `MapService`).
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** Hold-to-Pull-Up Window Covers & Fix Passenger-to-Driver Seat-Switch Camera Drop
+- **Root Cause (Passenger -> Driver Camera Drop):**
+  1. When an R6 avatar is already in a seated pose (with `Right Hip` and `Left Hip` rotated forward by `VanAnimController`), calling `target:Sit(hum)` computes `SeatWeld.C1 = CFrame.new(0, -0.76, 0) * CFrame.Angles(-math.pi/2, 0, 0)` from the bent-leg vertical extents instead of the canonical standing R6 `C1 = CFrame.new(0, -1.5, 0) * CFrame.Angles(-math.pi/2, 0, 0)`. Because `SwitchSeat` only restored `newSw.C0` without restoring `newSw.C1`, the driver's body and camera dropped down by `0.74` studs (`hrpY: 3.71 -> 2.97`, `camY: 5.41 -> 4.68`) upon landing in `DriverSeat`.
+  2. Additionally, entering `DriverSeat` (`VehicleSeat`) caused Roblox's engine to switch `workspace.CurrentCamera.CameraSubject` from `Humanoid` to `DriverSeat`, ignoring `Humanoid.CameraOffset` (`CAB_FP_CAM_OFFSET`).
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `Workspace.DeliveryVan.VanDrive`: Added `R6_SEAT_C1 = CFrame.new(0, -1.5, 0) * CFrame.Angles(-math.pi/2, 0, 0)` and `getCanonicalSeatC0(seat)`, enforcing both `C0` and `C1` in `bindCabSeatShift` and immediately on `newSw` after `target:Sit(hum)` in `SwitchSeat`.
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`: Enforced `cam.CameraSubject = hum` and `hum.CameraOffset = CAB_FP_CAM_OFFSET` in `setFirstPersonLock(true)` and inside the first-person cab branch of `camConn` so switching into `DriverSeat` never switches `CameraSubject` to `VehicleSeat` or drops the camera.
+  - `ServerStorage.Modules.Monsters.WindowMonster`, `ServerScriptService.Server.Services.MonsterService`, `ReplicatedStorage.Shared.NetDefs`, & `StarterPlayer.StarterPlayerScripts.Client.Controllers.WindowMonsterController`:
+    - Converted window covers from a one-press toggle to a **hold-to-pull-up** mechanic (`NetController:FireServer("WindowCover", side, true/false)`, `NetDefs.WindowCover.MinInterval = 0.02`, `RateLimitPerSec = 16`).
+    - Added `_tickCovers(dt)` in `WindowMonster.Update`: while holding `[Z]` / `[X]`, `c.Progress` advances at `1 / CoverPullUpSeconds` (`1.35s`) and the blind tweens linearly toward `1.0`. If the passenger releases the key before `c.Progress >= 1.0` (or leaves `FrontPassengerSeat`), `WindowCover<Side>` resets to `false` and the cover slides back down (`CoverDropSeconds = 0.75s`) without repelling. Once held all the way to `1.0`, `c.Up` latches to `true` for `CoverHoldSeconds = 8` and repels any threat on that side.
+- **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: early release at `0.55s` (`EarlyRelease_R: mid=0.38 -> dropped=0.00 (attr=false)`), full `1.48s` hold latch (`FullHoldLatch_L: top=1.00 -> afterRelease=1.00 (attr=true)`), and Passenger-to-Driver seat switch camera height (`P2D_CameraFix: beforeCamY=5.41 -> after(seat=DriverSeat,hrpY=3.71,headY=5.24,camY=5.42,subj=Humanoid,offY=0.05)`). Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
