@@ -4,6 +4,7 @@ You are collaborating with a team of developers using both **Google Antigravity 
 
 ## 1. Start of Session (Sync & Read Context First)
 - **Pull Latest Changes:** Before reading files or answering, run `git pull` in the workspace terminal so you have the latest updates from teammates.
+- **Read Lessons Learned Before Starting:** Always read `LESSONS.md` first so you never repeat a past failure, wasted-token loop, or correction from previous runs.
 - **Read Single Source of Truth:** Always read `GAME_DESIGN.md` and `DEVLOG.md` in the root of this repository before planning or writing any code.
 - **Inspect Live Studio via MCP:** Because this project uses Roblox Studio Team Create without Rojo, always use the **Roblox Studio MCP** to inspect the live `Workspace`, `ServerScriptService`, `ServerStorage`, and `ReplicatedStorage` hierarchy before creating or modifying scripts.
 
@@ -21,6 +22,7 @@ You are collaborating with a team of developers using both **Google Antigravity 
 - **Remind to Commit Drafts:** Remind the user to commit any open script drafts in Roblox Studio's **Drafts** widget if Team Create Collaborative Editing is active.
 - **Keep `GAME_DESIGN.md` Up to Date:** Whenever a new gameplay idea, mechanic, monster, upgrade, or system is proposed that is not yet in `GAME_DESIGN.md`, add or update it in `GAME_DESIGN.md` so the design doc stays the single source of truth.
 - **Sync AI Instruction Files When Needed:** If a workflow convention, architectural rule, or cross-agent guideline changes in a way teammates' AIs should follow, update `GEMINI.md`, `CLAUDE.md`, and `README.md` together (preserving developer-specific notes like attribution lines). If no rule changes are needed, just continue updating `DEVLOG.md`.
+- **Self-Improvement Loop (`LESSONS.md`):** Every run or so, audit the saved logs of recent runs (`DEVLOG.md` plus your agent's saved run transcripts/logs when accessible) to find every place an agent failed, wasted tokens/time, or was corrected by the team. Add each new lesson to `LESSONS.md` as a short **rule + reason**. If an existing rule turns out wrong or outdated, fix or remove it—the next run should never repeat a mistake.
 - **Update `DEVLOG.md`:** Before finishing your response, append a concise entry to `DEVLOG.md` containing:
   - **Date & Developer/Agent** (e.g., Antigravity or Claude)
   - **Summary of Changes** (what feature or fix was built)
