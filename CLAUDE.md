@@ -20,6 +20,8 @@ You are collaborating with a team of developers using both **Google Antigravity 
 
 ## 3. End of Session (Log & Push Changes)
 - **Remind to Commit Drafts:** Remind the user to commit any open script drafts in Roblox Studio's **Drafts** widget if Team Create Collaborative Editing is active.
+- **Keep `GAME_DESIGN.md` Up to Date:** Whenever a new gameplay idea, mechanic, monster, upgrade, or system is proposed that is not yet in `GAME_DESIGN.md`, add or update it in `GAME_DESIGN.md` so the design doc stays the single source of truth.
+- **Sync AI Instruction Files When Needed:** If a workflow convention, architectural rule, or cross-agent guideline changes in a way teammates' AIs should follow, update `GEMINI.md`, `CLAUDE.md`, and `README.md` together (preserving developer-specific notes like attribution lines). If no rule changes are needed, just continue updating `DEVLOG.md`.
 - **Update `DEVLOG.md`:** Before finishing your response, append a concise entry to `DEVLOG.md` containing:
   - **Date & Developer/Agent** (e.g., Antigravity or Claude). **When Claude makes changes on behalf of this user, log them as `Riplatki (via Claude)`** and put `(Riplatki)` in the commit message (e.g., `Update devlog (Riplatki)`), so teammates and their AIs know who made the change.
   - **Summary of Changes** (what feature or fix was built)

@@ -56,11 +56,16 @@ it down a forest road to deliver packages to houses.
 - Generation must stay compatible with monsters (e.g. avoid dead ends right behind the player so the chaser has a path).
 
 ## Planned: Monsters (each forces a different action)
-1. **Window monster:** pops up at the left or right window. Player must close the window or the driver cannot see.
-2. **Stare monster:** appears in the rear-view mirror or on the passenger seat. Player must look at it until it vanishes, but looking away from the road makes the van drift.
-3. **Light/screen monster:** kills the headlights or the tracker screen. Player must fix it (a switch or a camera feed) while navigating blind.
-4. **Chaser:** a big monster behind the van. Gets closer when the player slows down or crashes, falls back when they drive well.
-5. **Cargo monster:** sneaks into the back of the van. Player must check the rear camera and lock the cargo door, or packages get wrecked.
+1. **Window monster (`Monster2_Window`):** pops up at the left or right window. Player must close the window or the driver cannot see.
+2. **Stare monster (`Monster3_Stare`):** appears in the rear-view mirror or on the passenger seat. Player must look at it until it vanishes, but looking away from the road makes the van drift.
+3. **Light/screen gremlin (`Monster4_Gremlin`):** small crouched shadow-gremlin that perches on the hood/wipers or clings near dashboard electronics to kill headlights or the tracker screen. Player must fix it (a switch or a camera feed) while navigating blind.
+4. **Chaser (`Monster1_Chaser`):** a huge, hunched, long-limbed monster sprinting behind the van. Gets closer when the player slows down or crashes, falls back when they drive well.
+5. **Cargo monster (`Monster5_Cargo`):** twisted, spider-like stowaway crawler that sneaks into the back of the van. Player must check the rear camera and lock the cargo door, or packages get wrecked.
+6. **Skinwalker (`Monster6_Skinwalker`):** uncanny humanoid/deer-like hybrid that stands motionless in the middle of the road to bait drivers into swerving—or transforms into a relentless stalker if hit.
+
+### 3D Monster Assets (Blender → Roblox R15 FBX)
+- Source `.blend` and individual R15-rigged, UV-unwrapped `.fbx` exports (low-poly / retro PS1 atmospheric horror style) live in `Assets/Monsters/`:
+  - `Monster1_Chaser.fbx`, `Monster2_Window.fbx`, `Monster3_Stare.fbx`, `Monster4_Gremlin.fbx`, `Monster5_Cargo.fbx`, `Monster6_Skinwalker.fbx`, and `GraveyardExpress_Monsters.blend`.
 
 ## Planned: Upgrades (bought between shifts)
 - Better tracker screen (shows the next two stops, flags danger zones)
