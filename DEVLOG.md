@@ -475,6 +475,28 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode: all 22 workspace `ProximityPrompt`s converted to `Custom` (`Prompts=22, Custom=22, VanAttachmentPrompts=16`), live circular prompt UI verified on `Cab.DoorHandleL.PromptAttachment` (`CircularPrompt_ProximityPrompt(key=E, act=Open door, ring=true)`), and driver hand animations verified (`Base: R(-1.55,3.61,-8.85) L(-2.87,3.61,-8.85)` -> `Horn[H]: R(-2.09,3.56,-8.66) dR=0.59` -> `Headlights[L]: L(-3.10,3.43,-8.81) dL=0.30` -> `CabLight[K]: R(-0.61,3.20,-8.61) dR=1.05`). Zero script console errors. Studio returned to `Edit` mode. All 8 van tasks (#1–#8) are now complete! Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** Replace Bottom-Left Driver Controls GUI with In-Car Circular ProximityPrompts on Cab Controls
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `Workspace.DeliveryVan.VanDrive`:
+    - Created in-car `DriverControl` `ProximityPrompt`s (`Style = Enum.ProximityPromptStyle.Custom`, `VanPromptRole = "DriverControl"`, `MaxActivationDistance = 4.6`, enabled only when `driverSeat.Occupant ~= nil`) mounted directly on the 3D interior controls inside `CabDetail`:
+      - `HornPrompt` (`[H] Honk`) on `CabDetail.Wheel.HubBody.VanAnimHornPad`
+      - `HeadlightsPrompt` (`[L] Headlights: ON/OFF`) on `CabDetail.Wheel.StalkLTip` behind the left side of the wheel
+      - `CabLightPrompt` (`[K] Cab light: ON/OFF`) on `CabDetail.Dash.HazardBtn` on the center dashboard
+      - `DriftPrompt` (`[SHFT] Drift`) on `CabDetail.Console.ShiftKnob`
+      - `HandbrakePrompt` (`[B] Handbrake`) on `CabDetail.Console.HandbrakeGrip`
+      - `BoostPrompt` (`[Q] Boost`) on `CabDetail.Wheel.SpokeBtn`
+    - Also gated `WindowPromptL/R` `.Enabled` by cab seat occupancy (`refreshWindowPrompts`) so window switch prompts only enable when a cab seat is occupied.
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PromptUIController`:
+    - Added `isPromptAllowedForLocalPlayer` role filtering so `DriverControl` prompts are visible only to the seated driver and `WindowSwitch` prompts are visible only to the corresponding cab seat occupant, plus live golden ring highlight while holding a driver control key (`H`, `LeftShift`, `B`, `Q`).
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`:
+    - Disabled the bottom-left `VanControlsHint` text panel (`controlsPanel.Visible = false`) in favor of the in-car circular prompts on the physical cab controls.
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: `BottomLeftGUI=false | VisibleCircularDriverPrompts(6)=CircularPrompt_BoostPrompt[Q:Boost] | CircularPrompt_CabLightPrompt[K:Cab light: OFF] | CircularPrompt_DriftPrompt[SHFT:Drift] | CircularPrompt_HandbrakePrompt[B:Handbrake] | CircularPrompt_HeadlightsPrompt[L:Headlights: ON] | CircularPrompt_HornPrompt[H:Honk]` (plus `CircularPrompt_WindowPromptL[R:Roll down window]` on the door armrest). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+
 
 
 ---
