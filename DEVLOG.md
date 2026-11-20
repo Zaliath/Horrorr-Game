@@ -150,3 +150,11 @@
 - **Studio Paths Modified/Created:** None.
 - **New Dependencies:** None created. In use, do not recreate: Player attributes `VanReachDoor`, `VanReachSeq`; van attributes `PoseSteer`, `PoseGas`, `PoseBrake`; Attachments `VanAnimGripR/L`, `VanAnimFootR/L`, `VanAnimReachTarget`.
 - **Next Steps / Known Issues:** Play-mode check (R6 avatar seated in `DriverSeat`): both hands within ~0.2 studs of the wheel grips, right foot ~0.13 and left foot ~0.44 studs from their pedals, zero `VanAnimController` warnings. Door reach was triggered via the attributes but not cleanly confirmed (the van rolled away during the test) and nothing was inspected visually from a player camera. R6 arms are one rigid limb, so they point at far handles instead of bending (only R15 bends via IK). Passengers do not get hand/foot posing in their seat; only the driver does.
+
+## 2026-11-20 — Riplatki (via Antigravity) (Standardized attribution and commit conventions)
+- **Summary of Changes:** Updated `GEMINI.md` to formally document attributing all devlog entries to `Riplatki (via Antigravity)` and tagging commits with `(Riplatki)` to match `CLAUDE.md`.
+- **Studio Paths Modified/Created:** None.
+- **Repository Files Added/Modified:** `GEMINI.md`, `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:** Ready for next gameplay or Studio task.
+
