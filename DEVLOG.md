@@ -455,3 +455,24 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode: seated at rear cargo seat `z = -2.61`, aimed camera at `z = 5.65` (skipping 2 intermediate seats), pressed `[C]` -> landed directly on `seatRelZ = 5.65, hrp = (-3.62, 3.71, 5.65), role = RearPassenger`; then switched from `z = 5.65` to `z = 12.54` (`f0(z=5.65,y=3.71) -> f2(z=7.62,y=4.29,rY=3.07,lY=3.22) -> f4(z=11.67,y=4.10,rY=2.98,lY=2.73) -> f6(z=12.54,y=3.71,seatZ=12.54)`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Focus:** Van Tasks #7 & #8 — Custom Circular ProximityPrompt UI + Accurate Handle/Switch/Seat Placements & 5 New Driver Interior Control Animations
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PromptUIController` (created) & `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`:
+    - **#7 Custom Circular Proximity Prompt UI:** Created `PromptUIController` converting every `ProximityPrompt` in `Workspace` (and on `Workspace.DescendantAdded`) to `Enum.ProximityPromptStyle.Custom` and rendering a compact circular `BillboardGui` (`CircularPrompt_<Name>`) with a dark inner circle (`35×35 px`), centered keybind label (`E`, `F`, `R`, etc.), dual-arc `360°` `UIGradient` outer progress ring (`RightHalfClip` / `LeftHalfClip`) that fills smoothly during holds and flashes on trigger, and a compact action pill underneath (`ActionLabel`).
+  - `Workspace.DeliveryVan.VanDrive`:
+    - **#7 Accurate Prompt Attachments & Tight Distances:** Updated `prompt()` to parent prompts to centered `PromptAttachment`s on `Cab.DoorHandleL/R`, `SlidingDoor.DoorHandle`, and `RearDoors.RearHandleL/R` (`MaxActivationDistance = 5.5`), parented `WindowPromptL/R` to `SwitchPromptAttachment` on `CabDetail.Doors.WindowSwitch0` and `WindowSwitchR` on the door armrests (`MaxActivationDistance = 4.2`), and positioned `SeatPromptAttachment` right over the cushion center (`Vector3.new(0, 0.35, -0.15)`) on all 9 seats (`CAB_SEAT_PROMPT_DISTANCE = 5.5`, `CARGO_SEAT_PROMPT_DISTANCE = 4.8`).
+    - **#8 Replicated Interior Control Targets & Pose Relay:** Created server-replicated attachments on the existing 3D interior parts inside `CabDetail`: `VanAnimHornPad` (on `Wheel.HubBody` at `Wheel.HornPad`), `VanAnimStalkL` (on `Wheel.StalkLTip` behind left side of wheel), `VanAnimShiftKnob` (on `Console.ShiftKnob`), `VanAnimHandbrake` (on `Console.HandbrakeGrip`), and `VanAnimDashBtn` (on `Dash.HazardBtn`). Extended `"Pose"` and `flushPose` to replicate `PoseDrift` and `PoseHandbrake` attributes on `DeliveryVan`.
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:
+    - **#8 Driver Hand & Control Animations (FP + Replicated):**
+      - **Honking (`[H]` / `HornOn`):** Right hand (`reachR`) leaves the 3-o'clock rim and presses into `VanAnimHornTip` at the center of the steering wheel (`(-2.09, 3.56, -8.66)`).
+      - **Headlights (`[L]` / `HeadlightsOn`):** Left hand (`reachL`) reaches behind the left side of the wheel to flick `VanAnimStalkTip` (`(-3.10, 3.43, -8.81)`).
+      - **Cab Light (`[K]` / `CabLightOn`):** Right hand (`reachR`) reaches forward to press `VanAnimDashTip` on the center dashboard (`(-0.61, 3.20, -8.61)`).
+      - **Drifting (`[LeftShift]` / `PoseDrift`):** Right hand (`reachR`) grips `VanAnimShiftTip` (`Console.ShiftKnob`) and actively works the joystick with live steering and oscillation.
+      - **Handbrake (`[B]` / `PoseHandbrake`):** Right hand (`reachR`) dynamically pulls and alternates between `VanAnimHandbrake` (`Console.HandbrakeGrip`) and `VanAnimShiftKnob` (`Console.ShiftKnob`).
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode: all 22 workspace `ProximityPrompt`s converted to `Custom` (`Prompts=22, Custom=22, VanAttachmentPrompts=16`), live circular prompt UI verified on `Cab.DoorHandleL.PromptAttachment` (`CircularPrompt_ProximityPrompt(key=E, act=Open door, ring=true)`), and driver hand animations verified (`Base: R(-1.55,3.61,-8.85) L(-2.87,3.61,-8.85)` -> `Horn[H]: R(-2.09,3.56,-8.66) dR=0.59` -> `Headlights[L]: L(-3.10,3.43,-8.81) dL=0.30` -> `CabLight[K]: R(-0.61,3.20,-8.61) dR=1.05`). Zero script console errors. Studio returned to `Edit` mode. All 8 van tasks (#1–#8) are now complete! Remember to **Commit Drafts** in Team Create.
+
+
