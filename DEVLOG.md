@@ -1448,3 +1448,17 @@
   - `ServerScriptService.Server.Services.MapService` (modified)
   - `ServerStorage.Modules.Monsters.ForestHunter` (modified)
 - **Verification:** Live-verified in Play mode with `DeliveryVan` parked `790+` studs away: standing deep in the back corner of the Factory `(83, 0, 440)` for `2.8s` (> 2 poll cycles) produced `ForestHunterActive = false` (`HP = 100`); stepping out into deep forest `(420, 6, 300)` spawned `ForestHunter` cleanly outdoors (`HunterPos = (335.8, 0, 369.1)`); returning inside the Factory immediately triggered `State = "Retreat"` and cleared cleanly (`Active = false`, `HP = 100`) with **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`MapService`, `ForestHunter`) in Team Create!
+
+### Follow-up same date — Authentic Auto-Shop Mechanic Audio for Van Upgrades & Repairs (`justhyne1205 (via Antigravity)`)
+- **Root Cause Found:** Every van upgrade & repair played `Workspace.StartArea.VanUpgradeStation.DockingPad.GarageAudio.GarageChimeSFX` (`rbxassetid://9069609200` — a loud meme rejoin audio blasting at `RollOffMaxDistance = 10000`) layered over `WeldClankSFX` (`rbxasset://sounds/action_jump_land.mp3` at `Volume = 0.80`, `RollOffMaxDistance = 10000`).
+- **Summary of Changes:**
+  - Replaced all harsh van-garage sounds in both the place (`Workspace.DeliveryVan.Chassis.Chassis.WeldingFXMount` and `Workspace.StartArea.VanUpgradeStation.DockingPad.GarageAudio`) and **`ServerScriptService.Server.Services.UpgradeService`** with verified free official **`ProSoundEffects`** auto-shop tool audio at balanced volumes (`0.24–0.42`) and realistic 3D spatial `InverseTapered` roll-off (`10..80` studs):
+    - **Pneumatic Impact Wrench (`WeldClankSFX` `rbxassetid://9117703983` & `ImpactWrenchAltSFX` `rbxassetid://9117704306`):** Alternates crisp air-gun bolt-tightening bursts with subtle organic pitch variation on upgrades and repairs.
+    - **Warm Welding Arc Sparks (`WeldArcSFX` `rbxassetid://9119992532` with warm `EqualizerSoundEffect`):** Layered smoothly on repairs alongside `WeldingSparks:Emit(50)`.
+    - **Socket Ratchet Wrench (`RatchetWrenchSFX` `rbxassetid://9118046636`):** Follows at `+0.50–0.55s` with clean metallic bolt-locking clicks; previous tool sounds stop cleanly before retriggering so rapid clicks never stack loud noise.
+    - **Station Audio Cleanup:** Replaced `GarageChimeSFX` (`9069609200` completely removed from place and `UpgradeService`) and upgraded `PneumaticHissSFX` (`action_falling.mp3` → `rbxassetid://9125788628`, pneumatic mechanical clunk + air burst at `Volume = 0.36`, `RollOffMaxDistance = 75`).
+- **Studio Paths Modified:**
+  - `ServerScriptService.Server.Services.UpgradeService` (modified)
+  - `Workspace.DeliveryVan.Chassis.Chassis.WeldingFXMount` (updated/added `Sound` children — zero parts or welds added)
+  - `Workspace.StartArea.VanUpgradeStation.DockingPad.GarageAudio` (updated `GarageChimeSFX` & `PneumaticHissSFX`)
+- **Verification:** Live-verified in Play mode: `6/6` official `ProSoundEffects` audio assets reported `IsLoaded = true` with valid durations (`0.63s..1.44s`), `Legacy9069609200Found = false`; tested live docked `UpgradeAction("Buy", "Engine")` (`ImpactB -> Ratchet`, `Chime = false`) and `UpgradeAction("RepairZone", "Front")` (`ImpactB + Arc -> Ratchet`, `Chime = false`) with **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`UpgradeService`) in Team Create!
