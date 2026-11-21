@@ -1321,3 +1321,27 @@
   - Replicated Player Attributes: `Stamina`, `MaxStamina`, `IsSprinting`, `IsExhausted`, `ExhaustionRecoverAt`.
   - Official Roblox Audio Assets: `rbxassetid://9043365842` (APMOfficial Heartbeat), `rbxassetid://9113586280` (ProSoundEffects Breath Exhale).
 - **Verification:** Verified live in Play mode: idle+Shift drains `0` stamina; jump deducts `-5` stamina (`100 → 95`); sprinting ramps to `WalkSpeed = 24.80`, `FOV = 78.0°`, `RootJoint` leans `22.0°` (`R6_Run`), HUD displays `SPRINTING`; hitting `0` triggers `IsExhausted = true`, locks sprint (`blocked = true`), slows `WalkSpeed = 11.52`, tightens `FOV = 67.6°`, HUD switches to pulsing crimson `EXHAUSTED — CATCH YOUR BREATH` (`0% / 35%`); recovering past `35%` clears `IsExhausted = false`, restores `WalkSpeed = 16.00`, and resumes sprinting cleanly (`peakWS = 24.80`) with **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create!
+
+### Follow-up same date — Complete Retro-Amber CRT / Automotive Terminal 2D UI Overhaul (`justhyne1205 (via Antigravity)`)
+- **Summary of Changes:**
+  - Created a centralized `--!strict` design system at **`ReplicatedStorage.Shared.UITheme`** matching the reference video's obsidian-and-amber retro automotive terminal aesthetic: razor-sharp `0px` rectangular frames with mitered tangerine-amber `UIStroke` borders (`RGB(255, 146, 38)`), deep obsidian backdrops (`RGB(10, 9, 8)`), crimson vertical status indicator blocks (`RGB(232, 52, 44)`), uppercase `RobotoMono` typography, `>> CHEVRON <<` brackets, solid-amber inverted primary/hover buttons with jet-black text, flat sharp rectangular progress bars & upgrade pips, and subtle ProSoundEffects mechanical click/hover audio (`rbxassetid://9114480271`).
+  - Overhauled every 2D on-screen UI across the game while preserving 100% of existing behavior:
+    - **`ShiftHUD` (`ShiftController`):** Top status bar with crimson status pip & amber frame, dim-amber objective strip, inverted solid-amber `>> START SHIFT #N <<` / outlined `>> READY <<` & `>> RIGHT VAN <<` buttons with hover inversion, and framed toast notification banner.
+    - **`SprintStaminaGui` (`SprintController`):** Sharp flat amber stamina gauge with vertical leading slider thumb, `35%` recovery notch, trailing drain bar, crimson pulsing `>> EXHAUSTED — CATCH YOUR BREATH` alert state, and matching sharp mobile sprint button.
+    - **Shop Modals (`UpgradeShopController` / `VanUpgradeShop` & `PersonalUpgradeController` / `PersonalUpgradesGui`):** Rebuilt into `SETTINGS`-style framed obsidian-and-amber terminals with crimson title status pips, solid-amber `DONE` buttons, thin horizontal amber dividers, wrapped monospace descriptions, rectangular level pips, and solid-amber inverted `BUY` buttons. Also registered `PersonalUpgradeController` cleanly in `ControllerList` (with async `task.spawn` startup).
+    - **2D Seated Van HUD (`VanController` — 2D ScreenGuis ONLY):** Restyled `VanControlsHint`, `VanSeatHint`, and `VanSpeedometer` (`>> MPH <<` + flat amber/crimson `[Q] BOOST` meter) while leaving all 3D van cab buttons, switches, dashboard gauges, tracker screen, `VanDrive`, `DashController`, and `VanAnimController` 100% untouched.
+    - **Monster Alert & Defense HUDs (`DoorMonsterController`, `WindowMonsterController`, `ChaseMonsterController`, `CargoMonsterController`) & `NotificationController`:** Restyled all text alert banners, pursuit meters, and defense prompts into the unified amber/crimson terminal style while leaving all full-screen horror vignette/flash overlays, circular `[E]` prompts (`PromptUIController`), `Cmdr`, and `HorrorAtmosphereOverlay` completely untouched.
+- **Studio Paths Created/Modified:**
+  - `ReplicatedStorage.Shared.UITheme` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified — registered `PersonalUpgradeController`)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.SprintController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.UpgradeShopController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PersonalUpgradeController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified — 2D HUD only)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.WindowMonsterController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.CargoMonsterController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.NotificationController` (modified)
+- **Verification:** Visually verified live in Play mode across 4 screenshots (`ShiftHUD` + active `SprintStaminaGui`, `VanUpgradeShop`, `PersonalUpgradesGui`, and seated `DeliveryVan` with `VanSeatHint` + `VanSpeedometer` + `ChaseBanner`), widened `VanUpgradeShop` (`640px` + wrapped descriptions) and tucked modal crimson status pips tight beside titles after visual review, re-verified cleanly with zero script errors from any UI controller, and returned Studio cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create!
