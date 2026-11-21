@@ -1233,3 +1233,20 @@
   - `Assets/Props/ForestProps.blend`, `Assets/Props/ForestProps.glb`, `Assets/Props/HorrorKit_ForestPropsAtlas.png` (updated)
   - `Assets/Props/HorrorKit_ForestProps_Normal.png`, `Assets/Props/HorrorKit_ForestProps_ORM.png` (created)
   - `DEVLOG.md` (modified)
+
+
+### Follow-up same date — Imported & Organized All 15 Full-PBR Forest Props in Roblox Studio
+- **Summary of Changes:**
+  - Optimized the 3 shared PBR maps to Roblox's native `1024×1024` cap and split exports into 3 fast 5-prop packs (`ForestProps_Pack1_Ground.glb`, `ForestProps_Pack2_Landmarks.glb`, `ForestProps_Pack3_Roadside.glb`, `~1 MB` each) to resolve Studio's `HTTP StatusCode: -1 Request timed out` upload error.
+  - Scaled all 15 imported `MeshPart`s exact `1 / 0.28×` to match Roblox stud scale, anchored, configured collision (`CanCollide = false` on `Prop_BrambleBush_Dead`, `PreciseConvexDecomposition` on hero props `Prop_CarWreck_Rusted`, `Prop_AbandonedWell`, `Prop_OldGravestones`, `Prop_HuntingBlind_Rotted`, `Prop_FallenLog_Rotted`, `Prop_TreeStump_Old`), removed empty `Scene` wrappers, arranged them in a clean 3×5 showroom grounded at `Y = 0.20` inside `Workspace.MapModels.HorrorKit_Props`, and mirrored all 15 into `ReplicatedStorage.Assets.MapModels.HorrorKit_Props`.
+  - Visually verified all 15 props in Roblox Studio (`ForestProps_Studio_DayOverview`, `ForestProps_Studio_DayHero`) with full 4-map PBR `SurfaceAppearance` rendering cleanly and midnight horror `Lighting` restored.
+- **Studio Paths Created (both `Workspace.MapModels.HorrorKit_Props` & `ReplicatedStorage.Assets.MapModels.HorrorKit_Props`):**
+  - `Prop_Boulder_Mossy` (`rbxassetid://114354042048909`), `Prop_RockCluster_Small` (`rbxassetid://139663193113213`), `Prop_FallenLog_Rotted` (`rbxassetid://119196068687405`), `Prop_TreeStump_Old` (`rbxassetid://112641597933513`), `Prop_BrambleBush_Dead` (`rbxassetid://80877015223738`)
+  - `Prop_AbandonedWell` (`rbxassetid://90015852430222`), `Prop_OldGravestones` (`rbxassetid://84035641808634`), `Prop_WoodsTotem` (`rbxassetid://123608712818304`), `Prop_AbandonedCampfire` (`rbxassetid://77688221244201`), `Prop_HuntingBlind_Rotted` (`rbxassetid://133686692987559`)
+  - `Prop_WarningSign_Rusted` (`rbxassetid://94033745012004`), `Prop_RoadMarker_Post` (`rbxassetid://107565330190286`), `Prop_RustedBarrels` (`rbxassetid://89737716135134`), `Prop_CarWreck_Rusted` (`rbxassetid://137962507090541`), `Prop_ScrapTires_Pallet` (`rbxassetid://119729021272620`)
+- **Shared PBR `SurfaceAppearance` Textures (all 15 props share one single set!):**
+  - `ColorMap`: `rbxassetid://72703756900554`
+  - `NormalMap`: `rbxassetid://79916903243852`
+  - `RoughnessMap`: `rbxassetid://128184551029044`
+  - `MetalnessMap`: `rbxassetid://112128820888656`
+- **Next Steps / Known Issues:** Procedural chunk placement (`ChunkBuilder`) has NOT been wired to spawn these new props yet — ready whenever requested! Remember to grant the group experience permission to use these 15 personal-account mesh assets + 4 shared PBR texture IDs in Creator Dashboard before publishing.
