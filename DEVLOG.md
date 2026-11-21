@@ -1000,3 +1000,41 @@
   - Client `PlayerGui.HorrorAtmosphereOverlay` (`ScreenGui`, `DisplayOrder = -5`).
 - **Next Steps / Known Issues:**
   - Verified live in Play mode: confirmed midnight silhouette lighting (`ClockTime = 0.0`, `Fog = 20..290`, `HeadlightL/R Shadows = true`), `HorrorAtmosphereOverlay` (`DisplayOrder = -5`, `HasREC = false`, `GrainAnimated = true`), zero idle/walk camera drift (`0.048°–0.066°`), visual `screen_capture`s of warm Factory interior readability, in-cab windshield driving view, and exterior chase view with eerie silhouetted dead trees against cold dark-slate mist, and zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Slightly Brighter Midnight Lighting & 145-Stud Long-Throw Van Headlights (`Lighting`, `MapService`, `DeliveryVan`, `VanDrive`):**
+    - Gently lifted midnight horror lighting (`ExposureCompensation = 0.16`, `Brightness = 0.72`, `Ambient = (20, 27, 33)`, `OutdoorAmbient = (32, 45, 55)`, `FogColor = (36, 52, 64)`, `FogStart = 32`, `FogEnd = 340`, synced in `MapService.applyNocturnalLighting()`) so first-person highway driving is clearly readable without losing the eerie misty silhouette atmosphere.
+    - Upgraded `DeliveryVan.Cab.HeadlightL/R` into 3-stage ~145-stud long-throw warm-white highway beams using zero-mass `Attachment` relays (`SpotLight` primary `Shadows = true`, `HeadlightMidRelay` at `-36` studs, `HeadlightFarRelay` at `-82` studs, plus subtle volumetric `HeadlightCone` `Beam`s) and updated `VanDrive` so `[L]` cleanly toggles all 6 `SpotLight`s and 2 `Beam`s together.
+  - **Advanced Tactical `[F]` Flashlight Tool — Drop-In Model Ready (`FlashlightService`, `FlashlightController`, `NetDefs`, `ServiceList`, `ControllerList`):**
+    - Created `FlashlightService` + minimal placeholder `Tool` template (`ReplicatedStorage.Assets.Tools.Flashlight` with `Handle` + `LensAttachment` ready for a future custom 3D model), granting it on spawn and replicating `FlashlightOn` per player via `NetDefs.FlashlightToggle`.
+    - Created `FlashlightController` with `[F]` toggle & tool-click support (works seamlessly with default Backpack CoreGui disabled), realistic dual-concentric tactical optics (`32°` shadow-casting `HotspotLight`, `70°` outer `SpillLight` halo, forward `FarSpot`, and volumetric `VolumetricCone` `Beam`), smooth spring-lagged wrist inertia + walk bob + `120`-stud raycast aim convergence, co-op remote player rendering, ProSoundEffects click SFX (`rbxassetid://9114480271`), infinite battery, and erratic monster-proximity beam flicker.
+  - **True Fullscreen `EditableImage` VHS Static (`AtmosphereCameraController`):**
+    - Replaced the 44 sparse floating dots with 4 pre-baked `128×128` procedural monochrome VHS static snow `EditableImage` frames (tiled fullscreen via `ImageContent` and cycled at 24 FPS with random offset jitter), 48 interlaced CRT scanlines, 2 drifting horizontal VHS tracking shimmer bars, and soft dark vignette — zero `REC`/timer/date text clutter.
+    - Added dynamic monster threat scaling (`ChaseActive`, `WindowThreatSide`, `WindowApproachSide`, `DoorThreatActive`): subtle & clean during normal driving (`ImageTransparency = 0.915`), intensifying noticeably during active threats (`~0.76–0.80` with stronger tracking bars & tighter vignette).
+  - **Realistic, Optimized Dynamic Rain, Muffled Van Audio & Outdoors-Only Refractive Camera Droplets (`RainController` & `ControllerList`):**
+    - Created `RainController`: defaults to calm **Light Drizzle** and smoothly ramps into an **Extremely Intense Heavy Storm** whenever `DeliveryVan:GetAttribute("ChaseActive") == true` (`Rate 55 → 280`, heavier wind acceleration, ground splashes, and storm audio).
+    - Uses a 4-curtain exterior perimeter rain rig (`RainFront/Back/Left/Right`) positioned strictly outside `DeliveryVan`'s hull plus `160`-stud upward roof raycasts so **zero** rain ever falls inside the van or Factory.
+    - Plays balanced ProSoundEffects rain loops (`rbxassetid://9112857056` drizzle + `rbxassetid://9112853286` heavy storm) with smooth `-24 dB` high-cut `EqualizerSoundEffect` interior muffling when inside `DeliveryVan` or under the Factory roof.
+    - Renders 14 pooled refractive `Enum.Material.Glass` camera lens water droplets streaking down the lens **strictly when outdoors under open sky** (instantly evaporating inside `DeliveryVan`, Factory, or under roofs).
+- **Studio Paths Modified/Created:**
+  - `Lighting` & `Workspace.DeliveryVan.Cab.HeadlightL/R` (modified)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+  - `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `ServerScriptService.Server.Services.FlashlightService` (created)
+  - `ServerScriptService.Server.Core.ServiceList` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.AtmosphereCameraController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.FlashlightController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:**
+  - Remote (`NetDefs`): `FlashlightToggle` (C2S).
+  - Player Attribute: `FlashlightOn` (boolean).
+  - Template Tool: `ReplicatedStorage.Assets.Tools.Flashlight` (`Handle` + `LensAttachment`).
+  - Verified free ProSoundEffects Audio IDs: `rbxassetid://9112857056` (drizzle), `rbxassetid://9112853286` (heavy storm), `rbxassetid://9114480271` (flashlight click).
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode across all scenarios: Factory interior (`VHS CalmTrans=0.915`, `HighGain=-24.0dB`, `ActiveDrops=0`), inside `DeliveryVan` (`[L]` toggles `6/2 -> 0/0 -> 6/2`, `HighGain=-24.0dB`, `ActiveDrops=0`, in-cab `screen_capture` confirming crisp 145-stud lit highway visibility through rain & mist), outdoors on foot (`HighGain=0.0dB`, `ActiveDrops=3`, `[F]` flashlight `Hotspot/Spill/Far/Cone` verified via `screen_capture`), and Chaser Heavy Storm (`VHS ThreatTrans=0.802`, `Rain Rate=280`, `StormVol=0.400`, `OutdoorsLensDrops=13`, flashlight flickering `5.78..6.33`), with zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
