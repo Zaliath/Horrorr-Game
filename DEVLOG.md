@@ -1065,3 +1065,118 @@
 - **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
 - **New Dependencies:** Additional verified free ProSoundEffects Audio IDs: `rbxassetid://9112856394` (storm wash), `rbxassetid://9112852671` (muffled interior rain loop).
 - **Next Steps / Known Issues:** Verified live in Play mode across all scenarios: Factory interior (`Fog = 20..185`, `SnowT = 0.955`, `InteriorMuffledLoop = 0.45` + `DrizzleLoop = 0.28` at `-9.5/-13.5 dB`, `0` droplets), outdoors on foot (`BEAM_BOXES = 0`, 4 upgraded optics active, 3rd-person aim verified `dotHrp = 1.000 / dotCam = 0.001`, `DrizzleLoop = 0.58`, `15` slightly larger droplets `MaxSize = 0.065`), inside `DeliveryVan` calm drizzle (`Headlights = 6/6 ON`, `HeadlightBeams = 0`, `InteriorMuffledLoop = 0.58` + `DrizzleLoop = 0.31`, `0` on-screen droplets, in-cab `screen_capture` confirming crisp road visibility and hidden far trees/houses), and inside `DeliveryVan` during Chaser Heavy Storm (`FogEnd = 152`, `SnowT = 0.919`, `8` curtains `180..440` + `StormWindMist = 32` + `SplashDrops = 240`, `InteriorMuffledLoop = 1.05` + muffled `HeavyStormLoop = 0.57` + `StormWashLoop = 0.35`, `0` on-screen droplets), with zero game script errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`MapService`, `FlashlightController`, `AtmosphereCameraController`, `RainController`).
+
+
+---
+
+## 2026-11-20 - Riplatki (via Claude)
+- **Focus:** Door-Ripper felt empty: added the driver's door-fight animations (both hands on the door, punches and kicks) and monster hit reactions.
+- **Summary of Changes:**
+  - **Driver (`VanAnimController`):** while `DoorThreatState` is `Threat` (and `Repelled`, for the final slam) the driver lets go of the wheel and hauls the driver door shut with BOTH hands (left on the inner handle, right just ahead of it; targets follow the swinging `DoorLowerL`). The torso braces/twists toward the door (leans further out as `DoorThreatAngle` grows, extra jolt on each yank), and the head turns to watch the monster. Every `[E]` mash fires one limb in rotation: right punch (head), left kick, left punch (chest), right kick. Remote clients see the same strikes from `DoorThreatMashSeq` changes; the local driver strikes instantly through `VanAnimController:TriggerDoorStrike()`. Works for R6 (motor solve) and R15 (IKControl) via the existing channel system.
+  - **Fixed a silent bug:** `DoorMonsterController.triggerLocalMash` already called `VanAnimController:TriggerDoorStrike()` but that method never existed, and the `if VanAnimController.TriggerDoorStrike then` guard hid it. It exists now.
+  - **Monster (`DoorMonsterController`):** `registerHit()` staggers the monster on every blow: head snap, torso recoil/twist, shoved back off the running board, claw grip slips, one boot skids, jaw screeches, eye light flares, small dark splatter burst (`HitSplatter` `ParticleEmitter` on `DoorRipperAudioAnchor`). Added idle breathing sway and claw scrabbling on the panel while it pries. Other players' clients react to your hits via `DoorThreatMashSeq`.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md` (Door-Ripper fight animations), `DEVLOG.md`, `LESSONS.md`.
+- **New Dependencies:** Client-only attachments on `DeliveryVan.Chassis`: `VanAnimDoorHandL/R`, `VanAnimPunchTipL/R`, `VanAnimKickTipL/R`; `Rig.doorW` blend weight. No new remotes, tags, attributes or DataStore keys (reads existing `DoorThreat*` van attributes).
+- **Next Steps / Known Issues:**
+  - Verified in Play mode with a seated R6 NPC driver and a forced `doormonster threat`: lean reached about `-1.2..-2.7` studs toward the door, all four limbs swung in a repeating punch/kick rhythm (5-9 peaks in 1.8s), arm tips got within `~0.4` studs of the door grips, `HitSplatter` + monster rig present, `doormonster repel` fired the final shove, and the pose returned to neutral afterwards (`RootJoint.C0.X = 0`). Zero game script errors in the console.
+  - **Not tested:** the real local-driver path (needs an actual `[E]` key press, which `execute_luau` cannot send), R15 avatars, and nothing was seen visually (`screen_capture` is unreliable in Play mode). Please play it and tune by feel: `DOOR_LEAN_R6`, `DOOR_HAND_HANDLE`, `DOOR_HAND_EDGE`, `PUNCH_*`, `KICK_*` at the top of `VanAnimController`, and the `hitFlinch` multipliers in `DoorMonsterController`.
+  - R6 arms cannot bend, so when the door is pried wide open the hands reach as far as the arm allows while the torso leans out. First-person camera also shifts toward the door with the lean (up to about 2.4 studs).
+  - Idea: a door-slam shake/sound for each successful blow, and a dedicated punch whoosh SFX (only verified built-in sounds are used right now). Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 - OpenCode (Big Pickle)
+- **Focus:** Getting in and out of the van no longer teleports the player — added animated step-in, sit-down (rear bench) and stand-up transitions.
+- **Summary of Changes:**
+  - **`Workspace.DeliveryVan.VanDrive`:** Added a shared animated-seat-transition system that mirrors the proven `[C]` SwitchSeat slide. `animateIntoSeat()` welds the character's HRP to `Chassis` in chassis-local space, tweens it from the standing spot to the seated pose with a small lift/arc (0.72s cab, 0.82s rear), then destroys the weld and calls `Seat:Sit` with canonical `SeatWeld.C0/C1`. Both cab `SeatPrompt` and rear-bench `SeatPrompt` handlers now call it instead of `sitInSeat()` directly.
+  - **`exitVanSeat()`:** Replaced the instant `PivotTo` hop with the same welded tween from the seat to the old door-side / cargo-aisle standing spot, then restores velocity and physics. Reuses the existing door-block, raycast and exit-token guards.
+  - Character parts are temporarily moved to the `VanSeat` collision group and made `Massless` during a transition (same as the existing seat switch) so the van is not kicked by depenetration; saved values are restored afterwards.
+  - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:** Transitions reuse the existing `VanSwitch*` braced climb/sit choreography; a new `VanTransitionKind` attribute deepens the crouch for rear sit-down (`EnterRear`) / stand-up (`ExitRear`) and adds a lighter brace for cab entry/exit.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.VanDrive` (modified; `VanDrive` source)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController` (modified; ModuleScript source)
+  - No new Instances were left in the DataModel (a temporary test remote used during verification was removed).
+- **New Dependencies:** New **player attributes** (set/cleared by `VanDrive`, read by `VanAnimController`): `VanTransitionKind` (`EnterFront` / `EnterRear` / `ExitFront` / `ExitRear` / `""`), plus the pre-existing `VanSwitchActive`, `VanSwitchStart`, `VanSwitchDuration`, `VanSwitchFrom`, `VanSwitchTo`, `VanSwitchFromLocal`, `VanSwitchToLocal`, `VanSwitchHops`, `VanSeatRole` now also written for entry/exit. No new RemoteEvents, CollectionService tags, collision groups, or DataStore keys.
+- **Next Steps / Known Issues:**
+  - Verified in Play mode by temporarily exposing the entry handler to a test remote: rear entry showed `EnterRear` + `VanEnterWeld` active for ~0.8s before `SeatPart = PassengerSeat`; `[Space]`-equivalent `VanControl:FireServer("LeaveSeat")` showed `ExitRear` + `VanExitWeld` active for ~0.8s before `SeatPart = nil`. Console had zero game-script errors (only unrelated plugin warnings).
+  - **Not visually verified:** avatar limb IK during the transition, first-person camera feel, and R15 avatars (R6 is this game's default). Tune `TRANSITION_DURATION`, `REAR_TRANSITION_DURATION`, the lift/arc constants near `animateIntoSeat()`, and the `pushDip` weights in `VanAnimController` by feel in Play mode.
+  - Directly firing a `ProximityPrompt` from `execute_luau` (`InputHoldBegin`/`InputHoldEnd`) did **not** trigger the server handler; a temporary test remote was used instead and removed. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 - Antigravity
+- **Focus:** Implemented Monster #7 — The Forest Hunter / Deep-Forest Boundary Herder (tall antlered Wendigo/Leshy).
+- **Summary of Changes:**
+  - **Server (`ServerStorage.Modules.Monsters.ForestHunter`, registered in `MonsterService`):** Polls on-foot players every `1.2s` and spawns a stalking encounter (`85–115` studs away, ground-raycast snapped) when `> 180` studs from both the nearest `ProceduralRoadGraph` cell and `Workspace.DeliveryVan` (and outside `StartArea`). Unobserved hunters creep `22–28` studs closer into the player's forward path after `4.5s`; direct sight/flashlight spot (`Net` `"ForestHunterSpotted"`) or `<= 32` stud proximity triggers a screech and `24` studs/s charge. Claw attacks deal `-30` HP and apply directional herding knockback toward the nearest road/van (`AntiExploitService:ExemptMovement` + `ForestHunterKnockback`). Automatically retreats and dissolves when reaching road (`<= 42`), van (`<= 35`), `StartArea`, or a seat.
+  - **Client (`ForestHunterController`, registered in `ControllerList`):** Builds and drives the 46-part `Workspace.ForestHunter3D` procedural Wendigo/Leshy rig via `BulkMoveTo` (tattered moss shroud, branching antler crown, amber-to-crimson Neon eyes + `PointLight`, blood-red claws, dark mist emitter), checks unobstructed camera FOV / flashlight raycast, plays spatialized built-in audio cues, triggers crimson flash + zero-drift camera shake (`Camera.Value - 5` / `+ 5`), and applies replicated herding knockback on the client-owned `HumanoidRootPart`.
+  - **Atmosphere & Admin (`FlashlightController`, `RainController`, Cmdr `forestmonster`):** Added `"ForestHunter3D"` proximity flashlight flicker, smooth rain/ambient audio ducking (`0.08x`) while `Stalk`/`Creep` is active, and Cmdr `forestmonster` (`spawn | creep | charge | attack | clear`).
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.NetDefs` (modified: added `ForestHunterSpotted`)
+  - `ServerStorage.Modules.Monsters.ForestHunter` (created)
+  - `ServerScriptService.Server.Services.MonsterService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ForestHunterController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.FlashlightController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController` (modified)
+  - `ServerScriptService.Cmdr.Commands.forestmonster` & `forestmonsterServer` (created)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`, `LESSONS.md`.
+- **New Dependencies:** `ForestHunterSpotted` (`RemoteEvent` C2S); `Player` attributes `ForestHunterActive`, `ForestHunterState`, `ForestHunterPos`, `ForestHunterYaw`, `ForestHunterDist`, `ForestHunterEventSeq`, `ForestHunterLastEvent`, `ForestHunterKnockback`.
+- **Next Steps / Known Issues:**
+  - Verified in Studio Play mode via `CmdrFunction:InvokeServer`: `forestmonster spawn` (`active=true`, `state=Stalk`, 46-part `ForestHunter3D`, amber eyes), `creep` (`ev=Creep`, `dist=59.4`), `charge` (`state=Charge`, `ev=Screech`, eyes flared crimson), `attack` (`hp=100->70`, `peakVel=73.0`, `disp=13.6` studs), and `clear` (`activeFalse=true`, `modelGone=true`), with zero script errors in `get_console_output`.
+  - **Not yet tested in live Play:** natural automatic deep-forest spawn outside the `StartArea` perimeter (tested via Cmdr overrides) and visual appearance in the viewport (`screen_capture` not run). Remember to **Commit Drafts** in Roblox Studio's **Drafts** widget if Team Create Collaborative Editing is active.
+
+---
+
+## 2026-11-21 - Antigravity
+- **Focus:** Expanded procedural forest depth to 4 rings (`400` studs) and hardened `ForestHunter` spawn/creep ground validation so it stays in bounds.
+- **Summary of Changes:**
+  - **`ServerStorage.Modules.ChunkBuilder`:** Increased `FOREST_BORDER_RADIUS` from `3` (`300` studs) to `4` (`400` studs), normalized tree scale `depthT` across `350` studs (`(distFromRoad - 50) / 350`), and balanced per-chunk tree counts across Rings 1–4 (`4–6` / `8–11` / `11–15` / `12–15`, shadows disabled on Ring 4, `ForestBoundary` walls on Ring 4 outer edges).
+  - **`ServerScriptService.Server.Services.MapService`:** Raised `MAX_SPAWNS_PER_TICK` from `8` to `14` and initial `ResetForShift` streaming budget from `400` to `600` to accommodate Ring 4 forest chunks.
+  - **`ServerStorage.Modules.Monsters.ForestHunter`:** Added `trySnapToGroundY` and `_findValidGroundPos` sweeping angle offsets `{ 0, ±0.4, ±0.85, ±1.4, ±2.1, π }` across distance scales `{ 1.0, 0.78, 0.55 }` to reject void/off-map coordinates in `_spawnEncounter` and `_startCreep`, falling back inward toward `safetyTarget` when pinned.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `ServerStorage.Modules.Monsters.ForestHunter` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:**
+  - Verified in Studio Play mode: `Workspace.ProceduralMap` streamed `133` forest chunks including `27` Ring 4 chunks (`Forest_4_*` / `Forest_-4_*`) and `15` Ring 4 `ForestBoundary` walls; `forestmonster spawn` (`y=50.74` on `Bay_Roof_EastSlope` at spawn) and `forestmonster creep` (`y=53.79` on `Bay_Roof_EastSlope` at spawn) both hit solid geometry cleanly with zero script errors in `get_console_output`.
+  - Note: Because `trySnapToGroundY` casts down from `math.max(80, fallbackY + 45)`, testing inside `StartArea` hit the factory roof (`Bay_Roof_EastSlope`), and deep-forest dead trees (`CanQuery = true`) could intercept downward casts if spawned directly above a trunk; verify deep-forest ground snapping (`GrassGround` @ `y=0.86`) out in the woods and lower cast origin or filter `GrassGround` if needed. Remember to **Commit Drafts** in Roblox Studio's **Drafts** widget if Team Create Collaborative Editing is active.
+
+---
+
+## 2026-11-21 - OpenCode (Big Pickle)
+- **Focus:** Fixed van-seat transitions kicking/spinning the van, and removed the "hunchback" head look on seated remote players.
+- **Summary of Changes:**
+  - **`Workspace.DeliveryVan.VanDrive`:** Replaced the short-lived `setCharVanPhysics()` helper with a persistent per-player `vanOccupantPhysics` state. `setVanOccupantGhost()` swaps character parts to the `VanSeat` collision group **only during the welded slide** (entry, exit and `[C]` switch), then restores their original collision group while deliberately keeping `Massless = true`. A `monitorVanOccupant()` heartbeat waits until the avatar is no longer seated in a van seat and its HRP leaves the chassis-local keep-out box (`|X| < 6.5`, `-17 < Z < 17`, `-3 < Y < 16`) before restoring the original `Massless` values.
+  - Root cause: the old `task.delay(0.2, restore)` returned collisions while a rear-seat player was still standing **inside** the cargo body (rear exit spot is only `~1.9` studs off the seat, local X `≈ -1.9` vs van wall `≈ ±3.25`), so walking/standing up re-enabled limb-vs-cab depenetration and shoved the physics-owned van. Keeping the avatar massless while it is in/near the van removes the impulse without disabling ground collision.
+  - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:** `HEAD_FORWARD_OFFSET` (`-0.45` studs) is now applied **only when `char == localPlayer.Character`**. Remote avatars keep `rig.defaultNeckC0` position (head/eye rotations for look-back and door-threat still apply), so other players no longer look hunchbacked when seated. The local first-person camera is unchanged because it reads the local head position.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.VanDrive` (modified; `VanDrive` source)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController` (modified; ModuleScript source)
+  - No new Instances left in the DataModel (a temporary `TempTestEnterSeat` remote used for verification was removed).
+- **New Dependencies:** None — no new attributes, remotes, collision groups, or DataStore keys. Reuses the existing `VanSeat` group and the player/van attributes from the animated-seat-entry work.
+- **Next Steps / Known Issues:**
+  - Verified in Play mode: entry/exit/switch all show `CollisionGroup = VanSeat` + `Massless = true` during the slide, then `CollisionGroup = Default` + `Massless = true` while seated/standing inside. After teleporting the player out of the van, `Massless` restored to `false` within `0.8s`. `VanControl:FireServer("LeaveSeat")` and `SwitchSeat:FireServer(targetSeat)` both completed with no game-script errors (only unrelated plugin warnings).
+  - **Not visually verified:** whether keeping avatars Massless for the entire time they are in the van changes any other interaction (monster grabs, package pickup, collisions with other players). The keep-out box is intentionally generous; tune the `6.5 / 17 / 16` bounds in `isInsideVan()` if players report walking through van walls or staying ghosted too long. Remember to **Commit Drafts** in Team Create.
+
+### Follow-up same date — remaining van hop during transitions
+- **Focus:** User reported the van still shifted during the brief transition window and jumped noticeably when switching seats.
+- **Root cause:** The welded slide loops were not just translating the character — they also animated a vertical lift and pitch/roll arc into `slideWeld.C0` / `SwitchSlideWeld.C0`. Because the weld is attached to the physics-owned chassis, that arc was transferred straight into the van. Instrumented `[C]` switch showed the chassis lift from `Y=5.76` to `~7.05` with `~5°` tilt and `AssemblyAngularVelocity` spikes up to `1.323`.
+- **Fix:** In `Workspace.DeliveryVan.VanDrive`, all three slide loops (enter, exit, `[C]` switch) now interpolate **position only** with `CFrame.new(lerpedPos) * startC0.Rotation`; the `lift`, `hopSin`, `pitch`, `roll` and `rot` terms were removed. The climb/stand/sit arcs are already replicated to clients through the `VanSwitch*` attributes and remain cosmetic only.
+- **Verification in Play mode:** Rear entry, rear exit, front exit, rear↔rear switch, and driver→cab switch all kept `chassis.Position.Y = 5.76` with peak `AssemblyAngularVelocity <= 0.015` (previous switch peak `1.323`). Walking a post-exit avatar against the cargo wall produced `peakAv = 0.023` and no Y movement. `loadstring(Source)` passes; temporary `TempTestEnterSeat` remote removed again; no new game-script errors.
+
+---
+
+## 2026-11-21 - Riplatki (via Claude)
+- **Focus:** Van still got kicked/spun/flipped if the player moved while getting off the van, switching seats or standing up.
+- **Summary of Changes:**
+  - **Workspace.DeliveryVan.VanDrive:** Root cause: during the welded slide (enter / exit / [C] switch) the character's HRP is welded to the van, so the Humanoid's walk/jump/auto-rotate forces were applied straight to the van assembly. Added `lockOccupantControl(hum, locked)` (`PlatformStand = true` + `AutoRotate = false`, previous AutoRotate kept in the `VanPrevAutoRotate` Humanoid attribute). It is applied right after `setVanOccupantGhost(..., true)` in `animateIntoSeat`, `exitVanSeat` and the `SwitchSeat` handler, and released as soon as the slide weld is destroyed (before `sitInSeat` for entry).
+- **Studio Paths Modified/Created:** `Workspace.DeliveryVan.VanDrive` (modified).
+- **New Dependencies:** Humanoid attribute `VanPrevAutoRotate` (temporary). No new remotes, tags or DataStore keys.
+- **Next Steps / Known Issues:**
+  - `loadstring(Source)` passes. **Not Play-tested** (Studio would not leave Play mode at first; please test by holding WASD/Space while exiting, standing up from the rear bench and pressing [C]). If the van still moves, the next suspect is the moment collisions return after the slide.
+  - Input is ignored for ~0.7-0.8s during each transition. Remember to **Commit Drafts** in Team Create.
