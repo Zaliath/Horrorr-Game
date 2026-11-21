@@ -718,3 +718,18 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode (`Config: First=45 Min=38 Extra=27 | Shift1=[38.06..64.95] | Shift5=[26.11..52.94] | PauseTest: init=45.0 duringChase=45.0 afterChase=40.0`) with zero game script console errors; Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+
+
+---
+
+## 2026-11-20 — Riplatki (via Claude)
+- **Focus:** Van seat-switch bugs: (1) van jumps when switching seats with `[C]`, (2) camera snaps forward when switching to the driver seat.
+- **Changes Made (in live Roblox Studio via MCP):**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified): added a `VanSwitchLookKeep` render step (`Camera.Value + 1`). While the `[C]` slide runs (`VanSwitchActive == true` and `hum.SeatPart == nil`) it stores the camera look direction in chassis space, then re-applies it for `0.4s` after landing. **Camera snap root cause:** Roblox's `VehicleCamera` forces the view to yaw `0` / pitch `-18` whenever the avatar becomes seated in a `VehicleSeat` (`DriverSeat`); `FrontPassengerSeat` is a plain `Seat` so only passenger -> driver snapped. **Verified in Play mode** (yaw kept within about 0.5 degrees at +50 / -70 in both directions, e.g. `-70 -> -70.4`, `50 -> 49.6`).
+  - `Workspace.DeliveryVan.VanDrive` (modified): in the `SwitchSeat` handler, all character parts are put in the `VanSeat` collision group and set `Massless = true` for the duration of the slide, restored `0.2s` after landing. **This did NOT fix the jump** (see below). It is harmless but unproven, so remove it if it turns out to be useless.
+- **Van jump: root cause NOT found yet.** Server-side sampling of `DeliveryVan.PrimaryPart` during a parked switch showed the van lifting about `1.4` studs (peak `vy` roughly `6-8` studs/s, `av` up to about `0.7`) within the first ~0.6s of the slide, in BOTH directions (driver -> passenger and passenger -> driver). The player owns the van's network ownership (`GetNetworkOwner() == player`). The same size of jump happened before and after the collision-group/massless change, so character-limb depenetration and character mass are ruled out. Remaining suspects, not yet tested: (a) `hum.Sit = false` + `sw:Destroy()` at slide start letting the Humanoid state machine apply a jump/getting-up velocity to the welded `HumanoidRootPart` (which moves the whole van assembly), (b) `startDriveSession` / `stopDriveSession` in `VanController` on seat change (`restore()`, motor torque, drive loop velocity writes), (c) network ownership handoff. Suggested next test: while seated, keep the `SeatWeld` alive and slide with `SeatWeld.C0` instead of unseating, or `hum:ChangeState(Enum.HumanoidStateType.Physics)` during the slide, and A/B each against the same sampler.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+- **New Dependencies:** None (reuses existing `VanSeat` collision group and `VanSwitchActive` player attribute).
+- **Next Steps / Known Issues:** Van jump on `[C]` still open (see above). The Studio MCP connection dropped at the end of the session, so confirm both scripts above saved in Studio (the `VanController` edit was applied and tested in Play; the `VanDrive` edit was applied in Edit mode). Remember to **Commit Drafts** in Team Create.
