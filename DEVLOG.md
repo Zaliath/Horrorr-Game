@@ -945,3 +945,20 @@
   - Upgrade levels are NOT saved yet (reset when the server restarts); hook `UpgradeService` into `DataService` / `ProfileStore`. Cash is shared team cash.
   - Not built yet from the Planned list: tracker screen upgrade, window covers, headlights/horn, tires, rear camera/cargo lock, flashlight. `PersonalUpgrades`, `Weapons`, `Stamina`, `Gear` shops still have no UI.
   - Studio was in Play mode partway through (started by another editor); I waited for it to end by itself before editing. Remember to **Commit Drafts** in Team Create.
+
+
+---
+
+## 2026-11-20 - Riplatki (via Claude)
+- **Focus:** Box carrying pose (replaces the box floating in front of the player).
+- **Summary of Changes:**
+  - New client `CarryAnimController`: while a player's `CarryingPackage` attribute is true, both arms swing up and forward and squeeze slightly onto the box sides (R6 shoulder `Motor6D.C0` solved relative to the saved default, with the walk-cycle `Transform` cancelled so the arms stay steady). Eases in and out, runs for every character on every client so other players see it, and is skipped while seated or dead (the van animation owns the limbs there). R15 gets a simple shoulder-only fallback.
+  - `PackageService`: the carried box is now welded hugging the chest, `hrp * CFrame.new(0, 0.15, -(0.65 + box.Size.Z/2))`, instead of floating 2.5 studs out.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.CarryAnimController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `ServerScriptService.Server.Services.PackageService` (modified, pickup weld offset only)
+- **New Dependencies:** None (reads the existing `CarryingPackage` player attribute).
+- **Next Steps / Known Issues:**
+  - Verified in Play mode on an R6 character using a test box and the attribute: arms raised forward and symmetric (hands at `x = +-1.26, z = -1.55` relative to the root, box center at `z = -1.85`), then arms returned to the neutral pose after release. Not seen visually and the real pickup prompt was not exercised because of the issue below. Arms overlap the box sides slightly on the widest boxes; tune `SQUEEZE` / `RAISE` in the controller if it looks off.
+  - **Blocking issue, not mine:** `ServerScriptService.Server.Services.ShopService` currently has literal `\t` characters in its source (parse error at line 23, from someone's in-progress personal-upgrades edit), so the server `Bootstrap` fails and no services start in Play mode until it is fixed. Left untouched to avoid colliding with the other editor.
