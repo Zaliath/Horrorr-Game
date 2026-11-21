@@ -962,3 +962,15 @@
 - **Next Steps / Known Issues:**
   - Verified in Play mode on an R6 character using a test box and the attribute: arms raised forward and symmetric (hands at `x = +-1.26, z = -1.55` relative to the root, box center at `z = -1.85`), then arms returned to the neutral pose after release. Not seen visually and the real pickup prompt was not exercised because of the issue below. Arms overlap the box sides slightly on the widest boxes; tune `SQUEEZE` / `RAISE` in the controller if it looks off.
   - **Blocking issue, not mine:** `ServerScriptService.Server.Services.ShopService` currently has literal `\t` characters in its source (parse error at line 23, from someone's in-progress personal-upgrades edit), so the server `Bootstrap` fails and no services start in Play mode until it is fixed. Left untouched to avoid colliding with the other editor.
+
+---
+
+## 2026-11-20 - Riplatki (via Claude)
+- **Focus:** Fix "game loop won't start / chute won't drop boxes".
+- **Root cause:** `ServerScriptService.Server.Services.ShopService` had 101 literal `\t` text sequences in its source (someone's in-progress personal-upgrades edit was saved with escaped tabs), giving a parse error at line 23. `ServiceList` requires every service, so the whole server `Bootstrap` failed: no `ShiftService`, `ChuteService`, `MapService` etc. started, so no shift and no box drops.
+- **Fix:** Replaced the leading literal `\t` sequences in `ShopService` with real tabs (content otherwise unchanged; it still contains the Health/Speed `UPGRADE_CONFIGS` work in progress). Then compiled all 181 scripts in `ServerScriptService`, `ServerStorage`, `ReplicatedStorage`, `StarterPlayer`, `StarterGui` and `Workspace` with `loadstring`: 0 failures.
+- **Studio Paths Modified:** `ServerScriptService.Server.Services.ShopService` (whitespace fix only).
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:**
+  - Verified in Play mode: no script errors, services running (`leaderstats`, `ProceduralMap`, `ShiftState` remote, `MaxCargoBoxes = 24` set by `ChuteService`). I did not back the van into the chute to watch boxes drop.
+  - Tip for whoever edits scripts through MCP/AI tools: if a script suddenly fails with `Expected identifier ... got '\'`, the source has literal `\t`/`\n` escapes; check with `loadstring(script.Source)`.
