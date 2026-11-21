@@ -824,3 +824,13 @@
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:**
   - Verified with a 10-seed depot placement audit (`20/20` clean single-road depot placements) and live in Play mode (`ShiftGateWall = 2048×48×8 CanCollide=true`, `BackFogBarrier = false` at `Z = -550`, spawns `904` studs behind at `VanZ = -1510`, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+
+---
+
+## 2026-11-20 — Riplatki (via Claude) (Rear door leaf decorations now swing with the rear doors)
+- **Summary of Changes:** Fixed exterior (and interior) decorations on the rear doors staying in place when the rear doors open. `RearDoors.LeafDetailL` and `LeafDetailR` (48 parts each: stencils, hazard chevrons, window bezels/bars, hinge straps, kick plates, handle guards, tape, liners, grab handles) were never assigned an owner in `VanDrive`, so they were welded to the chassis. `VanDrive` now assigns every part in `LeafDetail<side>` to its `RearDoor<side>` root, so the existing `WeldConstraint` pass welds them to the door leaf. No parts are anchored at runtime, all affected parts are non-colliding and massless.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.VanDrive` (modified, "The game part" placeId 93445054108906)
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:** Verified in Play mode (Server): all 96 `LeafDetail` parts welded to their own `RearDoor` root; with `RearDoorL` swung 110 deg about its hinge a detail part moved 5.22 studs in world with 0.0001 max drift relative to the door. Sliding door check: all 41 `SlidingDoor` child parts (incl. the `XD_*` decor) were already welded to `DoorPanel` and moved 7.02 studs with 0.0001 drift, and no `ExtraDetail` part sits on the sliding door's footprint, so I found nothing left behind on the side door; if something still stays put there, tell me which piece. Not visually inspected from a player camera. Deliberately still on the body: `RearHinge*` barrels, tail/reverse lights, `ExtraDetail.Rear` (`RearHeader`, `HighBrake`, `PlateLight` straddle the door gap). Remember to **Commit Drafts** in Team Create.
