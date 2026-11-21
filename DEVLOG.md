@@ -1038,3 +1038,30 @@
   - Verified free ProSoundEffects Audio IDs: `rbxassetid://9112857056` (drizzle), `rbxassetid://9112853286` (heavy storm), `rbxassetid://9114480271` (flashlight click).
 - **Next Steps / Known Issues:**
   - Verified live in Play mode across all scenarios: Factory interior (`VHS CalmTrans=0.915`, `HighGain=-24.0dB`, `ActiveDrops=0`), inside `DeliveryVan` (`[L]` toggles `6/2 -> 0/0 -> 6/2`, `HighGain=-24.0dB`, `ActiveDrops=0`, in-cab `screen_capture` confirming crisp 145-stud lit highway visibility through rain & mist), outdoors on foot (`HighGain=0.0dB`, `ActiveDrops=3`, `[F]` flashlight `Hotspot/Spill/Far/Cone` verified via `screen_capture`), and Chaser Heavy Storm (`VHS ThreatTrans=0.802`, `Rain Rate=280`, `StormVol=0.400`, `OutdoorsLensDrops=13`, flashlight flickering `5.78..6.33`), with zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Flashlight Artifact Removal, 3rd-Person Forward Aim & Upgraded Dual-Ring Optics (`FlashlightController`, `DeliveryVan`):**
+    - Removed the untextured rectangular `VolumetricCone` `Beam` from `FlashlightController` (and untextured `HeadlightCone` `Beam`s from `DeliveryVan.Cab.HeadlightL/R`, keeping all 6 long-throw headlight `SpotLight`s intact) so no translucent flat box ever renders against walls.
+    - Updated `FlashlightController` so in **3rd person** (`camDist >= 2.2`) the flashlight points strictly straight forward in front of the character (`hrp.CFrame.LookVector`) and never chases the mouse/camera, while **1st person** retains smooth spring-lagged camera aiming.
+    - Sharpened the flashlight optics for a punchier, more realistic tactical beam: tight `26°` `9.0`-brightness shadow-casting `HotspotLight`, soft `68°` `1.5`-brightness cool-blue `SpillLight` halo, `30°` `3.2`-brightness `FarSpot` relay, and subtle foreground `BounceLight` (`PointLight`).
+  - **Tighter Horror Fog View Distance (`Lighting`, `MapService`):**
+    - Tightened nocturnal fog (`FogStart = 20`, `FogEnd = 185`, `FogColor = (28, 42, 52)`, `ExposureCompensation = 0.14`, `Brightness = 0.68`, synced in `MapService.applyNocturnalLighting()`, tightening further to `FogEnd = 152` during Chaser heavy storms) so distant trees and houses vanish into thick mist while the road ahead stays readable under the headlights.
+  - **Lighter, Cleaner VHS Static (`AtmosphereCameraController`):**
+    - Backed off VHS overlay opacity for clear driving visibility while preserving the VHS aesthetic (`VHSStaticSnow` `0.955` calm → `~0.875–0.919` threat, `VHSScanlines` `0.968`, `VHSTrackingBar` `0.98 → 0.90`, softer vignette `0.30–0.36`).
+  - **100× Richer Rain Visuals, Louder Outdoor Audio, Clearly Audible Muffled Interior Audio & Slightly Larger Outdoors Droplets (`RainController`):**
+    - Upgraded to **8 depth-layered exterior rain curtains** (`4` close crisp curtains + `4` wider outer sheets strictly outside `DeliveryVan`'s hull, `Drizzle 35..95` → `Storm 180..440`), added wind-blown `StormWindMist` sheets during Chaser storms, and boosted wet-road `SplashDrops` (`55 → 240`).
+    - Upgraded rain audio to **4 official ProSoundEffects loops** (`DrizzleLoop` `9112857056`, `HeavyStormLoop` `9112853286`, `StormWashLoop` `9112856394`, plus dedicated muffled `InteriorMuffledLoop` `9112852671` at `0.58 → 1.05` inside `DeliveryVan` and `0.45 → 0.88` under roofs with `-9.5/-13.5 dB` high-cut & `+4.2/+4.5 dB` low-boost EQ) so muffled rain is unmistakably audible inside the van and Factory during both drizzle and Chaser storms (fixing the previous near-silent shelter mix).
+    - Slightly enlarged the pooled refractive `Glass` lens droplets (`0.044..0.082`, pool of `15`), still strictly outdoors under open sky with zero droplets inside `DeliveryVan` or Factory.
+- **Studio Paths Modified/Created:**
+  - `Lighting` & `Workspace.DeliveryVan.Cab.HeadlightL/R` (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.FlashlightController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.AtmosphereCameraController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** Additional verified free ProSoundEffects Audio IDs: `rbxassetid://9112856394` (storm wash), `rbxassetid://9112852671` (muffled interior rain loop).
+- **Next Steps / Known Issues:** Verified live in Play mode across all scenarios: Factory interior (`Fog = 20..185`, `SnowT = 0.955`, `InteriorMuffledLoop = 0.45` + `DrizzleLoop = 0.28` at `-9.5/-13.5 dB`, `0` droplets), outdoors on foot (`BEAM_BOXES = 0`, 4 upgraded optics active, 3rd-person aim verified `dotHrp = 1.000 / dotCam = 0.001`, `DrizzleLoop = 0.58`, `15` slightly larger droplets `MaxSize = 0.065`), inside `DeliveryVan` calm drizzle (`Headlights = 6/6 ON`, `HeadlightBeams = 0`, `InteriorMuffledLoop = 0.58` + `DrizzleLoop = 0.31`, `0` on-screen droplets, in-cab `screen_capture` confirming crisp road visibility and hidden far trees/houses), and inside `DeliveryVan` during Chaser Heavy Storm (`FogEnd = 152`, `SnowT = 0.919`, `8` curtains `180..440` + `StormWindMist = 32` + `SplashDrops = 240`, `InteriorMuffledLoop = 1.05` + muffled `HeavyStormLoop = 0.57` + `StormWashLoop = 0.35`, `0` on-screen droplets), with zero game script errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`MapService`, `FlashlightController`, `AtmosphereCameraController`, `RainController`).
