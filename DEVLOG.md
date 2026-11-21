@@ -916,3 +916,32 @@
 - **New Dependencies:** Replicated remote `NetDefs.DoorMash`; van attributes `DoorThreatActive/State/Start/Duration/Progress/Open/Angle/MashSeq/YankSeq/VictimUserId/EventSeq` & `VanCoastUntil`; `DoorLowerL` attribute `DoorHingeLocalL`.
 - **Next Steps / Known Issues:**
   - Verified live in Play mode: `NetDefs.DoorMash` & `Remotes.DoorMash` active (`true/true`); forced `"Threat"` opened `DoorLowerL` (`DoorThreatAngle = 40.74°`, `2.715` studs door travel) and 7 `[E]` `RequestMash` inputs repelled (`DoorThreatState = "Repelled"`, `DoorThreatAngle = 0.00°`, `0.000` stud closed error); Client spawned 16-child `DoorRipperActive` in `Workspace.DoorMonsterClientRig` with `PlayerGui.DoorMonsterHUD` (`TouchMashButton`, `ApproachBanner`, `MashBarFrame`); `ForceRip()` flung door to `78.0°`, extracted driver out the left side (`Seat=nil`, `PlayerLocalX=-7.50`, `HP=100.0->65.0`, `Pen=10s`), and kept the driverless van rolling (`FwdSpd=35.93`, `Rolled=18.52` studs with `CoastRem=5.63s`); `Reset()` restored `DoorThreatActive=false`, `DoorThreatAngle=-1.0`, and `0.000` stud closed error. Zero game script errors (`get_console_output`), Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+
+---
+
+## 2026-11-20 — Riplatki (via Claude)
+- **Focus:** Van Upgrades v1: shop GUI + 3 simple upgrades (kept minimal on request).
+- **Summary of Changes:**
+  - Built the `VanUpgrades` garage shop GUI (opens from the existing `ShopService` `OpenShop` remote when ShopId is `VanUpgrades`): dark panel with cash readout, 3 upgrade rows (name, description, level pips, price button, MAXED state), status line, and an X close button (`Modal = true` so the mouse is freed in first person). Auto-closes if the player walks more than 30 studs from `StartArea.VanUpgradeStation`.
+  - New server `UpgradeService`: buys with team cash via `ShiftService:SetCash`, only while the shift phase is `Prep` (between shifts). Levels live in memory for the server session and are mirrored as `Upg<Id>` attributes on `Workspace.DeliveryVan`.
+  - Upgrades (3 levels each): **Engine Tuning** (+8 studs/s top speed per level, costs 200/400/700), **Boost Tank** (boost drains 15% slower per level, 150/300/500), **Cargo Rack** (+4 package capacity per level, 150/300/450). All numbers live in `ReplicatedStorage.Shared.VanUpgrades`.
+  - `VanController` now adds the Engine bonus to `MAX_SPEED` and scales `BOOST_DRAIN` by the Boost Tank multiplier. `ChuteService` now uses `BASE_MAX_BOXES (24) + Cargo Rack bonus` and keeps the van `MaxCargoBoxes` attribute in sync.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.VanUpgrades` (created)
+  - `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `ServerScriptService.Server.Services.UpgradeService` (created)
+  - `ServerScriptService.Server.Core.ServiceList` (modified)
+  - `ServerScriptService.Server.Services.ChuteService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.UpgradeShopController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+- **New Dependencies:**
+  - Remotes (`NetDefs`): `UpgradeAction` (C2S: `"Buy", upgradeId` or `"Refresh"`), `UpgradeState` (S2C: `{ Levels, Cash, CanBuy, Msg }`).
+  - `DeliveryVan` attributes: `UpgEngine`, `UpgBoostTank`, `UpgCargoRack` (level 0-3). Existing `MaxCargoBoxes` is now `24 + 4 * UpgCargoRack`.
+  - Client `ScreenGui`: `PlayerGui.VanUpgradeShop`.
+- **Next Steps / Known Issues:**
+  - Verified in live Play mode: GUI builds and opens near the station, buys deducted cash correctly (`$1000 -> $500` after 3 buys), van attributes updated (`UpgEngine/UpgBoostTank/UpgCargoRack = 1`, `MaxCargoBoxes = 28`), insufficient-cash message shown, auto-close works from 147 studs away. Zero game script errors. Not visually inspected (screen capture is unreliable in Play mode) and the speed/boost effect was not driven in a real drive test.
+  - Upgrade levels are NOT saved yet (reset when the server restarts); hook `UpgradeService` into `DataService` / `ProfileStore`. Cash is shared team cash.
+  - Not built yet from the Planned list: tracker screen upgrade, window covers, headlights/horn, tires, rear camera/cargo lock, flashlight. `PersonalUpgrades`, `Weapons`, `Stamina`, `Gear` shops still have no UI.
+  - Studio was in Play mode partway through (started by another editor); I waited for it to end by itself before editing. Remember to **Commit Drafts** in Team Create.
