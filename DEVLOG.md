@@ -805,3 +805,22 @@
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:** Verified in Play mode across `Shift 1`, `Shift 5`, and `Shift 6`: from `110.00` studs on `Shift 1`, stopped (`0`, `1s`) closed to `22.31` (`-87.69`), `75` studs/s (`5s`) closed to `37.33` (`-72.67`), `84` studs/s (`5s`) closed to `79.00` (`-31.00`), full speed `95` studs/s (`5s`) opened to `144.67` (`+34.67`), and Boost `158` studs/s from `SpawnDistance = 125.00` hit `Evaded` at `196.27` within `2s`. On late shifts, `Shift 5` cornering at `84` studs/s (`5s`) closed to `62.81` (`-47.19`), while holding full speed `95` studs/s still pulled ahead (`Shift 5`: `124.65`, `+14.65`; `Shift 6`: `119.65`, `+9.65`). Zero game script console errors; Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Fixed Sidepath Bypass Around Factory `ShiftGateBarrier` (`MapService` & `ProceduralRoadGraph`):**
+    - Widened `ShiftGateWall` from `180` studs to full map-corridor width (`2048 × 48 × 8` studs, Roblox's max single-part span covering `±1024` studs across all lanes, sidepaths, and forest margins) so neither the van nor players on foot can ever bypass the shift gate before clicking **"Start Next Shift"**.
+    - Added automatic matching sawhorse barricades & traffic cones across any parallel branch road cell intersecting the gate's `Z` plane, and updated `ProceduralRoadGraph:ReserveDepotAhead()` with a clean Pass-1 preference to place relocated Factory Depots on single-road straight stretches with zero parallel sidepaths (`20/20` clean single-road placements across a 10-seed audit).
+  - **Pushed `BackFogBarrier` Further Back & Protected Active Factory Depots (`MapService`):**
+    - Increased `BACK_BARRIER_LAG` from `4` → `8` cells (`~800+` studs behind `maxReachedSpine`) and `BACK_BARRIER_MIN_SPINE` from `2` → `3` (activates after `maxReachedSpine >= 11`) so the dark fog never feels claustrophobic or chases right behind the van's bumper.
+    - Raised `SPINE_BACK` (`5` → `9`), `DESPAWN_SPINE_BACK` (`6` → `11`), `SPAWN_RADIUS` (`850` → `950`), and `DESPAWN_RADIUS` (`950` → `1100`) so reversing all the way back to the fog wall never exposes bare ground or chunk pop-in.
+    - Clamped `BackFogBarrier` behind `currentDepotSpine - 4` while `ShiftGateBarrier` is active so the fog wall never encroaches onto the Factory Depot yard, and snapped `BackFogBarrier` heading cleanly to cardinal road axes.
+- **Studio Paths Modified/Created:**
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `ServerStorage.Modules.ProceduralRoadGraph` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:**
+  - Verified with a 10-seed depot placement audit (`20/20` clean single-road depot placements) and live in Play mode (`ShiftGateWall = 2048×48×8 CanCollide=true`, `BackFogBarrier = false` at `Z = -550`, spawns `904` studs behind at `VanZ = -1510`, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
