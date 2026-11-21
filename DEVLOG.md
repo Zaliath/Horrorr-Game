@@ -1462,3 +1462,246 @@
   - `Workspace.DeliveryVan.Chassis.Chassis.WeldingFXMount` (updated/added `Sound` children — zero parts or welds added)
   - `Workspace.StartArea.VanUpgradeStation.DockingPad.GarageAudio` (updated `GarageChimeSFX` & `PneumaticHissSFX`)
 - **Verification:** Live-verified in Play mode: `6/6` official `ProSoundEffects` audio assets reported `IsLoaded = true` with valid durations (`0.63s..1.44s`), `Legacy9069609200Found = false`; tested live docked `UpgradeAction("Buy", "Engine")` (`ImpactB -> Ratchet`, `Chime = false`) and `UpgradeAction("RepairZone", "Front")` (`ImpactB + Arc -> Ratchet`, `Chime = false`) with **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`UpgradeService`) in Team Create!
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — First-Person Camera/FOV Fix & 7 New Monsters
+- **Focus:** Fixed first-person van driving camera shake / FOV oscillation bug and implemented all 7 remaining monsters with new procedural 3D rigs based on the reference artwork.
+- **Summary of Changes:**
+  - **First-Person Camera Shake & FOV Fix (`VanController`, `AtmosphereCameraController`):** Removed competing `cam.FieldOfView` writes from `VanController`'s `PreSimulation` loop (replaced with `VanBoostFov` attribute + `VanController:GetBoostFovAdd()`), zeroed first-person cab translational jitter (`posX = 0, posY = 0`), slowed suspension sway to gentle low-frequency breathing (`<= 0.08°`), raised crash `deltaV` jolt threshold from `18` to `42` studs/s, and unified Boost + Speed FOV inside `AtmosphereCameraController`'s `RenderStepped` (`Camera - 8` strip / `Camera + 8` apply).
+  - **ShiftService Extensions (`ShiftService`):** Added `ShiftService:AddCash(delta)` and `ShiftService:SkipActiveStop(reason)` for cargo theft penalties and Hitchhiker cash tips.
+  - **7 New Monsters (`ServerStorage.Modules.Monsters.*`, `MonsterService`, Client Controllers, `ControllerList`, `ShiftController`, `FlashlightController`):**
+    1. **Dashboard Gremlin (`GremlinMonster` / `GremlinMonsterController`):** Bat-eared scaly green gremlin on `Cab.Hood` (`GremlinMonster3D`, 30 parts) that cuts headlights and scrambles `TrackerScreen` radar into green static until flung off by hard braking or rapid swerving.
+    2. **Stare Monster / Rearview Phantom (`StareMonster` / `StareMonsterController`):** Pitch-black dripping toothy shadow figure (`StareMonster3D`, 19 parts) creeping down the cargo aisle toward the driver when unobserved; freezes and dissolves over `4.0s` when observed via `RearviewMirror` / cab look (`StareGaze`).
+    3. **Backdoor / Cargo Monster (`CargoMonster` / `CargoMonsterController`):** Bat-winged wrench-wielding gargoyle imp (`CargoMonster3D`, 18 parts) rattling `RearDoors` (`[E]` `CargoDefend` / Horn / Boost counterplay; steals 1–2 boxes, skips active stop, and deducts `$75` on breach).
+    4. **Porch Lurker (`PorchMonster` / `PorchMonsterController`):** Tall gaunt grinning pale doorway lurker (`PorchMonster3D`, 23 parts) arming at delivery `DropoffPad`s; lunge deals `-35` HP + knockback unless driven inside by shining tactical Flashlight (`PorchFlash`).
+    5. **Phantom Semi (`PhantomSemiMonster` / `PhantomSemiController`):** Colossal `Bus` / `Semi` / `Van` shell with crimson windshield and blazing photophores carried on 6 massive pale spider limbs (`PhantomSemi3D`, 24 parts); holding lane + Horn `[H]` / flashing `[L]` vaults it over the van, whereas swerving or colliding stalls the van.
+    6. **The Fogwardens (`FogMonster` / `FogMonsterController`):** Pack of 3 dark/pale Fogwardens + 6 rising grasping hands (`FogMonster3D`, 34 parts) at `BackFogBarrier` with 3 proximity layers pushing on-foot players north (`FogWardenKnockback`) until scattered by Flashlight (`FogFlash`) or Horn `[H]`.
+    7. **The Hitchhiker (`HitchhikerMonster` / `HitchhikerController`):** Rare high-speed road encounter (`Hitchhiker3D`, 6 parts): `"Middle"` mannequin (hitting triggers `ChaseMonster(75)`) or `"Shoulder"` umbrella figure (slowing down boards them for a `+$150` tip at the next completed delivery).
+  - **Cmdr Commands:** Added `gremlinmonster`, `staremonster`, `cargomonster`, `porchmonster`, `phantomsemi`, `fogmonster`, and `hitchhiker` (`spawn | trigger | clear`) under `ServerScriptService.Cmdr.Commands`.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` & `AtmosphereCameraController` (modified: camera shake/FOV fix)
+  - `ReplicatedStorage.Shared.NetDefs` (modified: added `StareGaze`, `CargoDefend`, `PorchFlash`, `HitchhikerInteract`, `FogFlash`)
+  - `ServerScriptService.Server.Services.ShiftService` & `MonsterService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`, `ShiftController`, `FlashlightController` (modified)
+  - `ServerStorage.Modules.Monsters.{GremlinMonster,StareMonster,CargoMonster,PorchMonster,PhantomSemiMonster,FogMonster,HitchhikerMonster}` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{GremlinMonsterController,StareMonsterController,CargoMonsterController,PorchMonsterController,PhantomSemiController,FogMonsterController,HitchhikerController}` (created)
+  - `ServerScriptService.Cmdr.Commands.{gremlinmonster,staremonster,cargomonster,porchmonster,phantomsemi,fogmonster,hitchhiker}` + `*Server` (created)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** C2S remotes `StareGaze`, `CargoDefend`, `PorchFlash`, `HitchhikerInteract`, `FogFlash`; attributes on `DeliveryVan` (`VanBoostFov`, `Gremlin*`, `Stare*`, `CargoThreat*`, `PhantomSemi*`, `Hitchhiker*`), `Workspace` (`PorchThreat*`), and `Player` (`PorchKnockback`, `FogWarden*`).
+- **Verification:** Verified in Studio Play mode: standing FOV steady (`70.000..70.000 spread=0.000`), seated `DriverSeat` `LockFirstPerson` (`FOV=71.343..71.492 spread=0.1490`, `CamPosY spread=0.0244`, `VanBoostFov=0`); all 7 Cmdr commands verified (`GremlinMonster3D=30`, `StareMonster3D=19`, `CargoMonster3D=18`, `PorchMonster3D=23`, `PhantomSemi3D=24`, `FogMonster3D=34`, `Hitchhiker3D=6`, all `gone=true` on clear), with zero game-script errors in `get_console_output`. Studio returned cleanly to `Edit` mode.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Sculpted Saved Monster Assets & Controller Cloning Refactor
+- **Focus:** Replaced runtime procedural part builders across all 8 newly added monsters with high-detail sculpted `Model` assets saved in `ReplicatedStorage.Assets.Monsters` (matching the bone-`Model` + `<BoneName>Pivot` pattern of `Monster2_Window`, `Monster3_DoorRipper`, and `Monster6_Skinwalker` and styled closely after the 9 reference images) and updated all 8 client controllers to clone and animate them.
+- **Summary of Changes:**
+  - **11 Saved Sculpted Monster Models (`ReplicatedStorage.Assets.Monsters`):**
+    - `Monster7_ForestHunter` (8 bones, 108 parts), `Monster4_Gremlin` (7 bones, 81 parts), `Monster3_Stare` (6 bones, 77 parts), `Monster5_Cargo` (6 bones, 68 parts), `Monster9_PorchLurker` (6 bones, 88 parts), `Monster1_FogWardens` (9 bones, 109 parts), `Monster10_PhantomBus` (13 bones, 122 parts), `Monster10_PhantomSemi` (13 bones, 115 parts), `Monster10_PhantomVan` (13 bones, 114 parts), `Monster11_Hitchhiker_Middle` (1 bone, 27 parts), and `Monster11_Hitchhiker_Shoulder` (1 bone, 28 parts).
+  - **Client Controller Cloning Refactor (`StarterPlayer.StarterPlayerScripts.Client.Controllers.*`):**
+    - Refactored `ForestHunterController` (`ForestHunter3D`, `audioAnchor = ChestCore`), `GremlinMonsterController` (`GremlinMonster3D`, `audioAnchor = Ribcage`, animates `Jaw`), `StareMonsterController` (`StareMonster3D`, `audioAnchor = RibCageCore`, `baseTrans` fade preservation), `CargoMonsterController` (`CargoMonster3D`, `audioAnchor = Chest`), `PorchMonsterController` (`PorchMonster3D`, `audioAnchor = RibCage`, `baseTrans` fade preservation on `Retreating`), `PhantomSemiController` (`PhantomSemi3D`, `audioAnchor = HullCore`, variants `Bus`/`Semi`/`Van`), `FogMonsterController` (`FogMonster3D`, `audioAnchor = W2_Core`), and `HitchhikerController` (`Hitchhiker3D`, `audioAnchor = Chest` / `CoatTorso`, reads `RootBone` pivot) to clone from `ReplicatedStorage.Assets.Monsters`.
+  - **Verification:** Play-mode Cmdr sweep across all 8 commands (`forestmonster`, `gremlinmonster`, `staremonster`, `cargomonster`, `porchmonster`, `phantomsemi`, `fogmonster`, `hitchhiker`) via `CmdrFunction:InvokeServer` confirmed every cloned `Workspace.*3D` model spawns with its full saved `BasePart` count (`ForestHunter3D=108`, `GremlinMonster3D=81`, `StareMonster3D=77`, `CargoMonster3D=68`, `PorchMonster3D=88`, `PhantomSemi3D[Van]=114`, `FogMonster3D=109`, `Hitchhiker3D[Shoulder]=28`, `Hitchhiker3D[Middle]=27`), triggers cleanly, and cleans up (`cleared=true`) with zero game-script runtime errors in `get_console_output`. Studio stopped back to `Edit` mode.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Assets.Monsters.{Monster7_ForestHunter,Monster4_Gremlin,Monster3_Stare,Monster5_Cargo,Monster9_PorchLurker,Monster1_FogWardens,Monster10_PhantomBus,Monster10_PhantomSemi,Monster10_PhantomVan,Monster11_Hitchhiker_Middle,Monster11_Hitchhiker_Shoulder}` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{ForestHunterController,GremlinMonsterController,StareMonsterController,CargoMonsterController,PorchMonsterController,PhantomSemiController,FogMonsterController,HitchhikerController}` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Detail & Remodel Pass: FogWardens, Phantoms, Cargo, Porch Lurker
+- **Focus:** Upgraded sculpted detail on `Monster1_FogWardens`, fully remodeled all 3 phantom variants (`Monster10_PhantomBus`, `Monster10_PhantomSemi`, `Monster10_PhantomVan`), slightly remodeled/detailed `Monster5_Cargo` and `Monster9_PorchLurker`, and aligned `PhantomSemiController`'s spider-limb kinematics.
+- **Summary of Changes:**
+  - **`Monster1_FogWardens` (`9` bones, `290` parts):** Added 14-lock billowing black hair crown, hollow skull face & jagged mouth slits, striated pectorals/ribs/tar drips, barbed-wire sash with protruding barbs on Warden 1; smoky crown, etched ribs, dual-layered tattered shroud & floating grinning shadow-maw shard on Warden 2; bulbous pale-ivory faceless cranium tapering to a sharp point with skull root veins, exposed spine vertebrae/10 ribs, dense gnarled twigs, and double-jointed clawed arms on Warden 3; plus articulated 5-fingered pale hands (`Hand1`..`Hand6`).
+  - **All 3 Phantoms (`13` bones each: `Bus` `252` parts, `Semi` `232` parts, `Van` `220` parts):** Rebuilt all 6 spider-humanoid limbs (`Leg_L1..3_U/L`, `Leg_R1..3_U/L`) in arched road stance with muscle ridges, rot veins, knobby elbows/wrists, palms, and 5 segmented crooked fingers; added torn underbelly chassis frames with 24+ hanging roots/cables/tendrils; and sculpted unique high-detail exteriors (Bus: `ROUTE` header, roof AC + hatches, 5 amber markers, split crimson windshield + wipers, wing mirrors, corrugated grill, tow shackles, 5 side windows per side; Semi: slatted vertical radiator, bull-bar bumper, dual chrome/rusted smokestacks, sleeper portholes, fuel tanks, air horns, visor + big-rig mirrors; Van: sloped hood, roof rack + strobe bar, body ribs, ajar double rear doors). Updated `PhantomSemiController:stepSemi` (`liftY = 11.5`, `splay = 48°`, `lowerAngle = splay * 1.32`, radial `yawSpread`, per-variant `shoulderX` & `legZOffsets`).
+  - **`Monster5_Cargo` (`6` bones, `113` parts):** Slight remodel with bat-eared gargoyle snout & fangs, dorsal spikes, folded swept-back leathery bat wings with apex claw & finger struts, S-curved barbed imp tail, detailed rusted open-end/box-end mechanic's wrench in `ArmR`, and true digitigrade hock legs with 3 clawed toes.
+  - **`Monster9_PorchLurker` (`6` bones, `107` parts):** Refined doorway horror anatomy with elongated cranium, bruised orbital rings around dark eyes + glints, narrow nose, upturned crescent grin with gums + 16 individual upper/lower teeth, draped parted jet-black hair locks, clavicles/neck tendons/ribs, forearm tendons, and 5-fingered hands.
+  - **Verification:** Play-mode Cmdr sweep (`fogmonster`, `phantomsemi`, `cargomonster`, `porchmonster`) confirmed `FogMonster3D` (`290`), `PhantomSemi3D[Semi]` (`232`), `CargoMonster3D` (`113`), and `PorchMonster3D` (`107`) all spawned with exact part counts, triggered, and cleaned up (`cleared=true`), with zero game-script errors in `get_console_output`. Studio stopped cleanly to `Edit` mode.
+- **Studio Paths Modified:**
+  - `ReplicatedStorage.Assets.Monsters.{Monster1_FogWardens,Monster10_PhantomBus,Monster10_PhantomSemi,Monster10_PhantomVan,Monster5_Cargo,Monster9_PorchLurker}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PhantomSemiController`
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Detail Pass: Stare Monster & Hitchhiker Shoulder
+- **Focus:** Upgraded sculpted detail on `Monster3_Stare` and `Monster11_Hitchhiker_Shoulder` in `ReplicatedStorage.Assets.Monsters`.
+- **Summary of Changes:**
+  - **`Monster3_Stare` (`6` bones, `122` parts):** Upgraded with wispy rising ink crown spikes & floating ink splatter droplets, hollow glowing-white oval eyes with pitch-black pinpoint pupils, streaking pale tear tracks (`TearMain` / `TearDrop`) down both cheeks, 16 uneven teeth forming an upturned crescent grin with chin drips, 10 protruding rib contours + sternum + vertebrae + `StareShadowMist` `ParticleEmitter` on `RibCageCore`, shoulder shadow wisps, dripping tar tendrils down the arms/torso, 5-fingered shadow claws, and melting ink-puddle feet with ankle wisps.
+  - **`Monster11_Hitchhiker_Shoulder` (`1` bone `RootBone`, `101` parts):** Upgraded with layered trench coat (`CoatTorso`, storm cape, wide collar, lapels, epaulets, 6 tarnished brass buttons, cinched waist belt + buckle, lower skirt panels), deep overshadowed multi-panel hood concealing a dark face void with faint pale chin & damp hair wisps, detailed weathered leather suitcase with brass clasps & reinforced corners in the left hand, classic 8-ribbed domed octagonal black umbrella with J-hook wooden handle, steel ribs, brass tips & ferrule tip in the right hand, plus muddy rubber rain boots.
+  - **Verification:** Play-mode Cmdr sweep (`staremonster` and `hitchhiker spawn shoulder`) confirmed `StareMonster3D` (`122` parts) and `Hitchhiker3D` (`Shoulder`, `101` parts) spawned accurately, triggered/cleared cleanly (`cleared=true`), and produced zero game-script errors in `get_console_output`. Studio returned to `Edit` mode.
+- **Studio Paths Modified:**
+  - `ReplicatedStorage.Assets.Monsters.{Monster3_Stare,Monster11_Hitchhiker_Shoulder}`
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Phantom Procedural Spider-IK & Tripod Gait Animation
+- **Focus:** Upgraded `PhantomSemiController` (`Monster10_PhantomBus`, `Monster10_PhantomSemi`, `Monster10_PhantomVan`) to a Chaser-style procedural animation system with analytical 2-bone spider IK, world-space alternating tripod gait, hull suspension springs, and pooled debris bursts.
+- **Summary of Changes:**
+  - **2-Bone Analytical Spider IK (`PhantomSemiController:solvePhantomLegIK`):** Replaced fixed sinusoidal angles with world-space 2-bone law-of-cosines IK (`LEG_L1 = 9.2`, `LEG_L2 = 15.6`) aligned to the saved `Leg_*_U` (`+Y`) and `Leg_*_L` (`-Y`) bone pivots with upward/outward elbow splay and forward-fanned hand frames.
+  - **World-Space Alternating Tripod Gait & Ground Raycasting (`sampleGroundY`):** Plants all 6 hands onto raycasted asphalt/terrain (`{L1,R2,L3}` vs `{R1,L2,R3}` alternating tripod groups), computing real-time velocity lead, triggering parabolic step arcs when planted feet lag `> 7.5` studs (with `> 15.0` emergency catch-up), playing throttled spatial footstep thuds (`action_jump_land.mp3`), and spawning `BulkMoveTo` asphalt/dirt debris (`MAX_DEBRIS = 36`, cleaned in `destroyRig()`).
+  - **Hull Suspension Springs & State Choreography:** Added damped spring physics (`hullBob`, `hullPitch`, `hullRoll`), a distance-based crouch-to-gallop reveal (`liftY = 8.4 -> 11.8`, `splayX = 11.4 -> 15.2`), multi-phase `Leaping` choreography (crouch coiling `u < 0.18` -> aerial vault `+28` studs with splayed reaching limbs `0.18..0.86` -> landing brace + debris blast `>= 0.86`), and crash pitch recoil on `Impact`.
+  - **Verification:** Play-mode `CmdrFunction:InvokeServer` test (`phantomsemi spawn` -> `0.85s` gait check -> `trigger` -> `clear`) rolled `Bus` (`252` parts, exact match), recorded `ProceduralStepCount = 30` with `99.82` studs of smooth world foot travel, `hullStartY = 8.01 -> leapY = 25.79`, all `252` parts finite (`finite = true`), zero leftover debris/models after `clear`, and zero game-script errors in `get_console_output`. Studio returned to `Edit` mode.
+- **Studio Paths Modified:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PhantomSemiController`
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Arachnid Gait & IK Refinement on Phantoms
+- **Focus:** Fixed mechanical/bouncy visual artifacts in `PhantomSemiController` so all 3 Phantoms move with lifelike arachnid/insectoid locomotion.
+- **Summary of Changes:**
+  - **Smooth Dead-Reckoning & Ground Filtering (`PhantomSemiController`):** Sampled velocity only on replicated `PhantomSemiPos` changes and dead-reckoned `renderPos` per frame (`Lerp` gain `10`) with a downward ground raycast (`refY + 5.5` down `18` studs) + smoothed `smoothGroundY`, eliminating 20 Hz jitter and overhead prop raycast spikes.
+  - **Synchronized Metachronal Tripod Gait & Clamped Reach:** Separated neutral stance (`getNeutralFootPos`, `splayX = 10.6..12.0`, `zFlares = ±2.2`) from clamped landing lead (`leadDist <= 7.6`, max shoulder reach `<= 16.5` studs) with synchronized 3+3 tripod triggers (`stepThresh = 7.2`, emergency `11.5`), `(legIdx - 1) * 0.015s` front-to-back wave delay, `smoothstep` horizontal sweep, and steep `sin^0.72` liftoff/stab arcs — eliminating `maxDist` bone over-extension.
+  - **Coplanar Upper Knee + Yaw-Locked Lower Hand (`solvePhantomLegIK`):** Aligned `upperCF` to each leg's radial plane so elbows stay arched high above `HullCore`, while locking `lowerCF` to steady `handFwd` so planted fingers never spin sideways on the asphalt as the body passes overhead. Switched chassis springs to critically damped heavy suspension (`stiffness = 140, damping = 24`, clamped `±0.9` studs).
+  - **Verification:** Play-mode instrumentation (`phantomsemi spawn` -> `0.85s` gait check -> `trigger` -> `clear` via `CmdrFunction:InvokeServer`) rolled `Van` (`220` parts, exact match), recording `steps = 30`, `finite = true`, `maxHullSpeed = 105.57` studs/s, `elbowDeltaY = +6.20..+7.54` studs above `HullCore`, `wristStuck = 5` / `wristSwing = 9` confirming immobile road stance holds, `hullY = 11.41 -> 15.23` on leap, `cleared = true`, `debris = 0`, and zero game-script errors in `get_console_output`. Studio returned to `Edit` mode.
+- **Studio Paths Modified:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PhantomSemiController`
+- **Repository Files Modified:** `DEVLOG.md`.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Phantom Spawn Buff & Smart Ambient AI Traffic
+- **Focus:** Increased Phantom Semi spawn rate and added realistic ambient AI road cars (`TrafficSedan` + `TrafficService`) so oncoming headlights in the fog create genuine uncertainty alongside Phantoms.
+- **Summary of Changes:**
+  - **Phantom Spawn Frequency (`ServerStorage.Modules.Monsters.PhantomSemiMonster`):** Lowered `FirstDelayMin`/`Extra` from `62`/`35` to `24`/`16` (`24–40s`), `CooldownMin`/`Extra` from `65`/`35` to `36`/`22` (`36–58s`), and `MinDriveSpeed` from `32` to `24` studs/s.
+  - **`ReplicatedStorage.Assets.Vehicles.TrafficSedan` (`115` parts, `8.08 × 5.41 × 17.51` studs):** Modeled working retro boxy sedan after `Prop_CarWreck_Rusted` proportions with closed hood, 6-slat recessed grille, quad round headlights + twin long-throw `SpotLight`s (`Brightness = 7.5`, `Range = 135`, `Angle = 44`), intact dark glass, driver silhouette, red `BrakeLight`s, white `ReverseLight`s, tintable `PaintPart`s (5 muted colors), and 4 rolling/steering wheel sub-models (`WheelFL`/`FR`/`RL`/`RR`).
+  - **`TrafficService` + `ServiceList` + Cmdr `traffic` (`spawn | status | clear`):** Streams max `2` ambient sedans (`Workspace.AmbientTraffic`, `Persistent` streaming, `DESPAWN_DIST = 720`) every `18–32s` while driving (paused when `PhantomSemiActive == true`). Follows `ProceduralRoadGraph` curves via Bezier splines in the right lane (`+11.5` studs), smoothly passes around partial obstructions (`Passing`), brakes/stops and honks if `DeliveryVan` blocks the entire road (`Waiting`), and shifts into `Reversing` (`-20` studs/s, `ReverseLight`s ON) after `3.4s` to take alternate intersection exits or perform a `1.15s` turnaround (`UTurn`). Fixed an initial Play-test issue where `DESPAWN_DIST = 540` was shorter than warehouse distance to `cell 0,3` (`~550` studs).
+  - **Verification:** Play-mode Cmdr test (`traffic spawn` -> `traffic status` -> `traffic clear`) spawned `TrafficSedan_2` on `cell 0,2 (oncoming)` with `115` parts and `2` enabled `SpotLight` beams (`state=Driving, spd=50`), drove `24.18` studs in `0.45s`, cleaned up (`remaining=0`), verified `PhantomSemiMonster.Config` (`FirstDelay=24..40, Cooldown=36..58, MinDriveSpeed=24`), and logged zero game-script errors in `get_console_output`. Studio returned to `Edit` mode.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.Monsters.PhantomSemiMonster` (modified)
+  - `ReplicatedStorage.Assets.Vehicles.TrafficSedan` (created)
+  - `ServerScriptService.Server.Services.TrafficService` (created) & `ServerScriptService.Server.Core.ServiceList` (modified)
+  - `ServerScriptService.Cmdr.Commands.traffic` & `trafficServer` (created)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Custom R6 Walk/Run Animations & 0.1s Sprint Loop Fix (`The game part` v201, v203)
+- **Summary of Changes:**
+  - Replaced R6 locomotion animations across `StarterPlayer.StarterCharacterScripts.Animate`, `Workspace.Rig.Animate`, `Workspace.MonsterModels.Rig.Animate`, and `ReplicatedStorage.Assets.Animations.Animations`: set Run (`RunAnim`) to `rbxassetid://114255023516337` and Walk (`WalkAnim`) to `rbxassetid://108167055712897`.
+  - Updated `onRunning(speed)` to transition smoothly between `run` (sprinting / `> 18.5` studs/s) and `walk` with velocity-scaled playback speed, bypassed `SprintController` `stepR6Locomotion` so native `Animator:LoadAnimation` drives replication directly, and archived the old procedural keyframe sequences to `ServerStorage.R6_AnimationRig.AnimSaves`.
+  - **Fixed `0.1s` Sprint Snap-Back Bug (v203):** Replaced the hardcoded `playAnimation("walk", ...)` inside legacy `Animate`'s `0.1s` `move(time)` loop (`pose == "Running"`) so it continuously checks `player:GetAttribute("IsSprinting") == true` or `currentSpeed > 18.5` (scaling `run` by `currentSpeed / 24.8` and `walk` by `currentSpeed / 16.0`), connected a real-time `player:GetAttributeChangedSignal("IsSprinting")` listener, and wrapped `currentAnimTrack:AdjustSpeed` with nil checks.
+- **Studio Paths Modified:**
+  - `StarterPlayer.StarterCharacterScripts.Animate` (modified)
+  - `Workspace.Rig.Animate`, `Workspace.MonsterModels.Rig.Animate` (modified)
+  - `ReplicatedStorage.Assets.Animations.Animations` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.SprintController` (modified)
+  - `ServerStorage.R6_AnimationRig.AnimSaves` (archived old sequences)
+- **Verification:** Playtest confirmed `char.Animate.walk.WalkAnim` = `rbxassetid://108167055712897` and `char.Animate.run.RunAnim` = `rbxassetid://114255023516337` load and transition cleanly on sprint with zero console errors; saved **`The game part`** versions **201** and **203**.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Van Upgrade Station 2D Terminal-Green CRT Overhaul (`The game part` v211)
+- **Summary of Changes:**
+  - **Fixed Blank 3D CRT Monitor (`Workspace.StartArea.VanUpgradeStation.TerminalConsole`):** Diagnosed `ScreenPart.LookVector` pointing back into the CRT housing (`+X`); replaced `GarageScreenGui` with decorative `StandbyScreenGui` (`Face = Enum.NormalId.Back`, `// GARAGE DIAGNOSTICS READY — PRESS [E]`), removed `ClickDetector`/`ProximityPrompt` children from static prop buttons (`ButtonPrev`, `ButtonBuy`, `ButtonNext`), and added a single `ShopPrompt` (`ActionText = "Open Garage Terminal"`, `ObjectText = "Van Upgrade Station"`, `ShopId = "VanUpgrades"`, tag `"ShopPrompt"`).
+  - **2D Phosphor Terminal-Green CRT UI (`StarterPlayer.StarterPlayerScripts.Client.Controllers.UpgradeShopController`):** Rebuilt `VanUpgradesGui` matching `UITheme` and `PersonalUpgradeController` (`0px` sharp corners, mitered stroke, `RobotoMono`, `BgDeep`, `BgRow`, `BgTrack`, non-interactive `ScanlineOverlay` with looping `SweepBar` phosphor sweep gradient, live `>> TEAM CASH`, docking/phase banners, all 4 rows `Engine`/`Lights`/`Armor`/`Cargo` with stat preview deltas & `LV. X/3` pips, `BUY`/`LOCKED`/`MAXED`, `DONE`, `Escape` close) while preserving real-time `DeliveryVan.UpgradeAttachments` updates and attribute syncing (`VanDocked`, `UpgEngine`, `UpgLights`, `UpgArmor`, `UpgCargo`).
+  - **Server Docking & Feedback (`ServerScriptService.Server.Services.UpgradeService`):** Removed `hookPhysicalButtons()` while preserving server-authoritative `DockingZone` checks, runway LEDs, welding/pneumatic SFX, team notifications, and `UpgradeAction` remote (`InPrep` and `Success` fields in `UpgradeState`). *(Note: garage audio assets in `UpgradeService` were later upgraded to official `ProSoundEffects` clips in a follow-up teammate pass.)*
+- **Studio Paths Modified:**
+  - `Workspace.StartArea.VanUpgradeStation.TerminalConsole` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.UpgradeShopController` (modified)
+  - `ServerScriptService.Server.Services.UpgradeService` (modified)
+- **Verification:** Verified `StandbyScreenGui` orientation in Edit mode; in Playtest verified `ShopPrompt` (`ShopId = "VanUpgrades"`), `ShopService:OpenShop(player, "VanUpgrades")` opening `VanUpgradesGui`, visual screenshot layout, and zero errors in `UpgradeShopController`/`UpgradeService`; saved **`The game part`** **Version 211**.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Delivery Van Damage, Ramming Destruction, Tiered Repair Bay & 6-Ch CCTV (`The game part` v224)
+- **Summary of Changes:**
+  - **Persistent 6-Zone Van Damage & Visuals (`ReplicatedStorage.Shared.VanDamage`, `VanDamageService`, `VanController`, `VanDrive`):**
+    - Tracks 6 persistent zones (`Front`, `Body`, `Headlights`, `Windshield`, `WindowL`, `WindowR`) + `VanHealth` (`StageCosts` for `LV.1` Minor / `LV.2` Moderate / `LV.3` Severe/Shattered).
+    - Drives deformable `FrontBumperJoint`/`HoodJoint` welds, `Cab.Hood.RadiatorSmokeMount.RadiatorSmoke`, `DamageVisuals` dent plates, 3-stage `WindshieldCrackGui` (`12` spiderweb lines), `HeadlightR` blowout & `DmgHeadlights` (`35–84`) flicker when `HeadlightsOn == true`, and persistent shattered cab windows (removed 6s auto-heal and shift-reset glass healing; `WindowMonsterController` adds jagged shards, fog wisps, speed-scaled wind SFX, and `4.2s` broken-window breach).
+    - Client collision detection splits bumper `"Ram"` (`flatSpeed >= 22`, `0.75s` per-part cooldown) from solid `"Crash"` (`deltaVel >= 20`, `prevFlatSpeed >= 24`, `0.45s` cooldown); server `VanDamageService` ignores `< 20` studs/s, enforces `0.95s` damage tick cooldown, deals `0` van self-damage on light props `< 34` studs/s, reduces heavier damage via Armor level, launches props on `"RammedDebris"`, shoves `CarWreck`, and calls `TrafficService:WreckCar`.
+  - **Collidable Breakables + Speed-Based Bending Lamps & Trees (`ChunkBuilder`, `MapService`, `VanDamageService`):**
+    - Cleared `NON_COLLIDING_KITS` (only `Infra_PowerWire_20m`, `Prop_DeadGrass_Cluster`, `Prop_BrambleBush_Dead` remain non-colliding), set `StartAreaForest` `CanQuery = true`, and updated `ChunkBuilder.ReleaseChunk`/`acquireAsset` to discard destroyed parts and reset pooled/bent props.
+    - Streetlamps & utility poles bend away from impact (`10°–42°`, cap `48°`) and snap off (`RammedDestroyed`, unanchored, lights off) at `>= 52 - armorLv * 5` studs/s or `>= 44°` cumulative bend; trees (excluding stumps) bend slightly (`2.5°–9.5°`, max `12°`) while remaining anchored.
+  - **Tiered 3-Stage Repair Bay (`VanUpgradesGui` — `UpgradeShopController`, `UpgradeService`):**
+    - Added **`UPGRADES`** and **`REPAIR BAY`** tabs with damaged count badge, live `HULL INTEGRITY` bar, 3 status pips per component, step repair (`FIX -1` via `RepairZoneStep`, restoring `LV.3` shattered glass down to `LV.2` cracked `WindowCrackR/L = 2`), per-section `ALL`/`REPAIR` (`RepairZone`), and `REPAIR ALL (-10%)`.
+  - **In-Cab 6-Channel CCTV (`VanCamController`, `StareMonsterController`, `StareMonster`):**
+    - Mounted `Cam1_Rear`, `Cam2_Cargo`, and `Cam4_Side` props; wired clickable `CamMonitor` + `CamBtn1`–`CamBtn5` + `[G]` across `CH1`–`CH5` and `CH0` 5-tile grid; looking at `CamMonitor` on Stare-visible channels (`CH1`, `CH3`, `CH0`) counts as Stare gaze lock. Fixed `hookedVan` replication race on `CamMonitor.SurfaceGui.Screen.LiveFeedContainer.LiveViewport`, shifted `CAM 01` forward (`0, 6.1, -2.5`), filtered per-frame cloning sync to dynamic/damageable parts, and enforced `>= 0.10s` spacing on `StareGaze` flips.
+  - **Removed Security Shutters & Fixed DriverSeat / Window Cover Playtest Bugs (`VanDrive`, `VanController`, `NetDefs`, `WindowMonster`, `WindowMonsterController`):**
+    - Removed `Cab.SecurityShutterL/R`, `VanShutterToggle`, and all shutter joints/attributes/prompts.
+    - Fixed `DriverSeat` "can't drive" glitch (`chassis:SetNetworkOwner(driverPlayer)` + `0.12s`/`0.35s` re-asserts, zero server wheel brake `MotorMaxTorque`, destroy slide welds + clear `PlatformStand` + 1 `Heartbeat` before `seat:Sit(hum)` with `0.30s` retry loop; client `WASD`/Arrow blend & `VanSwitchActive` re-check).
+    - Restricted `[Z]`/`[X]` covers & threat-only banner strictly to `FrontPassengerSeat`.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.VanDamage` (created), `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `ServerScriptService.Server.Services.{VanDamageService,TrafficService,UpgradeService,MapService}` (modified/created)
+  - `ServerStorage.Modules.{ChunkBuilder,Monsters.WindowMonster,Monsters.StareMonster}` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{VanController,VanCamController,UpgradeShopController,StareMonsterController,WindowMonsterController}` (modified/created)
+  - `Workspace.DeliveryVan` / `VanDrive` (modified: deformable joints, cameras, shutters removed, DriverSeat network fix)
+- **Verification:** Play Solo verified `22/22` streetlamps, `8/8` utility poles, `30/30` guardrails, `21/21` posts/signs/barrels, `1826/1826` trees solid (`0/467` grass); guardrail launched at `25`, lamp bent `22.0°` at `32` & snapped at `60`, tree bent `7.3°` at `70`; `DriverSeat` ownership/driving verified; `FrontPassengerSeat`-only window cover hint & controls verified; `RepairZoneStep`, `RepairZone`, and `RepairAll` verified; zero console or `AntiExploit` errors; saved **`The game part`** **Version 224**.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Gated Van Prompts, `[C]` Switch Prompt, Unanchored Cargo, `[G]` Drop & 4s Grace (`The game part` v226, v227)
+- **Summary of Changes:**
+  - **Gated Van Prompts & `[C] Switch seat` (`VanDrive`, `PromptUIController`, `DeliveryVan.CabDetail.CamMonitorRig.CamBtn1`):**
+    - Replicated door states (`FrontDoorOpenL`, `FrontDoorOpenR`, `SlideDoorOpen`, `RearDoorsOpen`), tightened interior bounds (`|X| <= 4.15`), server-gated cab & rear `SeatPrompt`s, removed duplicate `CamBtn1.ProximityPrompt`, tagged `CycleCamPrompt` as `CabInterior`, hid `DriverControl`/`WindowSwitch`/`CabInterior`/`CabSeat`/`RearSeat`/in-van `PickupBoxPrompt` unless inside or matching door is open, and added dynamic `[C] Switch seat` override when seated looking at another seat (`DeliveryVan.SwitchSeat`).
+  - **Unanchored Physics Cargo, Chute Clog Removal & Anti-Tunneling (`ChuteService`, `PackageService`, `ShiftController`, `VanDrive`):**
+    - Removed the 3-second floor weld that jammed the chute at 8–9 boxes; added `"CargoBox"` collision group (`Density = 0.01`, `Friction = 0.55`, `Elasticity = 0.02`, up to 23 loaded) and `syncUnanchoredBoxes` (`0.25s` tracking marking tumbled-out boxes `DroppedBox = true`).
+    - Eliminated van physics jitter and random box phasing by matching `InVan` box network ownership to the current `DriverSeat` occupant (resetting to auto when dropped) and running a lockstep `Heartbeat` door-aware containment pass (keeps `InVan` boxes inside closed walls/doors while leaving open `RearDoors`/`SlideDoor` unobstructed).
+  - **`[G]` Drop Package Anywhere (`PackageService:ReturnOrDropCarried`, `ShiftController`):**
+    - Removed the 20-stud van teleport so `[G]` (plus clickable bottom-center `[G] DROP PACKAGE` HUD button) drops carried boxes 4 studs ahead (`DroppedBox = true`) outdoors, or inside (`InVan = true`) when inside the cargo bay.
+  - **4-Second Open Door / Window Monster Grace (`WindowMonster`, `WindowMonsterController`, `CargoMonster`, `DoorMonster`):**
+    - Added `WindowThreatOpenGrace` (`WindowThreatDuration = 4.0`, skips banging/cracking glass), `CargoThreatOpenGrace`, and `DoorThreatOpenGrace`: leaves a 4-second counter/close window before attacking/breaching immediately at `4.0s`.
+- **Studio Paths Modified:**
+  - `Workspace.DeliveryVan.VanDrive` & `DeliveryVan.CabDetail.CamMonitorRig.CamBtn1` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{PromptUIController,ShiftController,WindowMonsterController}` (modified)
+  - `ServerScriptService.Server.Services.{ChuteService,PackageService}` (modified)
+  - `ServerStorage.Modules.Monsters.{WindowMonster,CargoMonster,DoorMonster}` (modified)
+- **Verification:** Play Solo verified `[E] Open door` / `[F] Drive` gating, `[C] Switch seat` override, `23` unanchored boxes loaded cleanly, `14/14` matched driver network owner with `0/14` falling out during 38 studs/s turns, `[G]` outdoors drop (`DroppedBox = true`), and 4-second open-door/window grace behavior with zero console errors; saved **`The game part`** versions **226** and **227**.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — P.A.R.A.L.L.A.X. Terminal Death Screen, Persistent Revives & Death-in-Van Fixes (`The game part` v229, v234, v235)
+- **Summary of Changes:**
+  - **DOORS-Inspired CRT Death Screen (`DeathService`, `DeathScreenController`, `NetDefs`, `ServiceList`, `ControllerList`, 6 Monster Modules):**
+    - Disabled `Players.CharacterAutoLoads = false`, added `DeathReport` & `ReviveRequest` (`NetDefs`), tagged lethal kills across `WindowMonster`, `ChaseMonster`, `DoorMonster`, `ForestHunter`, `StareMonster`, and `PorchMonster`, and tracked monster repels/evasions via `MonsterService` / `DeliveryVan` attributes.
+    - **~5-Second Biometric Signal-Loss Intro (`Phase0Intro`):** Original oscilloscope sequence replacing skull art — fades CRT (`0.45s`), unfolds box (`0.42s`), animates 10 ECG frames slowing `84 -> 02 -> 00 BPM // FLATLINE` (`2.63s`), expands crimson flatline bar, and folds shut (`0.45s`).
+    - **`Phase1Terminal` & Turbo-Typing:** Horizontal (`0.22s`) + vertical (`0.38s`) PowerShell unfold typing cause of death + spaced blank lines + monster-specific Survival Protocol tip; clicking or pressing `[Space]`/`[Enter]` engages turbo typing (`3` chars/frame) rather than snapping instantly.
+    - **Cascaded 4-Tab Overview (`Phase2Overview`):** Unfolds top-left to bottom-right (`0.14s` stagger): `[TAB 01] // SHIFT_METRICS.LOG` (ASCII parcel), `[TAB 02] // VAN_TELEMETRY.SYS` (ASCII van + upgrades/hull), `[TAB 03] // THREAT_DOSSIER.DAT` (entity ASCII art), `[TAB 04] // RECOVERY_OPS.EXE` (flatline ECG, **`REVIVE AT VAN`**, **`MAIN MENU`**, **`RESTART FROM ZERO [X/N]`**).
+  - **Persistent Revives, Developer Free Revives, `addrevives`, Main Menu & Restart Vote (`DataService`, `DeathService`, `ShiftService:ResetEverythingToZero`, `Cmdr`):**
+    - Added `Revives = 3` to `ACCOUNT_TEMPLATE` (`ProfileStore` `Clockwork_Acc_v1`, `Account_<userId>`), stored `accountProfiles`, exposed `GetRevives`/`SetRevives`/`AddRevives`, and replicated `StoredRevives`.
+    - Developers (`Config.Cmdr.Admins`, `game.CreatorId`, `UserId <= 0`) revive free (`REVIVE AT VAN [DEV FREE | X]`); regular players spend 1 stored revive (blocked at `0`), with `AntiExploitService:NotifyTeleport` beside `DeliveryVan`. Added Cmdr `addrevives <amount> [players]` (`giverevives`, `revives`).
+    - Wired `MAIN MENU` teleport (`TeleportService:TeleportAsync(124598324996118, { player })`) and unanimous all-player `RESTART FROM ZERO` calling `ShiftService:ResetEverythingToZero`.
+  - **Fixed Mid-Entry Floating Crouch Pose & Broken Van Seats on Death (`VanDrive`, `VanController`, `VanAnimController`):**
+    - Added `VanDrive.cleanupPlayerVanState` on `Humanoid.Died`, `CharacterRemoving`, and `CharacterAdded` (destroys lingering slide/seat welds, restores seats/collisions/`Massless`, clears seat/switch attributes, treats `Health <= 0` occupants empty), added per-character `charConns` + stale-character guards in `VanController`, and gated seated poses in `VanAnimController`.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `ServerScriptService.Server.Services.{DeathService,DataService,ShiftService,MonsterService}` & `ServiceList` (created/modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DeathScreenController,VanController,VanAnimController}` & `ControllerList` (created/modified)
+  - `ServerStorage.Modules.Monsters.{WindowMonster,ChaseMonster,DoorMonster,ForestHunter,StareMonster,PorchMonster}` (modified)
+  - `ServerScriptService.Cmdr.Commands.{addrevives,addrevivesServer}` (created)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+- **Verification:** Play Solo verified `Phase0Intro` -> `Phase1Terminal` (`p1OpenDur = 0.62s`) -> cascaded 4-tab `Phase2Overview`, `addrevives` persistence (`3 -> 11 -> 3`), `VoteRestart` full reset (`Cash = 0, UpgEngine = 0, DmgFront = 0`), and dying in `DriverSeat` -> revive -> re-sitting in `LockFirstPerson` with zero console errors; saved **`The game part`** versions **229**, **234**, and **235**.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Diegetic Right-Wrist Courier PDA (`PARALLAX_WRIST_OS v4.2`, `[M]`) (`The game part` v237)
+- **Summary of Changes:**
+  - **Networking, Persistence & Stats (`NetDefs`, `DataService`, `DeathService`):**
+    - Added `WristAction` (`RateLimitPerSec = 16`, `MinInterval = 0.03`) and `WristState` (`S2C`); extended `DataService` `ACCOUNT_TEMPLATE` with `PersonalCash` and `Settings` (`FOV = 70`, `ViewBobbing = true`, `CameraShake = true`, `VanStartThirdPerson = false`, `MasterVolume = 0.85`, `MusicVolume = 0.8`, `SFXVolume = 0.9`) + `GP_*` entitlements and getters/setters; added `DeathService:GetPlayerRunStats`.
+  - **3D Wrist Rig & Server Logic (`WristService`, `ServiceList`):**
+    - Welds a 4-part massless non-collidable `ParallaxWristPDA` device onto the player's right forearm, streams `WristState`, handles `SetOpen`, `UpdateSetting`, `BuyProduct`, `BuyPass`, `PromptGamePassPurchaseFinished`, and applies gamepass perks (`HazardSuit` -> `MaxHP = 125`; `CourierBoots` -> `PassStaminaBonus = 25`). *(Note: `SUPPLY_PRODUCTS`/`SUPPLY_PASSES` currently use placeholder `ProductId = 0` / `PassId = 0` for Studio testing until published IDs are set.)*
+  - **Bottom-Right CRT Menu, Arm Raise & Camera/Setting Hooks (`WristMenuController`, `ControllerList`, `AtmosphereCameraController`, `VanController`, `CarryAnimController`):**
+    - **`[M]` Toggle & Cursor Handling:** Docks `WristTerminalGui` in the bottom-right quadrant with `Modal = true` so the cursor is unlocked while live gameplay remains interactive, temporarily switches `CameraMode` to `LockFirstPerson` (`LocalTransparencyModifier = 0` on right arm), raises the 3D PDA (higher if `CarryingPackage`, while `CarryAnimController` yields `st.R`), plays amber scanline + `PhosphorSweep` boot unfold, restores the exact prior `CameraMode` and zoom distance on close, and auto-closes on death or monster grab.
+    - **3 Tabs (`Page_Status`, `Page_Settings`, `Page_Supply`):** Live stats + threat-reactive ASCII ECG heartbeat + `[DEV FREE]` badge; persistent `FOV` (`70–100`), `ViewBobbing`, `CameraShake`, `VanStartThirdPerson`, and `MasterVolume` (`0%–100%`) wired into `AtmosphereCameraController` & `VanController:SetChaseCam`; Supply Store for Team Cash, Personal Cash, Revive packs, and Gamepasses.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `ServerScriptService.Server.Services.{WristService,DataService,DeathService}` & `ServiceList` (created/modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{WristMenuController,AtmosphereCameraController,VanController,CarryAnimController}` & `ControllerList` (created/modified)
+- **Verification:** Play Solo verified `PDA=true parts=4 coll=0 notMassless=0`, `[M]` open (`LockFirstPerson`, `ltm=0.0`, 3 tabs), live Settings/Pass (`FOV=85`, `Van3P=true`, `MaxHP=125`), exact zoom restore (`Classic`, `zoomDist=12.5`) on close, 3rd-person `DriverSeat` entry (`CamMode=Classic`, `CamType=Scriptable`), and zero script errors; saved **`The game part`** **Version 237**.
+
+---
+
+## 2026-11-21 — Riplatki (via Antigravity) — Cross-Place `Credits` Currency, Corporate Tax & Property Damage Fines (`The game part` v240 & `THE horror driving game` v52)
+- **Summary of Changes:**
+  - **Shared Cross-Place Economy (`Clockwork_Acc_v1` `SchemaVersion = 2`):** Unified persistent `Credits` (`LobbyCurrency` + `LastSettlement`) across both Studio places in Universe `10777912870`.
+  - **Corporate Tax, Property Fines & Untaxed Carryover (`The game part` v240):**
+    - **`ReplicatedStorage.Shared.TaxConfig` & `ServerScriptService.Server.Services.TaxService`:** Taxes **only** new run earnings (`90%` base Team Cash tax cap `98%`; `80%` base New Personal Cash tax cap `88%`), leaving brought-in `Credits` (`BroughtInPersonalCash`) completely untaxed (`0%` tax carryover loop). Run-wide crew property-damage surcharges (capped `+8.0%`) track unique damaged objects via `VanDamageService` (`TaxFinedKey` dedup + `"barricade"`): `Traffic` `+0.60%`, `Wreck` `+0.40%`, `Lamp` `+0.35%`, `Prop` `+0.20%`, `Tree` `+0.15%`, published via `RunDamageTaxAdd`, `RunDamagedObjects`, `RunTeamTaxRate`, `RunPersonalTaxRate`.
+    - **Idempotent Settlement & UI/Store Integration (`DataService`, `DeathService`, `DeathScreenController`, `WristService`, `WristMenuController`, `ShopService`, `PersonalUpgradeController`):** `TrySpendPersonalCash` spends `NewEarned` first before deducting `BroughtIn`; settlement commits once per run on `MainMenu`, unanimous `VoteRestart` (before clearing cash/fines), or `OnPlayerReleasing` (reviving never pays out). Itemized breakdown rendered in `DeathScreenGui`, `$Safe/$New` split + live tax rates shown in `WristTerminalGui`, Personal Cash fallback enabled in `ShopService`/`PersonalUpgradeController`. Added Cmdr `addpersonalcash` & `adddamagefine`.
+  - **Main Menu Hub `Credits` & Corporate Settlement Statement (`THE horror driving game` v52):**
+    - **`DataService`, `CurrencyService`, `PartyService`, `CurrencyController`, `NetDefs` (`CurrencyState`, `DismissSettlement`):** Fixed missing `accountProfiles[userId]` & `onPlayerAdded` load check, synced `leaderstats.Credits`, flushes profiles (`FlushPlayer`) before `TeleportToPrivateServer`, renders `CreditsFooterLabel` (`CREDITS: $X  //  UNTAXED CARRYOVER`) across all 5 `Workspace.MenuCluster` screens + `Screen_Main.AccountLedgerBox` + `[ RECEIPT ]` button, and auto-opens `LobbySettlementGui` when returning with an unseen `LastSettlement`. Added Cmdr `setcredits`.
+- **Studio Paths Modified/Created:**
+  - **`The game part` (`placeId: 93445054108906`):** `ReplicatedStorage.Shared.TaxConfig` (created); `ServerScriptService.Server.Services.{TaxService,DataService,VanDamageService,DeathService,WristService,ShopService}` & `ServiceList` (created/modified); `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DeathScreenController,WristMenuController,PersonalUpgradeController}` (modified); `ServerScriptService.Cmdr.Commands.{addpersonalcash*,adddamagefine*}` (created).
+  - **`THE horror driving game` (`placeId: 124598324996118`):** `ReplicatedStorage.Shared.NetDefs` (modified); `ServerScriptService.Server.Services.{DataService,CurrencyService,PartyService}` & `ServiceList` (created/modified); `StarterPlayer.StarterPlayerScripts.Client.Controllers.CurrencyController` & `ControllerList` (created/modified); `ServerScriptService.Cmdr.Commands.{setcredits,setcreditsServer}` (created).
+- **Verification:** End-to-end Play Solo verified across both places: `SchemaVersion 1->2` migration (`$1000 -> BroughtIn=1000`), live fines (`Traffic`+`Lamp`+`Prop` -> `WSAdd=0.0115`, `WSTeam=0.9115`, `WSPers=0.8115`), UI readouts across `WristTerminalGui`/`PersonalUpgradesGui`/`DeathScreenGui`, `Revive` keeping `$1000` (no double payout), `VoteRestart` settling `$1183 TOTAL`, `$0` new earnings yielding `+$0` untaxed carryover, real `VanImpact` on `Infra_Guardrail_Straight` incrementing & deduplicating fines, and `THE horror driving game` loading `Credits = 1183` across all 5 `MenuCluster` footers + `LobbySettlementGui` (`AcknowledgeBtn` dismissal) and live Cmdr `setcredits` updates; zero errors from new/edited scripts (one pre-existing `SettingsController:89` `MouseSensitivity` error in lobby place); saved **`The game part`** **Version 240** and **`THE horror driving game`** **Version 52**.
