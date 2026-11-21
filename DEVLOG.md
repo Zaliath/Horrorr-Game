@@ -1280,3 +1280,22 @@
   - Increased streetlamp spawn frequency on straight/cracked/damaged/pull-off road cells from every 2 cells (`SpineIndex % 2 == 0`, same side only) to **~78% of road cells** (guaranteed on even cells + `58%` on odd cells, alternating left/right via `(Gx + Gz) % 2` with fallback to the opposite shoulder if blocked by a pull-off bay or depot driveway), and added an outer-bend streetlamp on `Turn90` cells.
   - Gently boosted streetlamp illumination from `Range = 55, Brightness = 1.3–1.4` to **`Range = 60, Brightness = 2.10–2.25`** so warm sodium-amber pools clearly reveal the wet highway and roadside props ahead even without relying solely on van headlights.
 - **Verification:** Verified live in Play mode (`10` streetlamps across `26` streamed road chunks alternating `7` left / `3` right, `Brightness = 2.10..2.25`, `Range = 60`, confirmed clear warm asphalt pools with van headlights turned OFF via `Streetlamps_NoHeadlights_View`, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ChunkBuilder`).
+
+
+---
+
+## 2026-11-21 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Built a canonical Roblox **R6 character rig & armature** in Blender (`Assets/Animations/R6_Locomotion.blend`, exact `1 stud = 0.28 m` proportions, exact Motor6D pivot positions for `HumanoidRootPart -> Torso -> Head / Left Arm / Right Arm / Left Leg / Right Leg`) and crafted two high-quality seamless looping 30 FPS R6 locomotion animations:
+    - **`R6_Walk` (`32` frames / `1.07s` seamless loop):** Standard cautious horror walk — subtle `~4.8°` forward lean, double-frequency bob + hip sway, `±6.8°` opposing torso counter-twist, pendulum-lagging arms with cautious inward guard posture, and stabilized level head.
+    - **`R6_Run` (`18` frames / `0.60s` seamless loop):** Panicked horror survival sprint — aggressive `~20.5°` forward lean (`+3.8°` push-off drive), high explosive bounce (`0.43`-stud arc), wide `+56°/-52°` stride, urgent fast pumping arms tucked inward across the chest, strong `±15.2°` upper-body counter-rotation, and upward counter-pitched head staring straight ahead.
+  - Visually verified both full-cycle frame strips in Blender via `look` (`mode: "frames"`), exported `Assets/Animations/R6_Walk.fbx`, `Assets/Animations/R6_Run.fbx`, and `Assets/Animations/R6_Locomotion_Keyframes.json`.
+  - Generated exact 1:1 30 FPS Roblox R6 `KeyframeSequence`s (`R6_Walk` and `R6_Run`, mathematically conjugated through canonical R6 `Motor6D.C0` rotations) inside **`ReplicatedStorage.Assets.Animations`** AND attached them to a ready-to-preview R6 dummy rig at **`ServerStorage.R6_AnimationRig.AnimSaves`** (verified exact forward lean `TorsoUpZ = -0.361`, level `HeadUpZ = -0.050`, opposing arm/leg drive `RFootZ = -1.20 / LFootZ = +2.27 / LHandZ = -1.02 / RHandZ = +0.54`).
+- **Studio Paths Created:**
+  - `ReplicatedStorage.Assets.Animations.R6_Walk` (`KeyframeSequence`, 33 keyframes, `Loop = true`)
+  - `ReplicatedStorage.Assets.Animations.R6_Run` (`KeyframeSequence`, 19 keyframes, `Loop = true`)
+  - `ServerStorage.R6_AnimationRig` (canonical R6 preview rig with `AnimSaves/R6_Walk` & `AnimSaves/R6_Run`)
+- **Repository Files Added/Modified:**
+  - `Assets/Animations/R6_Locomotion.blend`, `Assets/Animations/R6_Walk.fbx`, `Assets/Animations/R6_Run.fbx`, `Assets/Animations/R6_Locomotion_Keyframes.json` (created)
+  - `DEVLOG.md` (modified)
+- **Next Steps:** Ready to preview in Blender (Spacebar) or Roblox Studio Animation Editor (drag `ServerStorage.R6_AnimationRig` into Workspace briefly to publish `R6_Walk` and `R6_Run` to Roblox), then build the advanced sprinting system!
