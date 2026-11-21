@@ -851,3 +851,29 @@
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:**
   - Verified live in Play mode (`SpanX=[-1639 .. 1561]`, `Total=3200 studs`, `CanCollide=true/true`, `WallLook=(0, 0, -1)`, `DistBehind=1204 studs` at `VanZ=-1709`, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Press-Toggle `[V]` 3rd-Person Chase Cam & Hold `[LeftAlt / MMB / R3]` Look Back / Window Lean-Out (`VanDrive`, `VanController`, `VanAnimController`):**
+    - **`Workspace.DeliveryVan.VanDrive`:**
+      - Added `"RollWindowDown"` (shared `setWindowTarget` helper reused by `toggleWindow`; idempotently rolls `L`/`R` open if `winTarget[side] < 0.5`, skips if `WindowBroken`, blocks if `WindowCover` is up) and `"LeanBack"` `VanControl` remote handlers setting replicated `Player` attribute `VanLookBackSide` (`"L"`, `"R"`, or `""`).
+      - Added Heartbeat/exit/seat-switch sanitization so `VanLookBackSide` clears automatically if the player leaves or switches seats, drops window roll below `0.55`, closes the cover, or faces an approaching/active Window Monster.
+    - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`:**
+      - Converted `[V]` / `ButtonSelect` from per-frame `IsKeyDown` hold polling into `ToggleChaseCam()` (`chaseCamToggled`), auto-resetting when exiting the van and clearing on `SetChaseCamBlocked(true)`. Updated `VanSeatHint` text to `[C] Switch seat  •  [V] 3rd Person  •  Hold [Alt/MMB] Look Back`.
+      - Implemented Hold Look Back (`LeftAlt` / `MouseButton3` / `ButtonR3`):
+        - **3rd Person:** Smoothly orbits `180°` in front of the van looking backward with raycast collision clamping.
+        - **1st Person Cab (`Driver` `L` / `Passenger` `R`):** Blocks with a toast if `WindowCover` is raised; leans immediately if shattered or `WindowRoll >= 0.75`; otherwise fires `"RollWindowDown"` until `WindowRoll >= 0.70`, then leans camera outside looking back down the van flank with world raycast collision clamping, speed-scaled rushing wind SFX (`VanLeanWindSfx` in `SoundService`), and speed-scaled camera shake; leaves window down on release; snaps back inside with a camera jolt (`"GET BACK INSIDE!"`) if `WindowApproachSide` or `WindowThreatSide` activates on that side.
+        - **`RearPassenger`:** Smoothly turns camera toward the rear cargo doors without touching cab windows.
+      - Added public API `ToggleChaseCam()`, `IsLookingBack()`, and `IsLeaningOut()`.
+    - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:**
+      - Added `VanAnimSillBraceL` / `VanAnimSillBraceR` door-sill attachments and replicated R6 (`RootJoint`) / R15 (`Waist`) + `Neck` procedural lean-out and backward look twist driven by `VanLookBackSide`, keeping the driver's right hand on the steering wheel (`gripR`) while bracing the outer hand on the open window sill.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **New Dependencies:** Replicated `Player` attribute `VanLookBackSide`; `SoundService.VanLeanWindSfx`; door-sill attachments `VanAnimSillBraceL` / `VanAnimSillBraceR`.
+- **Next Steps / Known Issues:**
+  - Verified in Play mode: `VanSeatHint` displayed `"[C] Switch seat  •  [V] 3rd Person  •  Hold [Alt/MMB] Look Back"`, `VanAnimSillBraceL/R` created (`true/true`), `RollWindowDown` rolled `WindowRollL` from `0.00` past `0.73` to `1.00`, `LeanBack(true)` replicated `VanLookBackSide="L"` and shifted `RootJoint.C0` to `(-1.85, 0.17, -0.17)`, releasing left `WindowRollL=1.00` and returned `RootJoint.C0` to `(-0.02, 0.00, -0.00)`, and `WindowCoverL=true`, `WindowApproachSide="L"`, `WindowThreatSide="L"`, and seat exit all auto-cleared `VanLookBackSide` to `""`. Zero game script errors (`get_console_output`), Studio returned to `Edit` mode (`VirtualInputManager:SendKeyEvent` lacks `RobloxScript` capability in `execute_luau`, so live keyboard/camera testing of `[V]` toggle and `[Alt]` hold feel should be done interactively in Play). Remember to **Commit Drafts** in Team Create.
