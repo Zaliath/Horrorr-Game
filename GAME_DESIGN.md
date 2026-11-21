@@ -40,6 +40,8 @@ it down a forest road to deliver packages to houses.
 - **Framework** (`ServerScriptService.Server`): Bootstrap, Core (ServiceList, Scheduler, Net), Services (DataService,
   MonetizationService, ReplicationService, AntiExploitService). Persistence via `ProfileStore`. Admin via `Cmdr`.
   Shared code in `ReplicatedStorage.Shared` (Loader, Enums, Types, Util, NetDefs, Config).
+- **Advanced Sprinting, Stamina & Exhaustion** (`SprintService` / `SprintController` / `ReplicatedStorage.Shared.Config.Sprint`):
+  hold `[LeftShift]` / `[RightShift]` / Gamepad `[L3]` (or mobile touch button) on foot to sprint (`16 → 24.8` studs/s with smooth acceleration/deceleration, respecting `PersonalUpgradeSpeed`, `CarryingPackage` weight/drain, `AdminWalkSpeed`, and `AdminFly`). Drains `18/s` only while moving (`>= 4` studs/s; `1.25×` drain when carrying a package; `5` stamina per jump), regenerates after `1.2s` delay (`14/s` walking, `21/s` standing still or seated in `DeliveryVan`). Draining stamina all the way to `0` triggers **Exhaustion** (`IsExhausted`): locks sprinting, slows walk speed to `0.72×` (`~11.5` studs/s), imposes a `2.0s` recovery delay + slower `0.6×` breath recovery, tightens camera FOV (`-3°`) with a dark rhythmic vignette pulse + heartbeat/panting audio, and requires recovering past **`35%`** before sprinting is allowed again. Drives the Blender-authored R6 `R6_Walk` & `R6_Run` `KeyframeSequence`s smoothly across all co-op players via `Motor6D.Transform` (yielding arms to `CarryAnimController` and seated poses to `VanAnimController`) and renders an auto-fading dark horror Stamina Bar HUD (`SprintStaminaGui`) above the hotbar with trailing drain ghost bar and `35%` recovery tick mark.
 
 
 ## Planned: Core Loop
