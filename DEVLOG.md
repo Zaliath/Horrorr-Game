@@ -747,3 +747,26 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode (`chasemonster close 85` & `close 48` while driving at `95` studs/s): `MaxForwardReach = 97.8` & `95.7` studs ahead of `Root` (`fwdL=78.1`, `fwdR=89.2`), `SwipeMissCount = 1` (`L=SwipeMiss` alternating with `R=Tree`/`Guardrail`/`LampPost`), `BuildingStumbles = 2`, `DestroyedPropsCount = 9`, `seat=DriverSeat` held solidly throughout, and zero game script console errors; Studio returned cleanly to `Edit` mode (`6807141d-6567-4853-a980-bec7b2f2d9ee`). Remember to **Commit Drafts** in Team Create.
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Creeping Trailing Fog & Fallen-Tree Debris Barrier (`MapService`):**
+    - Tracked farthest forward spine progress (`maxReachedSpine`) and added a creeping `Workspace.BackFogBarrier` positioned `4` spine cells behind `maxReachedSpine` (activates once `maxReachedSpine >= 6`, always ahead of `DESPAWN_SPINE_BACK = 6` so players never see bare/despawned grass or void behind them).
+    - Built `BackFogBarrier` from a tall invisible collision wall (`BackFogWall`, dynamically widened across parallel multi-path road formations so nobody can detour around it), 4 layered vertical-gradient dark-teal fog curtains (`SurfaceGui` + `UIGradient` dissolving cleanly to `1.0` transparent at the top with zero hard rectangular edge against the night sky), billowing dark `DarkFogMist` + `GroundMist` `ParticleEmitter`s, 5 fallen/sprawled dead trees (`HorrorKit_Props`), and mangled broken guardrails / wood fence splinters / trash heaps / tilted chevron signs (`HorrorKit_Infrastructure` / `HorrorKit_Props`). Kept purely diegetic with zero radar/HUD bump warnings.
+    - Protected all chunks between `backBarrierSpine - 2` and the van from despawning, raised `MAX_SPAWNS_PER_TICK` (`5` → `8`, boosted to `14` while reversing), exposed `MapService:GetBackBarrierSpine()` / `GetMaxReachedSpine()`, and destroyed leftover `Workspace.StartAreaGround` in `ReserveAndRelocateDepot()` so no empty grass field remains behind after Shift #1.
+  - **"No Turning Back" Missed Delivery Handling (`ShiftService` & `ShiftController`):**
+    - Stored `SpineIndex` and `Missed` on each `StopRecord` and checked `MapService:GetBackBarrierSpine()` during `Phase == "Active"`: when the trailing fog wall advances past an active delivery house, that stop is automatically marked **MISSED** (forfeits its `$100` payout and shift on-time bonus while keeping completed stops paid), broadcasts `"MISSED STOP: <Address> — swallowed by the fog!"`, clears its beacon/prompt, and immediately advances `activeStopIndex` to the next stop (or triggers `Return` / Next Factory Depot approach if it was the final stop) so a shift can never soft-lock.
+    - Excluded `Missed` stops from `RemainingStops` so the in-van `TrackerScreen` radar immediately removes missed stops and locks onto the next stop (or gold depot dot).
+- **Studio Paths Modified/Created:**
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:**
+  - Runtime Model: `Workspace.BackFogBarrier` (`BackFogWall`, `BackFogSheet_1..4`, `BackFogEmitterBar`, fallen dead trees & roadblock debris).
+  - `MapService` API: `MapService:GetBackBarrierSpine()`, `MapService:GetMaxReachedSpine()`.
+  - `ShiftState` stop field: `Missed` (boolean).
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode: `BackFogBarrier` stayed `nil` at start, spawned cleanly ~4 cells behind the van (`Parts=18`, `Emitters=2`, `FallenTrees=5`, `Debris=7`, dynamically widened `WallSize=(710, 44, 8)` across a multi-path formation), automatically marked overshot stops MISSED and advanced cleanly (`583 OLD MILL RD` → `984 OLD MILL RD` → `Return` `NEXT FACTORY DEPOT` with gold radar dot & `RemDots=0`), destroyed `Workspace.StartAreaGround` (`nil`) on depot relocation, visually verified the gradient-faded dark fog + fallen trees/debris via road-level `screen_capture` (zero hard sky edge, zero bare grass), and confirmed zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
