@@ -770,3 +770,22 @@
   - `ShiftState` stop field: `Missed` (boolean).
 - **Next Steps / Known Issues:**
   - Verified live in Play mode: `BackFogBarrier` stayed `nil` at start, spawned cleanly ~4 cells behind the van (`Parts=18`, `Emitters=2`, `FallenTrees=5`, `Debris=7`, dynamically widened `WallSize=(710, 44, 8)` across a multi-path formation), automatically marked overshot stops MISSED and advanced cleanly (`583 OLD MILL RD` → `984 OLD MILL RD` → `Return` `NEXT FACTORY DEPOT` with gold radar dot & `RemDots=0`), destroyed `Workspace.StartAreaGround` (`nil`) on depot relocation, visually verified the gradient-faded dark fog + fallen trees/debris via road-level `screen_capture` (zero hard sky edge, zero bare grass), and confirmed zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Replaced Random Road Chase Timer with Condition-Only Spawning (`ShiftService`, `MonsterService`, `ChaseMonster`):**
+    - **`ServerScriptService.Server.Services.ShiftService` & `MonsterService`:** Added `ShiftService:GetMonsterContext()` exposing live `Phase`, `TimeRemaining`, `CompletedStops`, `TotalStops`, `TimedOut`, `MissedAnyStop`, and `IncompleteShiftEnd`, and passed `ctx` into `MonsterService`'s `m:Update(dt, active, shiftNumber, ctx)` loop.
+    - **`ServerStorage.Modules.Monsters.ChaseMonster`:** Removed `FirstChaseDelay` / `AfterChaseDelayMin` / `AfterChaseDelayExtra` random spawns and replaced them with 3 strict natural triggers (plus `ChaseSpawnReason` attribute + `PostChaseCooldown = 18s` breather; pauses while `WindowThreatSide`/`WindowApproachSide` is active; resets delivery delay & stillness on each completed delivery):
+      1. **Standing Still Too Long (`"StandingStill"`):** Triggers after `StillTriggerSeconds = 22`s below `StillSpeedThreshold = 10` studs/s (warning at `15s`; drains `3.5×` while driving `>= 18` studs/s).
+      2. **Taking Too Long (`"TakingTooLong"` / `"LowTime"`):** Triggers after `StopDelayTriggerSeconds = 70`s without completing a delivery (warning at `55s`), or once per shift when `TimeRemaining <= 35`s (`LowTimeTriggerSeconds`) with packages still undelivered.
+      3. **Incomplete Shift End (`"IncompleteShift"`):** Triggers immediately upon entering `"Return"` when `TimedOut`, `MissedAnyStop`, or `CompletedStops < TotalStops` to hunt the van toward the Next Factory Depot, resetting cleanly upon reaching `"Prep"` — while clean on-time completed shifts never spawn the Chaser on the depot drive.
+- **Studio Paths Modified/Created:**
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `ServerScriptService.Server.Services.MonsterService` (modified)
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+- **Repository Files Modified:** `DEVLOG.md`, `GAME_DESIGN.md`.
+- **New Dependencies:** `ShiftService:GetMonsterContext()`; replicated `DeliveryVan` attribute `ChaseSpawnReason`.
+- **Next Steps / Known Issues:** Verified all 7 scenarios in live Play mode (`1_FastDrivingNoSpawn(act=false)`, `2_Still22s(act=true,reason=StandingStill)`, `3_TooLong70s(act=true,reason=TakingTooLong)`, `4_LowTime(act=true,reason=LowTime)`, `5_IncompleteReturn(act=true,reason=IncompleteShift)->7_DepotPrep(act=false)`, `6_CleanCompleteReturn(act=false)`, `LiveVan_ChaseSpawnReason=""`), zero game script console errors, Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
