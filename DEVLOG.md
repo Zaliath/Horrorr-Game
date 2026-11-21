@@ -1384,3 +1384,35 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
   - `ServerScriptService.Server.Services.ShiftService` (modified)
 - **Verification:** Verified live in Play mode via `screen_capture` and geometry readbacks: long depot toast rendered cleanly at `ToastFrame = (613×37)` containing `ToastLabel = (570×12)` with `19px` right margin and flush `StatusPip`/`CornerBrackets`; `DepotBillboard` & `StopBillboard` verified live with sharp unclipped `2px` amber borders, corner reticle brackets, and solid-amber header strips; **zero game script errors** in console. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`UITheme`, `ShiftController`, `ShiftService`) in Team Create!
+
+
+---
+
+## 2026-11-21 — Miah (via Antigravity)
+- **Summary of Changes:**
+  - **Adaptive Eerie Horror Soundtrack & Ambient Soundscape (`StarterPlayer.StarterPlayerScripts.Client.Controllers.AudioController`):**
+    - Replaced the stub `AudioController` with a full `--!strict` adaptive horror music & nocturnal soundscape controller using **100% official `APMOfficial` & `ProSoundEffects`** Creator Store audio pooled in `SoundService.GameMusicAudio` (preserving `AudioController:PlaySFX(soundName)` intact):
+      - **Rotating Eerie Exploration Score:** Crossfades every `108s` (`10s` fade) between `Unsettling Atmosphere (b)` (`rbxassetid://9040209498`, `129.3s`) and `The Plot Thickens Underscore` (`rbxassetid://9044409538`, `105.7s`), softened & warmed during `Prep` at the Factory Depot and gently ducked inside the closed cab.
+      - **Dark Ambient Bed & Ghostly Forest Wind:** Layered `Eerie Ambience 1 (SFX)` (`rbxassetid://9112775175`, `56.0s`) + reverb-washed `Eerie Wind Constant 1 (SFX)` (`rbxassetid://9114228774`, `36.0s`) that blooms outdoors on foot and in deeper woods while hushed in the depot/closed van.
+      - **Adaptive Monster Tension / Pursuit Score:** Smoothly crossfades in `Stalking the Prey 60` (`rbxassetid://1835248722`, `62.0s`) and `Panic Attack Drone` (`rbxassetid://1835353529`, `53.3s`) driven by live threat telemetry across all 11 monsters (`ChaseActive`, `WindowThreatSide`/`WindowApproachSide`, `DoorThreatActive`, `PhantomSemiActive`, `CargoThreatActive`, `StareActive`/`StareStep`, `GremlinActive`, `HitchhikerActive`, `PorchThreatActive`, `ForestHunterActive`/`ForestHunterState`, `FogWardenActive`/`FogWardenLayer`) plus `< 35s` shift timer urgency. Mirrors `RainController`'s uncanny silence ducking when `ForestHunter` is in `"Stalk"`/`"Creep"`.
+      - **Sparse Distant Eerie Stingers:** Pooled `4` preloaded reverb-washed stingers (`rbxassetid://9045758386`, `1837212740`, `1841714854`, `9120332419`) firing every `46–88s` during quiet active stretches outside the depot.
+      - **Public API:** `PlaySFX`, `SetMusicEnabled`, `IsMusicEnabled`, `SetMusicVolume`, `GetMusicVolume`, `SetTensionOverride`, `TriggerStinger`, `GetDebugState`.
+  - **3D Spatial Co-op Van Driving Soundscape (`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAudioController`):**
+    - Created and registered `VanAudioController` in `ControllerList` (Phase 4 right after `DashController`). Attaches two client-only `Attachment` emitters (`VanEngineAudioEmitter` at the hood, `VanTireAudioEmitter` at the lower chassis) to `DeliveryVan.Chassis.Chassis` — **zero parts or welds added** (100% Moving Van Physics Rule safe) with `InverseTapered` 3D roll-off (`14..175` studs) so passengers and outside co-op teammates hear the van in 3D space:
+      - **Ignition Startup / Shutdown & Stall Sputter:** `1987 Jeep Wrangler Engine Start` (`rbxassetid://9125345489`, smooth `1.65s` starter-catch envelope when entering `DriverSeat`) and `1988 Chevy Pickup Truck Rough Start Turn Off` (`rbxassetid://9125346576`, shutoff clunk on exit or metallic stall sputter on `VanStunned`).
+      - **Layered 5-Gear Engine Idle & Driving Load:** `1934 Rolls-Royce 1 (SFX)` (`rbxassetid://9112919271`, `46.0s` vintage front-hood idle + rattle) + `1988 GMC Suburban 2 (SFX)` (`rbxassetid://9112736090`, `51.4s` heavy V8 driving hum) synced 1:1 to `DashController`'s 5-gear km/h RPM bands with brief mechanical gear-shift dips (`0.18s`) and extra low-end punch scaling with `UpgEngine` (`0..3`).
+      - **Wet Asphalt vs. Off-Road Tire Roll & Drift/Brake Screech:** `Tires Constant On Bridge 1` (`rbxassetid://9112887000`, grounded speed-scaled tire hum shifting EQ warmer/crunchier off-road) + `Skids Tire Screeches On Dirt Pavement 4` (`rbxassetid://9119186275`, driven by lateral slip, `PoseDrift`, `PoseHandbrake`, and hard braking).
+      - **Turbo `[Q]` Boost Roar & Blow-Off Release:** `Rumble Constant Roar Energy Building 1` (`rbxassetid://9118747824`) + `Whoosh Giant Swish By 5` (`rbxassetid://9120722836`) triggered locally (`VanController:GetBoostFovAdd()`) and remotely (`PoseBoost` drop) for co-op listeners.
+      - **Dynamic Cabin Acoustic Muffler (`EqualizerSoundEffect`):** Muffles exterior highs inside the closed van (`HighGain = -10.5`, `MidGain = -2.2`, `LowGain = +2.4`) and smoothly opens up when rolling/breaking windows (`WindowRollL/R`, `WindowBrokenL/R`), leaning out, opening any van door, switching to `[V]` 3rd-person cam, or standing outside.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.AudioController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAudioController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified — registered `VanAudioController`)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md`.
+- **New Dependencies:**
+  - Client audio containers: `SoundService.GameMusicAudio`; client-only `Attachment`s `VanEngineAudioEmitter` & `VanTireAudioEmitter` under `Workspace.DeliveryVan.Chassis.Chassis`.
+  - 18 verified free official `APMOfficial` / `ProSoundEffects` Audio IDs (`9040209498`, `9044409538`, `9112775175`, `9114228774`, `1835248722`, `1835353529`, `9045758386`, `1837212740`, `1841714854`, `9120332419`, `9112919271`, `9112736090`, `9125345489`, `9125346576`, `9112887000`, `9119186275`, `9118747824`, `9120722836`).
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode: `GameMusicAudio: 10/10 loaded | VanAudio: 8/8 loaded` (`18/18` sounds `IsLoaded == true` with valid `TimeLength > 0`, zero console errors from audio controllers); confirmed Prep vs. `ChaseActive = true` adaptive tension crossfade (`EerieTrackA 0.150 -> 0.022`, `TensionMusic 0.000 -> 0.340`, `PanicDrone 0.000 -> 0.210`), seated driving engine/tire scaling, and closed-cab vs. open-window EQ unmuffling (`HighGain -10.5 -> -4.6`). Studio returned cleanly to `Edit` mode.
+  - Note for teammates: pre-existing `VanCamController` logged a `Script timeout: exhausted allowed execution time` in `populateViewportScene` (`line 189/190`) on Play boot (unrelated to audio; consider yielding periodically inside `populateViewportScene`).
+  - Remember to **Commit Drafts** (`AudioController`, `VanAudioController`, `ControllerList`) in Roblox Studio Team Create!
