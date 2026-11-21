@@ -974,3 +974,29 @@
 - **Next Steps / Known Issues:**
   - Verified in Play mode: no script errors, services running (`leaderstats`, `ProceduralMap`, `ShiftState` remote, `MaxCargoBoxes = 24` set by `ChuteService`). I did not back the van into the chute to watch boxes drop.
   - Tip for whoever edits scripts through MCP/AI tools: if a script suddenly fails with `Expected identifier ... got '\'`, the source has literal `\t`/`\n` escapes; check with `loadstring(script.Source)`.
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Nocturnal Horror Lighting, Silhouette Mist & Shadow-Casting Van Headlights (`Lighting`, `DeliveryVan`, `MapService`):**
+    - Replaced midday lighting (`ClockTime = 11.43`, bright flat ambient, thin `0.26` `Atmosphere`) with deep midnight horror lighting (`ClockTime = 0.0`, `Brightness = 0.60`, `ExposureCompensation = 0.0`, `Ambient = (14, 19, 24)`, `OutdoorAmbient = (24, 34, 42)`, `GlobalShadows = true`) and classic dark-slate nocturnal silhouette fog (`FogColor = (32, 48, 58)`, `FogStart = 20`, `FogEnd = 290`, overcast `Sky` with no celestial orbs/stars) so towering dead trees loom as dark silhouettes out of the mist while `StartArea` stays warmly lit by its 24 `WarehouseLights`. Enforced on server startup via `MapService.applyNocturnalLighting()` so time never drifts.
+    - Tuned `Lighting.HorrorGrade` (`Contrast = 0.22`, `Saturation = -0.32`, cold tint `(228, 240, 246)`) and `Lighting.Bloom` (`Intensity = 0.65`, `Size = 30`, `Threshold = 1.15`) so headlights, taillights, streetlamps, porch lamps, and monster eyes pierce the mist.
+    - Upgraded `DeliveryVan.Cab.HeadlightL/R.SpotLight` to **`Shadows = true`** (`Brightness = 6.0`, `Range = 60`, `Angle = 74`, warm-white `(255, 244, 218)`) and disabled `CastShadow` on 45 front fascia/bezel/grille parts right around the lenses so the van's own grille never blocks its shadow-casting beam.
+  - **Subtle Film Grain + Dark Vignette & Moderate Camera Motion (`AtmosphereCameraController` & `ControllerList`):**
+    - Created `StarterPlayer.StarterPlayerScripts.Client.Controllers.AtmosphereCameraController` (registered in `ControllerList`) with a lightweight `HorrorAtmosphereOverlay` `ScreenGui` (`DisplayOrder = -5`, strictly beneath HUD/menus): 4-edge `UIGradient` soft dark vignette (subtly deepens outdoors & at high speed) + ultra-subtle faint film lines + 44 pooled 18 Hz animated film grain specks (**no** `REC` text).
+    - Layered moderate, motion-sickness-safe additive camera motion (`Camera - 8` pre-strip, `Camera + 8` post-apply, zero `hum.CameraOffset` override, zero aim drift, fully compatible with `VanController`, `WindowMonsterController`, `ChaseMonsterController`, and `DoorMonsterController`):
+      - **On-Foot:** Smooth figure-8 walk/sprint head-bob, subtle idle breathing sway, and light strafe roll (`≤ 1.4°`).
+      - **In-Van Driving:** Speed- and road-surface-scaled rumble (`Road_DamagedRough` `1.65×`, `Road_Cracked` `1.25×`, off-road `1.45×`), gentle corner banking roll (`≤ 1.8°`), smooth speed FOV push (`+4.5°` stacking cleanly with `VanController`'s `[Q]` Boost FOV), and damped collision jolts.
+    - Left player flashlight mechanics untouched as requested.
+- **Studio Paths Modified/Created:**
+  - `Lighting` (`ClockTime`, `Ambient`, `OutdoorAmbient`, `FogColor/Start/End`, `Sky`, `HorrorGrade`, `Bloom`; removed `Atmosphere`)
+  - `Workspace.DeliveryVan.Cab.HeadlightL/R` & front fascia parts (modified)
+  - `ServerScriptService.Server.Services.MapService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.AtmosphereCameraController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:**
+  - Client `PlayerGui.HorrorAtmosphereOverlay` (`ScreenGui`, `DisplayOrder = -5`).
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode: confirmed midnight silhouette lighting (`ClockTime = 0.0`, `Fog = 20..290`, `HeadlightL/R Shadows = true`), `HorrorAtmosphereOverlay` (`DisplayOrder = -5`, `HasREC = false`, `GrainAnimated = true`), zero idle/walk camera drift (`0.048°–0.066°`), visual `screen_capture`s of warm Factory interior readability, in-cab windshield driving view, and exterior chase view with eerie silhouetted dead trees against cold dark-slate mist, and zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
