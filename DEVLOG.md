@@ -704,3 +704,17 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
 - **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
 - **Next Steps / Known Issues:** Verified end-to-end in live Play mode: all 9 seats confirmed `Disabled=false, CanTouch=false, CanCollide=false, CollisionGroup="VanSeat", TouchTransmitter=nil, StreamingMode=Persistent` with walk-over anti-touch (`WalkOverSeatPart=nil` on cab & rear seats), zero kicks across `DriverSeat` (`1.0s` idle + `1.56s` moving + `12s` Server/Client trace), `[C]` `SwitchSeat` (`DriverSeat -> FrontPassengerSeat`), moving rear `PassengerSeat` (`95` studs/s, `0.8s`, `kicks=0`), and intentional `LeaveSeat`; chase speed verified parked (`135.3–155.0` studs/s), `95` studs/s cruising (`140.7–170.2` studs/s closing `123.0 -> 95.6`), and `158` studs/s Boost (`128.0–140.9` studs/s pulling away `135.0 -> 150.5` with `seat=DriverSeat`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Reduced `WindowMonster` Spawn Frequency (`ServerStorage.Modules.Monsters.WindowMonster`):**
+    - Increased `Config.FirstThreatDelay` (`18` -> `45`s), `AfterThreatDelayMin` (`14` -> `38`s), and `AfterThreatDelayExtra` (`14` -> `27`s), making Shift 1 spawns occur every `38–65s` (up from `14–28s`).
+    - Updated `_scheduleNext()` cooldown scaling (`shrink = math.min(12, (shiftNumber - 1) * 3)`) with a higher minimum cooldown floor (`26`s vs `8`s, giving `26–53s` by Shift 5+).
+    - Paused the spawn countdown in `Update()` whenever `DeliveryVan:GetAttribute("ChaseActive") == true` so the Window Monster never overlaps an active Road Chase Monster pursuit.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.Monsters.WindowMonster` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode (`Config: First=45 Min=38 Extra=27 | Shift1=[38.06..64.95] | Shift5=[26.11..52.94] | PauseTest: init=45.0 duringChase=45.0 afterChase=40.0`) with zero game script console errors; Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
