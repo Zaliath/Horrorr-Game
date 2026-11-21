@@ -661,7 +661,6 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode (`Ext = 108.1 × 63.7 × 100.4`, `Toppled = 8`, `Grabs = House(Window_East_Upper_03), Road(RoadCurb)`, `Scars = 5 (24 parts)`, `Debris = 90`, `Props = 5` -> clean `Scars = 0`, `Debris = 0` on `clear`, and active `"Chasing"` closing speed verified at `135.8 -> 37.3` = `98.5` closed in `1.01s` / `97.5` studs/s rate, `maxSpd = 105.0`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
-
 ---
 
 ## 2026-11-20 — justhyne1205 (via Antigravity)
@@ -683,3 +682,25 @@
   - `ShiftState` snapshot field: `RemainingStops` (`{ { HouseId: number, Address: string, Pos: Vector3 } }`).
 - **Next Steps / Known Issues:**
   - Verified live in Play mode across `Prep` (`TargetDotVis=false`, `RemVis=0`, `CompassE` at top while parked facing East), `Active` at East/North/West headings (confirmed accurate Heading-Up dot projection & rotating `N/E/S/W`, bright green active dot + 2 smaller dimmer remaining stop dots + crisp pure-Frame cyan-white van chevron via in-cab `screen_capture`), and `Return` (confirmed pulsing gold `NEXT FACTORY DEPOT` dot with `RemVis=0` via in-cab `screen_capture`). Zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Fixed Van Seats Prematurely Kicking Players Out Across All 9 Seats (`VanDrive`, `VanController`, `AntiExploitService`):**
+    - **Root Cause:** Keeping empty seats at `seat.Disabled = true` and toggling `seat.Disabled = false` on the exact same frame as `seat:Sit(hum)` triggered a Roblox client/server replication & ownership race that broke `SeatWeld`, causing `Occupant` listeners to immediately slam `seat.Disabled = true` and eject players. Additionally, `DeliveryVan.ModelStreamingMode` defaulted to `Default` under `Workspace.StreamingEnabled = true`, and `VanController:LeaveSeat()` lacked a post-sit grace window and `VanSwitchActive` guard.
+    - **`Workspace.DeliveryVan.VanDrive`:** Registered non-collidable `"VanSeat"` `CollisionGroup`, added `configurePromptOnlySeat(seat)` keeping `seat.Disabled = false` permanently while disabling touch-to-sit via `CanTouch = false`, `CanCollide = false`, and stripping any `TouchTransmitter`; cleared `hum.PlatformStand` in `sitInSeat`; added `exitToken` + `switchingPlayers` guard in `exitVanSeat`; enforced `DeliveryVan.ModelStreamingMode = Enum.ModelStreamingMode.Persistent` (`Edit` + runtime).
+    - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController`:** Added `seatedAt` tracking and a `0.35s` post-sit grace window + `VanSwitchActive` guard in `LeaveSeat()`.
+    - **`ServerScriptService.Server.Services.AntiExploitService`:** Exempted `VanSwitchActive == true` from speed-cap flags during `[C]` seat switches.
+  - **Made Colossal Skinwalker Chase Monster Much Faster so Players Must Use Boost `[Q]` (`ChaseMonster`, `VanController`, `ChaseMonsterController`):**
+    - **`ServerStorage.Modules.Monsters.ChaseMonster`:** Raised `BaseChaseSpeed = 134` studs/s (`MaxBaseChaseSpeed = 148`, `ShiftSpeedStep = 3.0`, `CatchupBonusMax = 32` easing smoothly above `vanForwardSpeed > 105`, `CloseMercySlow = 0`, `StoppedClosingCap = 155`, `SpawnIntroSeconds = 0.85`, `SpawnDistance = 155`, `EvadeDistance = 225`) and tightened `haulSurge = 0.88..1.12x` so its sprint speed never dips below the van's `MAX_SPEED = 95`.
+    - **`VanController` & `ChaseMonsterController`:** Upgraded Boost `[Q]` to `BOOST_SPEED = 158`, `BOOST_PUSH = 58`, `BOOST_DRAIN = 24` (`~4.17s` tank while keeping `MAX_SPEED = 95`), and updated client crawl cadence (`crawlFreq = 1.35..2.40` Hz, `pullSurgeZ = 12.5`).
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan` (`ModelStreamingMode = Enum.ModelStreamingMode.Persistent`)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+  - `ServerScriptService.Server.Services.AntiExploitService` (modified)
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+- **Repository Files Modified:** `DEVLOG.md`, `LESSONS.md`.
+- **Next Steps / Known Issues:** Verified end-to-end in live Play mode: all 9 seats confirmed `Disabled=false, CanTouch=false, CanCollide=false, CollisionGroup="VanSeat", TouchTransmitter=nil, StreamingMode=Persistent` with walk-over anti-touch (`WalkOverSeatPart=nil` on cab & rear seats), zero kicks across `DriverSeat` (`1.0s` idle + `1.56s` moving + `12s` Server/Client trace), `[C]` `SwitchSeat` (`DriverSeat -> FrontPassengerSeat`), moving rear `PassengerSeat` (`95` studs/s, `0.8s`, `kicks=0`), and intentional `LeaveSeat`; chase speed verified parked (`135.3–155.0` studs/s), `95` studs/s cruising (`140.7–170.2` studs/s closing `123.0 -> 95.6`), and `158` studs/s Boost (`128.0–140.9` studs/s pulling away `135.0 -> 150.5` with `seat=DriverSeat`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
