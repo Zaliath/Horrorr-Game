@@ -789,3 +789,19 @@
 - **New Dependencies:** `ShiftService:GetMonsterContext()`; replicated `DeliveryVan` attribute `ChaseSpawnReason`.
 - **Next Steps / Known Issues:** Verified all 7 scenarios in live Play mode (`1_FastDrivingNoSpawn(act=false)`, `2_Still22s(act=true,reason=StandingStill)`, `3_TooLong70s(act=true,reason=TakingTooLong)`, `4_LowTime(act=true,reason=LowTime)`, `5_IncompleteReturn(act=true,reason=IncompleteShift)->7_DepotPrep(act=false)`, `6_CleanCompleteReturn(act=false)`, `LiveVan_ChaseSpawnReason=""`), zero game script console errors, Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Rebalanced Chase Monster Speed Just Below Full Van Speed (`ChaseMonster`, `ChaseMonsterController`):**
+    - **`ServerStorage.Modules.Monsters.ChaseMonster`:** Re-tuned pursuit speeds against `VanController`'s `MAX_SPEED = 95` and `BOOST_SPEED = 158` so the Skinwalker closes in whenever the van stops, corners, or cruises under top speed, while steadily losing ground when the player holds full speed (`95` studs/s) or hits Boost `[Q]`:
+      - Set `Config.BaseChaseSpeed = 88`, `ShiftSpeedStep = 1.0`, `MaxBaseChaseSpeed = 93`, `CatchupBonusMax = 14`, `StoppedClosingCap = 95`, `SpawnDistance = 125`, and `EvadeDistance = 195`.
+      - Updated the `Chasing` rubberband in `ChaseMonster:Update` so `distBonus` (beyond `80` studs) eases smoothly to `0` across `vanForwardSpeed = 78..92` (`fullSpeedEase`), and tuned `haulSurge` to `0.90 + 0.20 * (math.sin(self._elapsed * 5.2) ^ 2)` (mean `1.0×`).
+    - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController`:** Updated client fallback `chaseSpeed` to `88` and tuned `crawlFreq` to `math.clamp(effectiveSpeed * 0.012, 1.05, 1.50)` so the sweeping hand-over-hand cadence remains weighty at the new pursuit speed.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:** Verified in Play mode across `Shift 1`, `Shift 5`, and `Shift 6`: from `110.00` studs on `Shift 1`, stopped (`0`, `1s`) closed to `22.31` (`-87.69`), `75` studs/s (`5s`) closed to `37.33` (`-72.67`), `84` studs/s (`5s`) closed to `79.00` (`-31.00`), full speed `95` studs/s (`5s`) opened to `144.67` (`+34.67`), and Boost `158` studs/s from `SpawnDistance = 125.00` hit `Evaded` at `196.27` within `2s`. On late shifts, `Shift 5` cornering at `84` studs/s (`5s`) closed to `62.81` (`-47.19`), while holding full speed `95` studs/s still pulled ahead (`Shift 5`: `124.65`, `+14.65`; `Shift 6`: `119.65`, `+9.65`). Zero game script console errors; Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
+
