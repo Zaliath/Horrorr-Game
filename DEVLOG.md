@@ -1180,3 +1180,25 @@
 - **Next Steps / Known Issues:**
   - `loadstring(Source)` passes. **Not Play-tested** (Studio would not leave Play mode at first; please test by holding WASD/Space while exiting, standing up from the rear bench and pressing [C]). If the van still moves, the next suspect is the moment collisions return after the slide.
   - Input is ignored for ~0.7-0.8s during each transition. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-21 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Slightly Softer VHS Overlay (`AtmosphereCameraController`):**
+    - Nudged the VHS overlay just slightly softer while preserving the exact VHS aesthetic and monster-threat scaling (`VHSStaticSnow`: `0.966` calm → `~0.905` threat, `VHSScanlines`: `0.976`, `VHSTrackingBar`: `0.985` calm → `~0.925` threat, zero `REC`/timestamp text).
+  - **Bigger Outdoors Camera Lens Droplets + Heavy Chaser Surge (`RainController`):**
+    - Expanded the outdoors-only refractive `Glass` camera droplet pool from `15` → **`38`** with larger, crisper water beads (`TargetScale = 0.072..0.135`, `Transparency = 0.74`, `Reflectance = 0.25`, dynamic downward teardrop elongation as they slide).
+    - Calm light drizzle maintains a moderate ~`10–14` active droplets, surging rapidly to **`32–38`** fast-spawning droplets whenever `DeliveryVan:GetAttribute("ChaseActive") == true` outdoors (still strictly **0** inside `DeliveryVan`, Factory, or under roofs).
+  - **Much Louder Chaser Storm Rain Audio (`RainController`):**
+    - Kept calm drizzle balanced while dramatically cranking up active Chaser storm audio: outdoors `HeavyStormLoop` up to **`2.20`** + `StormWashLoop` up to **`1.40`**; muffled inside `DeliveryVan` `InteriorMuffledLoop` up to **`1.85`** + muffled `HeavyStormLoop` (`1.25`) & `StormWashLoop` (`0.80`) with punchier **`+6.0 dB`** low-end roof-drum rumble.
+  - **1st-Person Seated Van Window Rain Droplets (`RainController`):**
+    - Added client-only `SurfaceGui` glossy rain droplet layers (`PlayerGui.VanWindowRain`) adorned to the interior faces of `DeliveryVan`'s 6 existing `Glass` panes (`Cab.Windshield` pool `112`, `Cab.SideGlassL/R` `76` each, `SlidingDoor.DoorWindow` `32`, `RearDoors.RearWindowL/R` `26` each) — zero new parts, welds, or physics impact, and naturally hidden behind Window Monster blinds when pulled up.
+    - **Strict visibility rule:** Enabled **only** when seated in a van seat **and** in 1st person (`isSeatedFirstPerson`); immediately disabled when on foot, zoomed into 3rd person, or holding `[V]` chase cam, and zero droplets spawn when parked under the Factory roof.
+    - **Sightline weighting & airflow physics:** Keeps `Cab.Windshield`'s central driving sightline clear while densely beading the windshield edges, top perimeter, and side windows; droplets trickle downward when parked, streak upward/outward on the windshield and diagonally backward on side windows as van speed climbs, and pelt heavily during Chaser storms.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.AtmosphereCameraController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** Client `PlayerGui.VanWindowRain` (`Folder` of 6 client-only `SurfaceGui` layers on existing `DeliveryVan` glass panes).
+- **Next Steps / Known Issues:** Verified live in Play mode across all scenarios: Factory interior (`Snow = 0.966`, `Scan = 0.976`, `Bar = 0.985`, `Lens = 0`, all 6 van windows `0` drops under Factory roof), outdoors on foot (`11–12` calm lens drops → `38` Chaser storm drops `maxS = 0.139`, `HeavyStormLoop = 2.20`, `StormWashLoop = 1.40`, verified via `Outdoor_Storm_LensDrops_v2`), in-cab 1st-person highway drizzle (`Lens = 0`, `Windshield = 59` with `center = 1 / edge+top = 45`, `SideGlassL/R = 39/41`, verified via `InCab_Final_Drizzle`), in-cab 1st-person Chaser storm (`Lens = 0`, `InteriorMuffledLoop = 1.85`, `HeavyStormLoop = 1.25`, `StormWashLoop = 0.80`, `LowGain = +6.0 dB`, `Windshield = 111`, `SideGlassL/R = 73/74`, verified via `InCab_Final_Storm`), and `[V]` 3rd-person chase cam (all 6 `VanWindowRain` `SurfaceGui`s immediately `Enabled = false`), with zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`AtmosphereCameraController`, `RainController`).
