@@ -1250,3 +1250,19 @@
   - `RoughnessMap`: `rbxassetid://128184551029044`
   - `MetalnessMap`: `rbxassetid://112128820888656`
 - **Next Steps / Known Issues:** Procedural chunk placement (`ChunkBuilder`) has NOT been wired to spawn these new props yet — ready whenever requested! Remember to grant the group experience permission to use these 15 personal-account mesh assets + 4 shared PBR texture IDs in Creator Dashboard before publishing.
+
+
+---
+
+## 2026-11-21 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - Wired all **15 new full-PBR forest & roadside horror props** into **`ServerStorage.Modules.ChunkBuilder`** (100% object-pooled with `SurfaceAppearance` preserved and `templateBaseSize` restored on reuse):
+    - **On-Road Hazards (`Prop_CarWreck_Rusted` & `Prop_RustedBarrels`) on Main Roads & Sidepath Roads (`BuildRoadChunk`):** Spawns solid crashed cars (`58%`, occasionally paired with tumbled barrels off the shoulder) and barrel clusters (`42%`) on straight/cracked/damaged road cells (`14%` on main roads, `24%` on `IsBranch` sidepaths; skipped on `Gz < 2`, bridges, intersections, delivery house cells, and depot driveways). Always hugs one outer lane (`±14.5–20` studs off centerline) so `>= 28` studs of unobstructed asphalt remain for clean high-speed swerving.
+    - **Roadside Shoulders, Pull-Off Bays & Yards (`BuildRoadChunk`):** Places non-collidable `Prop_WarningSign_Rusted` (facing approaching traffic), `Prop_RoadMarker_Post`, and shoulder `Prop_ScrapTires_Pallet` / `Prop_RustedBarrels`; fills `Road_PulloffBay` pockets with solid `Prop_CarWreck_Rusted` / `Prop_RustedBarrels` / `Prop_ScrapTires_Pallet`; and mixes `Prop_ScrapTires_Pallet` / `Prop_RustedBarrels` into house yards clear of `DropoffPad`s.
+    - **Rare Creepy Backwoods Clearings (`BuildForestChunk`):** Spawns `Prop_AbandonedWell`, `Prop_OldGravestones`, `Prop_WoodsTotem`, `Prop_AbandonedCampfire`, and `Prop_HuntingBlind_Rotted` in Ring 1 (`22%`) and Ring 2 (`18%`) forest chunks BEFORE tree placement, reserving a `17`-stud tree-free clearing ring (zero tree clipping!) framed with 1–2 edge brambles/rock clusters and orienting hunting blinds/gravestones toward the nearest road.
+    - **Forest Floor Clutter (`BuildForestChunk`):** Scatters `Prop_Boulder_Mossy`, `Prop_RockCluster_Small`, `Prop_FallenLog_Rotted`, `Prop_TreeStump_Old`, and `Prop_BrambleBush_Dead` across forest chunks (`2–4` Ring 1, `2–3` Ring 2, `1–2` Ring 3, `0–1` Ring 4, `0.88–1.18×` scale variety, `>= 9` studs from tree trunks; shadows disabled on Rings 3–4 & small clutter for smooth FPS; boulders/logs/stumps solid in deeper woods `>= 62` studs from road while brambles stay non-collidable).
+- **Studio Paths Modified:**
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** None (uses existing `ChunkBuilder` pooling and templates in `ReplicatedStorage.Assets.MapModels.HorrorKit_Props`).
+- **Next Steps / Known Issues:** Verified live in Play mode across ~30 streamed road cells and surrounding forest rings: **`15/15` new prop types** spawned cleanly (`312` new props right at spawn; across road sweep: `17` wells, `12` gravestones, `8` totems, `9` campfires, `3` hunting blinds, `14` warning signs, `34` markers, `20` pallets, `17` road/sidepath barrel clusters, `2` on-road car wrecks including sidepath `Road_-1_20` paired with barrels, and hundreds of boulders/rocks/logs/stumps/brambles), **`TreeClips = 0`** across all clearings, visually confirmed live on-road `Prop_CarWreck_Rusted` in van headlights (`Live_OnRoad_CarWreck_Headlights`), and zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create (`ChunkBuilder`).
