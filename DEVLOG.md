@@ -834,3 +834,20 @@
   - `Workspace.DeliveryVan.VanDrive` (modified, "The game part" placeId 93445054108906)
 - **New Dependencies:** None.
 - **Next Steps / Known Issues:** Verified in Play mode (Server): all 96 `LeafDetail` parts welded to their own `RearDoor` root; with `RearDoorL` swung 110 deg about its hinge a detail part moved 5.22 studs in world with 0.0001 max drift relative to the door. Sliding door check: all 41 `SlidingDoor` child parts (incl. the `XD_*` decor) were already welded to `DoorPanel` and moved 7.02 studs with 0.0001 drift, and no `ExtraDetail` part sits on the sliding door's footprint, so I found nothing left behind on the side door; if something still stays put there, tell me which piece. Not visually inspected from a player camera. Deliberately still on the body: `RearHinge*` barrels, tail/reverse lights, `ExtraDetail.Rear` (`RearHeader`, `HighBrake`, `PlateLight` straddle the door gap). Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Sealed `BackFogBarrier` Full-Map Width & Locked East-West Orientation (`MapService`):**
+    - Fixed the bug where `BackFogBarrier` rotated 90° sideways on East/West lateral road jogs (and was narrower than the flanking forest), letting players drive right around the fog through the woods.
+    - Locked `BackFogBarrier` strictly to East-West orientation facing North (`-Z`) and widened both the invisible collision wall (`BackFogWall_L/R`) and all 4 vertical-gradient dark fog curtains (`BackFogSheet_1..4_L/R`) to two `1,600`-stud halves (`3,200` studs total, `X = [-1639 .. +1561]`, extending hundreds of studs beyond both outermost forest boundaries) with a `600`-stud billowing mist emitter bar across the road and shoulders.
+  - **Tuned `BackFogBarrier` Distance Slightly Further Back (`MapService`):**
+    - Added real North-South `maxReachedGz` tracking (`BACK_BARRIER_LAG = 11`, `BACK_BARRIER_GZ_LAG = 10`) so East/West jogs never shrink the actual world distance behind the van (~`1,000–1,200` studs behind — comfortable breathing room without feeling too far away).
+    - Raised active Factory Depot clamp to `8` cells (`currentDepotSpine - 8` / `currentDepotGz - 8`) while `ShiftGateBarrier` is active, and expanded streaming keep bounds (`SPINE_BACK = 12`, `DESPAWN_SPINE_BACK = 14`, `SPAWN_RADIUS = 1100`, `DESPAWN_RADIUS = 1250`, reverse spawn boost `16`).
+- **Studio Paths Modified/Created:**
+  - `ServerScriptService.Server.Services.MapService` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode (`SpanX=[-1639 .. 1561]`, `Total=3200 studs`, `CanCollide=true/true`, `WallLook=(0, 0, -1)`, `DistBehind=1204 studs` at `VanZ=-1709`, zero console errors). Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
