@@ -877,3 +877,42 @@
 - **New Dependencies:** Replicated `Player` attribute `VanLookBackSide`; `SoundService.VanLeanWindSfx`; door-sill attachments `VanAnimSillBraceL` / `VanAnimSillBraceR`.
 - **Next Steps / Known Issues:**
   - Verified in Play mode: `VanSeatHint` displayed `"[C] Switch seat  •  [V] 3rd Person  •  Hold [Alt/MMB] Look Back"`, `VanAnimSillBraceL/R` created (`true/true`), `RollWindowDown` rolled `WindowRollL` from `0.00` past `0.73` to `1.00`, `LeanBack(true)` replicated `VanLookBackSide="L"` and shifted `RootJoint.C0` to `(-1.85, 0.17, -0.17)`, releasing left `WindowRollL=1.00` and returned `RootJoint.C0` to `(-0.02, 0.00, -0.00)`, and `WindowCoverL=true`, `WindowApproachSide="L"`, `WindowThreatSide="L"`, and seat exit all auto-cleared `VanLookBackSide` to `""`. Zero game script errors (`get_console_output`), Studio returned to `Edit` mode (`VirtualInputManager:SendKeyEvent` lacks `RobloxScript` capability in `execute_luau`, so live keyboard/camera testing of `[V]` toggle and `[Alt]` hold feel should be done interactively in Play). Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Copilot SDK
+- **Summary of Changes:** Added a large, bright red anchored test part to confirm live Studio editing.
+- **Studio Paths Modified/Created:** `Workspace.StudioEditTestRedPart`
+- **New Dependencies:** None.
+- **Next Steps / Known Issues:** Test part is non-colliding and can be removed after verification. Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Built & Finished Monster #3 — The Driver-Side Door-Ripper (`Monster3_DoorRipper`, `DoorMonster`, `DoorMonsterController`):**
+    - **`ReplicatedStorage.Assets.Monsters.Monster3_DoorRipper`:** Built articulated 16-child procedural horror rig (`Root`, `Torso`, `Head` with glowing amber->crimson eyes + `EyeLightAnchor` `PointLight`, unhinging toothed `Jaw`, `UpperArmL/R` `2.05`, `ForearmL/R` `2.15`, clawed `HandL/R`, `UpperLegL/R` `1.95`, `LowerLegL/R` `2.05`, taloned `FootL/R`).
+    - **`ServerStorage.Modules.Monsters.DoorMonster`, `MonsterService`, & `NetDefs`:**
+      - Added `NetDefs.DoorMash` (`RateLimitPerSec = 28`, `MinInterval = 0.025`) wired in `MonsterService:Start()` to `doorMonster:RequestMash(player)`.
+      - Implemented full state machine (`Approach` -> `Threat` -> `Repelled` / `Ripping`): spawns naturally only while actively driving (`MinDriveSpeed = 24`) and mutually exclusive with `WindowMonster` / `ChaseMonster`; during `"Threat"`, `DoorThreatProgress` decays (`0.155..0.215`/s) with periodic yanks (`1.35s`) swinging `DoorThreatAngle` (`2°..62°`), while driver `[E]` mashes (`+0.095`) fight back to `1.0` (`_repel()`, slams door shut). On failure (`_triggerRip()`), flings door to `78°`, sets `VanCoastUntil` (`6.5s`, maintaining `>= 46` studs/s rolling velocity), deducts `10s` shift time, exempts movement via `AntiExploitService`, destroys `DriverSeat.SeatWeld`, and ejects the driver (`-35` HP, non-lethal above `10` HP) outside the left door while the van keeps rolling down the road.
+      - Added Cmdr command `doormonster` / `dm` (`spawn | threat | rip | repel | clear`) and mutual-exclusion guards in `WindowMonster` & `ChaseMonster`.
+    - **`Workspace.DeliveryVan.VanDrive` & `VanController`:**
+      - Physically rotates `DoorLowerL` via `DoorThreatAngle`, blocks cab entry/exit, `[C]` seat switch out, and Look Back lean-out on `"L"` during `DoorThreatActive`/`DoorThreatState`, disables left `DoorPrompt` so `[E]` isn't intercepted during mash, and switches `VanDrive` / `VanController:stopDriveSession()` to free-rolling wheel torque (`1400` vs `60000`/`70000` brake) while `VanCoastUntil` is active.
+    - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController` & `ControllerList`:**
+      - Registered controller driving analytical 2-bone arm & leg IK (`BulkMoveTo`) so hands stay locked onto moving `DoorHandleL` & `DoorLowerL` and feet plant on the running board, plus sprint-and-leap approach, tumbling repel, cab lunge rip, local mash prediction HUD (`PlayerGui.DoorMonsterHUD`) with `[E]`/`ButtonX`/touch button + pulsing vignette, zero-drift camera shake + brief `0.55s` shock glance, `SetChaseCamBlocked` safety, and shaped built-in spatial SFX.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Assets.Monsters.Monster3_DoorRipper` (created)
+  - `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanController` (modified)
+  - `ServerStorage.Modules.Monsters.DoorMonster` (created)
+  - `ServerStorage.Modules.Monsters.WindowMonster` (modified)
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `ServerScriptService.Server.Services.MonsterService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `ServerScriptService.Cmdr.Commands.doormonster` & `doormonsterServer` (created)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:** Replicated remote `NetDefs.DoorMash`; van attributes `DoorThreatActive/State/Start/Duration/Progress/Open/Angle/MashSeq/YankSeq/VictimUserId/EventSeq` & `VanCoastUntil`; `DoorLowerL` attribute `DoorHingeLocalL`.
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode: `NetDefs.DoorMash` & `Remotes.DoorMash` active (`true/true`); forced `"Threat"` opened `DoorLowerL` (`DoorThreatAngle = 40.74°`, `2.715` studs door travel) and 7 `[E]` `RequestMash` inputs repelled (`DoorThreatState = "Repelled"`, `DoorThreatAngle = 0.00°`, `0.000` stud closed error); Client spawned 16-child `DoorRipperActive` in `Workspace.DoorMonsterClientRig` with `PlayerGui.DoorMonsterHUD` (`TouchMashButton`, `ApproachBanner`, `MashBarFrame`); `ForceRip()` flung door to `78.0°`, extracted driver out the left side (`Seat=nil`, `PlayerLocalX=-7.50`, `HP=100.0->65.0`, `Pen=10s`), and kept the driverless van rolling (`FwdSpd=35.93`, `Rolled=18.52` studs with `CoastRem=5.63s`); `Reset()` restored `DoorThreatActive=false`, `DoorThreatAngle=-1.0`, and `0.000` stud closed error. Zero game script errors (`get_console_output`), Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.

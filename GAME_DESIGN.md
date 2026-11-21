@@ -71,6 +71,7 @@ it down a forest road to deliver packages to houses.
 5. **Cargo monster (`Monster5_Cargo`):** twisted, spider-like stowaway crawler that sneaks into the back of the van. Player must check the rear camera and lock the cargo door, or packages get wrecked.
 6. **Skinwalker (`Monster6_Skinwalker`):** uncanny humanoid/deer-like hybrid that stands motionless in the middle of the road to bait drivers into swerving—or transforms into a relentless stalker if hit.
 7. **Deep-forest / Far-from-van hunter *(planned, not built yet)*:** kills players who stray too far away from the delivery van into the woods; pairs with the dense, solid deep forest designed to slow off-road players down.
+8. **Door-Ripper (`Monster3_DoorRipper` / `DoorMonster`):** driver-side roadside hijacker that sprints out of the dark shoulder while the van is moving (`>= 24` studs/s), leaps onto the left running board, and pries the driver door open. The driver must mash `[E]` / `[X]` to pull the door shut (`DoorMash` remote) — slamming it shut knocks the monster tumbling down the road, whereas failing lets it rip the driver out onto the asphalt (`-35` HP, `-10s` shift penalty) while the driverless van keeps rolling forward (`VanCoastUntil`).
 
 ### 3D Monster Assets (Blender → Roblox R15 FBX)
 - Source `.blend` and individual R15-rigged, UV-unwrapped `.fbx` exports (low-poly / retro PS1 atmospheric horror style) live in `Assets/Monsters/`:
