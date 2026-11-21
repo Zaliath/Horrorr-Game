@@ -733,3 +733,17 @@
   - `Workspace.DeliveryVan.VanDrive` (modified)
 - **New Dependencies:** None (reuses existing `VanSeat` collision group and `VanSwitchActive` player attribute).
 - **Next Steps / Known Issues:** Van jump on `[C]` still open (see above). The Studio MCP connection dropped at the end of the session, so confirm both scripts above saved in Studio (the `VanController` edit was applied and tested in Play; the `VanDrive` edit was applied in Edit mode). Remember to **Commit Drafts** in Team Create.
+
+---
+
+## 2026-11-20 — Riplatki (via Antigravity)
+- **Summary of Changes:**
+  - **Big, Chaotic, Ultra-Long-Reach Movement & Near-Miss Swipes (`StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController`):**
+    - **Velocity-Lead Ultra-Long Forward Arm Scanner (`findEnvironmentAnchor`):** Added shoulder forward velocity prediction (`leadDist = math.clamp(worldSpeed * reachDuration, 18, 56)`), forward-biased corner/roof clamping (`reachAimPos = predictedShoulder + forwardDir * 24`), `28–87` stud forward reach filtering scored heavily toward farthest forward distance (`fwdProj * 1.65`), and a `78`-stud forward road curb fallback so both `88`-stud arms always reach aggressively out in front even at `134–170+` studs/s pursuit speed.
+    - **Desperate "Just Barely Missing" Van-Swipe Lunges (`isSwipeLunge`):** Within `96` studs during `"Chasing"`, alternating arms execute a wide haymaker windup (`u < 0.26`, `±42–56` studs lateral), blast across the rear bumper `3.5–8.0` studs behind the van (`0.26 <= u < 0.72`, `sx * 38 -> -sx * 16` lateral sweep at full up to `87`-stud extension with wind-whoosh SFX and snapped claw curl), and overshoot-crash into buildings/trees/poles/asphalt (`u >= 0.72`) with heavy thuds, camera shake, and stumble recoil.
+    - **Chaotic Stumbling Torso, Head & Building Impacts:** Slowed sweep cadence to weighty readable arcs (`crawlFreq = math.clamp(effectiveSpeed * 0.010, 1.05, 1.55)` Hz) paired with `16.5–25.5` stud forward pull lunges, multi-harmonic lateral staggering (`chaosLat`), damped spring stumble physics (`stumbleLat`, `stumbleRoll`, `stumblePitch`), violent shoulder-twisting torso yaw (`±28°`) / roll (`±22°`) / pitch (`-16°±11°`), widened `42`-stud house/wake crash radius, `6.5°` house structural jolts + extra plank/brick debris, and clean rip-loose release when blasting past planted anchors (`relAnchorFwd < -16`).
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+- **Repository Files Modified:** `DEVLOG.md`.
+- **Next Steps / Known Issues:** Verified in live Play mode (`chasemonster close 85` & `close 48` while driving at `95` studs/s): `MaxForwardReach = 97.8` & `95.7` studs ahead of `Root` (`fwdL=78.1`, `fwdR=89.2`), `SwipeMissCount = 1` (`L=SwipeMiss` alternating with `R=Tree`/`Guardrail`/`LampPost`), `BuildingStumbles = 2`, `DestroyedPropsCount = 9`, `seat=DriverSeat` held solidly throughout, and zero game script console errors; Studio returned cleanly to `Edit` mode (`6807141d-6567-4853-a980-bec7b2f2d9ee`). Remember to **Commit Drafts** in Team Create.
+
