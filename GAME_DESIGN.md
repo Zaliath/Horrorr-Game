@@ -42,7 +42,7 @@ it down a forest road to deliver packages to houses.
 
 
 ## Planned: Core Loop
-- Each shift is a list of deliveries. The van screen shows the next address.
+- Each shift is a list of deliveries. The van's in-cab `TrackerScreen` runs a real-time **Heading-Up GPS radar** (van chevron fixed pointing up, rotating `N / E / S / W` compass labels, rotating radar sweep): the current active delivery house appears as a bright pulsing **green dot**, remaining shift stops appear as smaller/dimmer green dots, and once deliveries finish or time expires the Next Factory Depot appears as a pulsing **gold dot**.
 - The player is always behind schedule, and every monster threat costs time, so they choose between speed and safety.
 - **Endless Forward Factory Depot Progression:** Instead of teleporting back to `(0, 0)` when a shift ends, both finishing all deliveries AND running out of time (`0:00`, forfeiting the on-time bonus) spawn/relocate the Factory Depot further down the continuing procedural road onto a reserved roadside lot (`~6–8` cells ahead) with a glowing green bay beacon. Players drive to the new roadside depot to collect shift payout, restock boxes at the chute, and browse shops. An invisible collision wall paired with subtle weathered industrial sawhorse barricades, blinking amber hazard beacons, and traffic cones blocks continuing further down the road until **every currently alive player** clicks the small **"Start Next Shift"** HUD ready-up button (automatically handling deaths, respawns, and disconnects).
 - At the end of each shift the player is paid based on deliveries completed and time taken, then spends the money on van upgrades.

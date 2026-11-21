@@ -661,3 +661,25 @@
 - **Repository Files Modified:** `DEVLOG.md`.
 - **Next Steps / Known Issues:** Verified in live Play mode (`Ext = 108.1 × 63.7 × 100.4`, `Toppled = 8`, `Grabs = House(Window_East_Upper_03), Road(RoadCurb)`, `Scars = 5 (24 parts)`, `Debris = 90`, `Props = 5` -> clean `Scars = 0`, `Debris = 0` on `clear`, and active `"Chasing"` closing speed verified at `135.8 -> 37.3` = `98.5` closed in `1.01s` / `97.5` studs/s rate, `maxSpd = 105.0`). Zero script console errors. Studio returned to `Edit` mode. Remember to **Commit Drafts** in Team Create.
 
+
+---
+
+## 2026-11-20 — justhyne1205 (via Antigravity)
+- **Summary of Changes:**
+  - **Cleaned Up Baked Static Clutter on `TrackerScreen` (`Workspace.DeliveryVan.CabInterior.TrackerScreen.SurfaceGui.Screen.Radar`):**
+    - Removed the 10 fake baked-in decorative clutter instances (`6` fake static green dots, `2` fake static red dots, fake `"UNK SIGNAL"` label, and frozen `42°` green diagonal line) while preserving the radar rings, crosshairs, compass ticks, `N / E / S / W` labels (renamed to `CompassN/E/S/W`), and `DashController`'s rotating `Sweep`.
+  - **Upgraded In-Van GPS Radar to Real-Time Heading-Up Mode (`ShiftController` & `ShiftService`):**
+    - Switched radar math in `ShiftController` to **Heading-Up** orientation updated smoothly every frame on `RenderStepped` (zero per-frame allocations): projects target offsets into the van's horizontal `(Forward, Right)` frame (`Forward = up`, `Right = right`), keeps a crisp pure-Frame cyan-white upward GPS chevron (`VanArrow`) centered at `0°` (avoiding missing Unicode font glyphs on `SurfaceGui`), and orbits `CompassN/E/S/W` smoothly around the radar rim as the van turns.
+    - **Active Shift — Next Delivery House:** Renders the current active delivery stop as a bright pulsing **green dot** (`RGB 65, 255, 115`) with a crisp mint-white stroke and pulsing `TargetPing` ring (clamped cleanly to the outer rim when beyond `RADAR_RANGE = 900` studs).
+    - **Active Shift — Remaining Stops:** Added `RemainingStops` to `ShiftService`'s `ShiftState` snapshot (plus automatic re-broadcast when a streamed `DropoffPad` refines `PadWorldPos`) and rendered remaining uncompleted stops as smaller, dimmer green dots (`RemainingDot_1..N`) so drivers/navigators can read upcoming stops at a glance.
+    - **Return Phase — Next Factory Depot:** Renders the relocated Next Factory Depot as a distinct pulsing **gold dot** (`RGB 255, 205, 55`) with matching gold ping ring while hiding remaining stop dots.
+    - **Prep Phase:** Cleanly hides all target dots and ping rings until the shift begins.
+- **Studio Paths Modified/Created:**
+  - `Workspace.DeliveryVan.CabInterior.TrackerScreen.SurfaceGui.Screen.Radar` (modified — removed 10 fake static clutter elements, named `CompassN/E/S/W`)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **New Dependencies:**
+  - `ShiftState` snapshot field: `RemainingStops` (`{ { HouseId: number, Address: string, Pos: Vector3 } }`).
+- **Next Steps / Known Issues:**
+  - Verified live in Play mode across `Prep` (`TargetDotVis=false`, `RemVis=0`, `CompassE` at top while parked facing East), `Active` at East/North/West headings (confirmed accurate Heading-Up dot projection & rotating `N/E/S/W`, bright green active dot + 2 smaller dimmer remaining stop dots + crisp pure-Frame cyan-white van chevron via in-cab `screen_capture`), and `Return` (confirmed pulsing gold `NEXT FACTORY DEPOT` dot with `RemVis=0` via in-cab `screen_capture`). Zero console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** in Team Create.
