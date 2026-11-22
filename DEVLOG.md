@@ -2184,3 +2184,16 @@
   - Fired `ReviveRequest("VoteRestart")` -> confirmed `VanSwallowed = false`, `VanFuel = 100`, `DeliveryVan` restored within `0.75` studs of original depot spawn (`43,756` visible parts, `38` solid parts, `0` leftover devour constraints, `Anchored = false`), and player respawned `3.49` studs from `SpawnLocation`.
   - Triggered `chasemonster spawn` immediately after restart -> confirmed `ChaseActive = true`, `ChaseState = "Spawning"`.
 - **New Dependencies:** None.
+
+
+---
+
+## 2026-11-22 — justhyne1205 (via Antigravity) — Staged & Configured `CreepyCrawlie` Skinned Monster Asset
+- **Summary of Changes:**
+  - Renamed imported `Workspace.Scene` → `CreepyCrawlie` (`PrimaryPart = CreepyCrawlie_Export_Mesh`, 19-bone skinned PBR `MeshPart` with `SurfaceAppearance` maps `ColorMap = rbxassetid://113635959479475`, `RoughnessMap = rbxassetid://130377133219500`, `MetalnessMap = rbxassetid://77600376324606`, `NormalMap = rbxassetid://127595576241712`), set `Anchored = true, CanCollide = false`, added `Animator` under `AnimationController`, and renamed `ServerStorage.RBX_ANIMSAVES.Scene` → `CreepyCrawlie` (preserving `CreepyCrawlie_Move` `KeyframeSequence` and updating `AnimSaves.Value`).
+  - Proportionally scaled via `Model:ScaleTo(4.0)` (`0.94 × 0.65 × 0.91` → `3.76 × 2.62 × 3.65` studs, scaling mesh & all 19 bones cleanly), grounded flush at `botY = 0.00` facing `(0, 0, -1)` right beside `Monster4_Gremlin` in `Workspace.MonsterModels.CreepyCrawlie` (`(266.50, 1.31, -77.60)`), and saved a clean origin-centered template copy at `ReplicatedStorage.Assets.Monsters.CreepyCrawlie`.
+- **Studio Paths Modified/Created:**
+  - `Workspace.MonsterModels.CreepyCrawlie` (moved, renamed, scaled, grounded)
+  - `ReplicatedStorage.Assets.Monsters.CreepyCrawlie` (created template copy)
+  - `ServerStorage.RBX_ANIMSAVES.CreepyCrawlie` (renamed from `Scene`)
+- **Verification:** Visual Studio `screen_capture` (`CreepyCrawlieLineup`) confirmed clean ground contact (`botY = 0.00`), forward facing matching the rest of the `MonsterModels` lineup, crisp PBR textures, and proportional scale next to `Monster4_Gremlin`, `Monster5_Cargo`, and `Rig`.
