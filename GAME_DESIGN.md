@@ -132,3 +132,9 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 - Failure/win conditions and exact shift structure.
 - What is saved in the player profile.
 - Confirm procedural vs hand-built map (the plan above is procedural; the current map is hand-built).
+
+## Implemented Release Polish (Phase 1 — v294)
+- **Player Animations & Flashlight Aim:** Custom `Idle`, `Falling`, `Land`, and `< 35 HP` `IdleHurt` / `WalkHurt` / `RunHurt` animations plus synced 3rd-person `FlashlightAimPitch`.
+- **Dashboard Life:** 2nd-order spring-damper `SkullBobbleJoint` on `CabDetail.Trinkets.Skull` and live cab telltale warning lights for low hull, open doors, low fuel (`< 20%`), and latched monsters.
+- **Fuel / Gas System:** Authoritative `VanFuel` (`0–100`) draining faster under `[Q]` boost, empty-tank sputter, SpeedoPanel fuel bar, free `DepotFuelPump` in `StartArea`, and procedural roadside `GasStationLandmark`s every 5 spine steps.
+- **Delivery Payday Juice:** `DeliveryFX` drop-off scanner beep + cash chime + `+$120` popup + porch light flicker, and `ShiftPaystub` animated Corporate Paystub summary modal at shift end.

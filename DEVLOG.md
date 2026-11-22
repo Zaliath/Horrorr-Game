@@ -1964,3 +1964,26 @@
   - `Workspace.DeliveryVan.VanDrive`
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{ChaseMonsterController,VanController,WristMenuController}`
 - **Verification:** Play Solo end-to-end verified: Remote Van drove `DeliveryVan` `17.29` studs (`-39.0,-179.9 -> -38.0,-197.2`); `spawnprop` + `VanImpact` wrecked `Mailbox`, `Guardrail`, `Fence`, `Barrels`, and `TrafficSedan` (`wrecked = true`); all 5 Chaser finishers (`sky`, `slam`, `throw`, `rip`, `drag`) transitioned cleanly with `VanSwallowed = true` (`Transparency = 1.0`, `CanCollide = false`); Wrist `[ ADMIN ]` categorized cards & dropdown buttons verified present; **zero** game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 285**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Phase 1 Release Polish: Custom Animations, Skull Bobblehead, Van Fuel & Gas Stations, Delivery Juice & Corporate Paystub (`The game part` v294)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **Custom Player Animations & Flashlight Pitch Aim (`Animate`, `FlashlightService`, `FlashlightController`, `NetDefs`):**
+    - Wired 6 custom AnimationIds (`Idle: 84570383049367`, `Falling: 122668571629696`, `Land: 80980401321728`, `Idle Hurt < 35 HP: 88633264181645`, `Walk Hurt < 35 HP: 109843810793603`, `Run Hurt < 35 HP: 127508779095743`) with smooth `< 35 HP` crossfade transitions and landing hook.
+    - Added `FlashlightAim` (`C2S`) + `FlashlightAimPitch` attribute so teammates see each player's flashlight vertical aim pitch.
+  - **Dashboard Skull Bobblehead & Cab Warning Telltales (`VanDrive`, `VanAnimController`, `DashController`):**
+    - Registered `SkullBobbleJoint` on `CabDetail.Trinkets.Skull` driven by a 2nd-order spring-damper wobble reacting to forward acceleration, lateral G-forces, bumps, and shocks.
+    - Wired `DashController` telltales (`Telltale0..8`, `DOOR`/`ENG`/`ALRT`) and `fuelSeg` bar to glow/flicker red on low health (`< 45`), open doors, low fuel (`< 20%`), or latched monsters.
+  - **Van Gas / Fuel System & Gas Stations (`VanDrive`, `VanController`, `ChunkBuilder`, `MapService`, `ShiftService`, `WristService`, `WristMenuController`):**
+    - Added authoritative `VanFuel` (`0–100`) draining with speed & `[Q]` boost, empty-tank sputter speed cap, HUD Fuel Gauge + `LOW FUEL!` / `OUT OF GAS!` warnings, free `DepotFuelPump` in `StartArea`, procedural `GasStationLandmark` every 5 road spine steps (`SpineIndex >= 4 and % 5 == 0`) with hold-to-refuel `ProximityPrompt`s, and `RefillFuel` Wrist Admin action.
+  - **Delivery Payday Juice & Corporate Paystub (`ShiftService`, `ShiftController`, `NetDefs`):**
+    - Added `DeliveryFX` (`S2C`) for barcode scanner beep + cash chime + `+$120` popup + porch light flicker on drop-off, and `ShiftPaystub` (`S2C`) for a 4.6s animated counting Corporate Paystub modal at shift completion.
+- **Studio Paths Modified:**
+  - `ReplicatedStorage.Shared.NetDefs`
+  - `StarterPlayer.StarterCharacterScripts.Animate`
+  - `ServerScriptService.Server.Services.{FlashlightService,MapService,ShiftService,WristService}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DashController,FlashlightController,ShiftController,VanAnimController,VanController,WristMenuController}`
+  - `Workspace.DeliveryVan.VanDrive`
+  - `ServerStorage.Modules.ChunkBuilder`
+- **Verification:** Edit-mode `loadstring` syntax check passed `14/14` scripts (`errors: []`); Play Solo verified `Animate` IDs (`84570383049367` / `122668571629696`), `< 35 HP` transition, `FlashlightAimPitch = 0.35`, `SkullBobbleJoint`, `VanFuel = 100`, `DepotFuelPump`, `6` `GasStationLandmark` spawns, `DeliveryFX` & `ShiftPaystub` (`PaystubModal`), and `0` game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 294**.
