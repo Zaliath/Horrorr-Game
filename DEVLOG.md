@@ -1763,3 +1763,20 @@
   - `ServerScriptService.Server.Services.{MonsterService,ShiftService}` (modified)
   - `ServerStorage.Modules.Monsters.{WindowMonster,DoorMonster,GremlinMonster,CargoMonster,StareMonster,PhantomSemiMonster,HitchhikerMonster,PorchMonster}` (modified)
 - **Verification:** Play Solo verified all updated `Config` tables across all 8 monster modules, `VanReady = true`, and zero game-script errors in `get_console_output`; stopped Play cleanly and saved **`The game part`** **Version 256**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Door-Ripper True Rip-Out & Backward Road Drag Overhaul (`The game part` v257)
+- **Root Cause Found:** `DoorMonster._triggerRip` previously wrote `hrp.CFrame` and velocity only on the Server while the local client owned `HumanoidRootPart` physics inside the enclosed cab, causing cab collisions and client ownership to leave the driver inside the van while the Door-Ripper drifted away alone.
+- **Summary of Changes:**
+  - **Server World-Space Drag & Collision-Free Extraction (`ServerStorage.Modules.Monsters.DoorMonster`):**
+    - Extended `RipSeconds` to `3.15s` (`0.45s` lunge/grab + `2.70s` rip-out & `52`-stud drag backward along the road/left shoulder), raycasting exact road ground height (`sampleRoadGroundY`) at extraction time (`t = 0.45s`) and replicating `DoorRipOriginPos`, `DoorRipDir`, and `DoorRipDistance` on `DeliveryVan`.
+    - Cleanly unseats the driver, applies temporary `VanSeat` collision group + `Massless = true` (`setCharDragPhysics`) so the cab doorframe never snags the body, calls `AntiExploitService:ExemptMovement` + `NotifyTeleport`, deals `35` HP lethal-capable damage (`LastThreatSource = "DoorMonster"`), and restores `Default` collision group, `Massless = false`, and `PlatformStand = false` on drag completion or reset.
+  - **Client-Owned Drag, Claw Lock & Horror Camera (`StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController`):**
+    - Drives the local victim's `HumanoidRootPart` cleanly out through the open driver doorway (`0.45s–0.72s`) and drags them on their back along the asphalt (`0.72s–3.15s`) before tossing them backward (`finishLocalDrag`) so they scramble up ~55 studs behind the coasting van.
+    - Moves `Monster3_DoorRipper` in world space backward along the asphalt with alternating stomping legs, footstep/scrape SFX, and ichor/dust puffs while locking both clawed hands (`handLWorld`/`handRWorld`) onto the victim's chest/shoulders (visible to both victim and co-op spectators).
+    - Keeps first-person shock-glance camera aimed up at the Door-Ripper's crimson eyes/jaw with heavy asphalt-scraping tremor and pulsing crimson vignette for the full drag (`isLocalRipVictim`).
+- **Studio Paths Modified:**
+  - `ServerStorage.Modules.Monsters.DoorMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController` (modified)
+- **Verification:** Play Solo seated `DriverSeat` test (`doormonster rip`): verified clean extraction at `t = 0.9s` (`seat = false`, `dragAttr = true`, `hp = 125 -> 90`, `dStart = 11.5`, `y = 3.1`, `cg = VanSeat`), smooth drag to `dStart = 52.2` (`dVan = 46.5`) at `t = 2.7s`, and clean release at `t = 3.8s` (`dStart = 59.2`, `dVan = 53.5`, `plat = false`, `cg = Default`) with zero console or `AntiExploit` errors; saved **`The game part`** **Version 257**.
