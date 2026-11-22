@@ -1798,3 +1798,16 @@
   - `ServerStorage.Modules.Monsters.DoorMonster` (modified)
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DoorMonsterController,VanController}` (modified)
 - **Verification:** Play Solo confirmed `LockFirstPerson` held through extraction & drag (`rArm=0.0, lArm=0.0, rLeg=0.0, head=1.0`, `faceUpY = 0.96`), active flailing arms (`rArmY = +0.75` above torso, `flailing = true`), look-away vs look-at prompt gating (`enAway = false, enLook = true`), `KickStep` stagger & `KickFree` `"KickedOff"` escape restoring exact `CANONICAL_R6_C0` (`restoredR = true, restoredL = true`, `cam = Classic`, `plat = false`), zero console errors; saved **`The game part`** **Version 259**.
+
+### Follow-up same date — Door-Ripper Chained Circular `ProximityPrompt` Fight-Back & Non-Lethal Drag Damage (`The game part` v261)
+- **Summary of Changes:**
+  - **Chained Native `ProximityPrompt` Fight-Back Sequence (`PromptUIController`, `DoorMonsterController`):**
+    - Removed the separate `KickQTEFrame` 2D HUD GUI completely and extended `PromptUIController` with a `CustomRingProgress` attribute that smoothly tints the circular prompt ring from crimson `(235, 58, 48)` to gold `(245, 212, 102)` for live countdowns on the standard circular template.
+    - Triggering `[E] Fight Back` now chains 5 fresh `ProximityPrompt`s (`DoorRipFightBackPrompt`, `Exclusivity = AlwaysShow`, `2.25s`/letter) positioned around the Door-Ripper's chest/head with randomized non-repeating letters (`Q`, `E`, `R`, `T`, `C` / gamepad / touch) and labels `Kick! (1/5)`..`Kick Off! (5/5)`.
+    - Enforced `ProximityPromptService.Enabled = true` throughout dragging, kept `canPrompt = true` once a combo starts (`qteStage >= 1`), handled both `Triggered` and direct `InputBegan` with a `0.16s` `qteStepLockUntil` debounce so keypresses work reliably even when `PlayerModule` sinks keys, and moved `playCue` above `failFightSequence` after console verification caught a nil call on timeout.
+  - **Non-Lethal Periodic Drag Damage & Forest Survival (`DoorMonster`):**
+    - Removed fatal `ForestMaulDamage` and added `applyNonLethalDamage` enforcing `MinSurviveHealth = 10` (`RipDamage = 15`, periodic `DragTickDamage = 6` every `1.6s`, `KickFailDamage = 6`, replicated `DoorRipDamageSeq` for red screen/camera scrape cues). Reaching the full `205`-stud forest drag drops the injured driver alive into the woods (`"IT DROPPED YOU DEEP IN THE FOREST! FIND YOUR WAY BACK TO THE ROAD!"`) instead of instant death.
+- **Studio Paths Modified:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{PromptUIController,DoorMonsterController}` (modified)
+  - `ServerStorage.Modules.Monsters.DoorMonster` (modified)
+- **Verification:** Play Solo verified `KickQTEFrame` gone, Stage 0 (`[E] Fight Back`) -> Stage 1 -> `2.4s` timeout fail (`hp: 110 -> 96`, non-lethal) -> retry Stage 0 -> Steps `1..5` rendering exact letters (`R`, `C`, `Q`, `R`, `T`) on `CircularPrompt_DoorRipFightBackPrompt` -> `KickedOff` (`hp = 94`, `alive = true`, `CameraMode = Classic`, `PlatformStand = false`, `CollisionGroup = Default`), plus non-lethal end-of-drag forest drop (`hp = 90`, `alive = true`), with zero game-script console errors; saved **`The game part`** **Version 261**.
