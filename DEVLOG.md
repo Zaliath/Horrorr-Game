@@ -1743,3 +1743,23 @@
   - `Workspace.StartArea.VanUpgradeStation.DockingPad` (hidden `Transparency = 1`, `CanCollide = true`, `GarageAudio` preserved)
   - Removed replaced old blocky geometry from `Workspace.StartArea.VanUpgradeStation` and `Workspace.StartArea.WarehouseDecor.VanStationDetail`.
 - **Verification:** Live Play-mode tested: swept `Blockcast` (`RespectCanCollide = true`, `11.0W × 9.5H` from `X = 40` to `X = 84`) confirmed `100%` unobstructed drive-in clearance through the portal and 4-post lift; `DeliveryVan` docked cleanly on `DockingPad` (`Pos = (79.07, 2.35, 349.54)`), triggering `10/10` `RunwayLEDs` to switch Red → Emerald Green `(40, 240, 100)` inside the sculpted bezels; `ShopPrompt` (`Enabled = true`) & `GarageAudio` (`2` sounds) verified intact; visual Play-mode `screen_capture` confirmed lighting, CRT alignment, and docked van framing with **zero console errors**. Studio returned cleanly to `Edit` mode.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Encounter Pacing Director, Staggered Monster Spawns & Porch Lurker Fix (`The game part` v256)
+- **Root Causes Found:**
+  1. **Long Wait + Simultaneous 3-Monster Pileups:** All 6 road/van monsters ticked independent timers (`42–84s` of pure high-speed driving `>= 20–28 studs/s`) with zero shared pacing coordination, so cautious driving stretched the opening wait into minutes and then several monsters hit `0` on the same stretch of road simultaneously.
+  2. **Porch Lurker (`PorchMonster`) Never Spawning Naturally:** `OnDropoffPadSpawned` armed houses during `Prep` (or stops ahead), got wiped on the next frame while leaving `_armedHouses[houseId] = true` permanently burned, and never cleared an old `"Lurking"` house when the crew moved to the next stop.
+- **Summary of Changes:**
+  - **Central Encounter Pacing Director (`ServerScriptService.Server.Services.MonsterService`):**
+    - Added a shared `Director` (`deps.Director`) enforcing a short `14–18s` calm start per shift, preventing overlapping road/van threats (`Window`, `Door`, `Gremlin`, `Stare`, `Cargo`, `PhantomSemi`, `Chase`), applying a **`14–21s` breathing-room gap** after each encounter (tightening by `1.5s/shift` down to `8–14s`), and maintaining a **3-monster anti-repeat ring buffer** (`< 75s`) so every monster gets fair rotation without starving others.
+  - **Staggered & Accessible Monster Timers (`ServerStorage.Modules.Monsters.*`):**
+    - Tuned initial delays, cooldowns, and driving speed gates so threats appear steadily during normal driving (all gated by `TryClaimRoadThreat`): `WindowMonster` (`16s` / `26–42s`), `GremlinMonster` (`18–28s` / `28–44s`, `MinDriveSpeed = 16`), `PhantomSemiMonster` (`20–30s` / `34–52s`, `MinDriveSpeed = 18`), `DoorMonster` (`22s` / `28–44s`, `MinDriveSpeed = 16`), `CargoMonster` (`24–36s` / `30–46s`, `MinDriveSpeed = 14`), `StareMonster` (`26–38s` / `32–50s`).
+    - Kept **`HitchhikerMonster`** rare (`75–115s` / `80–125s`, `MinDriveSpeed = 38`), gated only by `Director.CanSpawnHitchhiker()` so it never overlaps `PhantomSemi`/`Chase`.
+  - **Fixed `PorchMonster` Natural Spawning (`ShiftService` & `PorchMonster`):**
+    - Exposed `ActiveHouseId` in `ShiftService:GetMonsterContext()`.
+    - Cached streamed pads in `_knownPads` (cleaned on `OnDropoffPadDespawning`), cleared `_armedHouses` on shift end, cleared stale `"Lurking"` state when `ActiveHouseId` advances, and rolled `SpawnChance = 0.60` cleanly for each active delivery stop once streamed in.
+- **Studio Paths Modified:**
+  - `ServerScriptService.Server.Services.{MonsterService,ShiftService}` (modified)
+  - `ServerStorage.Modules.Monsters.{WindowMonster,DoorMonster,GremlinMonster,CargoMonster,StareMonster,PhantomSemiMonster,HitchhikerMonster,PorchMonster}` (modified)
+- **Verification:** Play Solo verified all updated `Config` tables across all 8 monster modules, `VanReady = true`, and zero game-script errors in `get_console_output`; stopped Play cleanly and saved **`The game part`** **Version 256**.
