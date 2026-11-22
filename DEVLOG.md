@@ -1720,3 +1720,26 @@
   - `StarterPlayer.StarterCharacterScripts.Animate` (modified)
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.FlashlightController` (modified)
 - **Verification:** Live-verified in Play mode numerically and visually (`flashlight_sprint_fixed`): `ToolNoneAnim` no longer plays; `WalkAnim` (`RootJoint TPos=(0.03,-0.16,-0.03)`) and `RunAnim` (`RootJoint TPos=(0.00,-0.29,-0.33), TRot=(26.2°,0.2°,3.0°)`) remain 100% intact while `Right Shoulder` holds cleanly forward (`88°` walk / `103°` lean-compensated sprint, `TPos=(0,0,0)`); screenshot confirmed clean connected R6 sprinting silhouette with forward flashlight beam and **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`Animate`, `FlashlightController`) in Team Create!
+
+
+---
+
+## 2026-11-21 — justhyne1205 (via Antigravity) — Blender PBR Van Service Bay Remake & Studio Integration
+- **Summary of Changes:**
+  - **Custom 5-Module Industrial Blender Remake (`assets/blender/VanServiceBay.blend` & `VanServiceBay_Complete.glb`):**
+    - Replaced the old blocky Roblox-primitive `VanUpgradeStation` visuals and `WarehouseDecor.VanStationDetail` with a complete 5-module game-ready PBR industrial garage bay modeled at exact 1:1 stud scale (`< 20k` tris per mesh) with a custom packed `1024×1024` 4-map PBR atlas (`ColorMap = rbxassetid://116690947947527`, `RoughnessMap = rbxassetid://97496512744914`, `MetalnessMap = rbxassetid://101362728639107`, `NormalMap = rbxassetid://120690578710341`):
+      1. `ServiceBay_Deck` (`7,152` tris): 8 bolted diamond-plate steel deck panels, smooth beveled steel drive-on approach ramp, sunken cast-iron oil drainage trench with 34 grate bars, 10 recessed Runway LED bezels, hazard curbs, rear rubber dock bumpers, and contoured wheel-stop chocks.
+      2. `ServiceBay_HeavyLiftGantry` (`12,980` tris): 4 beveled H-beam hydraulic lift columns with bolted baseplates, safety-lock ladder teeth, chrome cylinders, tucked swing arms, column-mounted finned hydraulic power-pack, open-web Warren-truss steel overhead gantry, rolling crimson chain-hoist trolley with hook, and 4 high-bay work lamps.
+      3. `ServiceBay_EntrancePortal` (`4,636` tris): lattice-braced gunmetal portal columns, entrance bollards, electrical conduit, hanging hazard clearance bar, backlit 3D `"VAN SERVICE BAY"` header, and 3 curved gooseneck barn lamps.
+      4. `ServiceBay_DiagnosticTerminal` (`3,104` tris): sculpted 1980s roll-around CRT diagnostic cart on 4 swivel casters with lower oscilloscope/battery shelf, push handle, slanted switchboard with 3 amber-lit switches & E-STOP, deep CRT glare-visor bezel, and desk lamp.
+      5. `ServiceBay_WorkshopProps` (`10,340` tris): crimson rolling tool cabinet, 4-high sculpted 5-lug van tire stack + leaning spare, 3 ribbed 55-gallon oil drums on spill pallet with rotary hand pump, 4 caged halogen tripod floodlights, crimson hydraulic engine hoist, and V-twin air compressor.
+  - **Live Studio Integration (`Workspace.StartArea.VanUpgradeStation.BlenderServiceBay`):**
+    - Aligned all 9 imported PBR `MeshPart`s cleanly onto Bay Origin `(78.88, 1.90, 349.67)` inside `Workspace.StartArea.VanUpgradeStation` so `MapService.captureDepotParts()` automatically relocates the entire bay with the Factory Depot between shifts.
+    - Set visual `MeshPart`s to `Anchored = true, CanCollide = false`, added clean primitive invisible colliders (`ServiceBayColliders`, including smooth `DriveOnRampCollider` wedge and open-doorway column/prop boxes), styled the 4 emissive glow meshes (`*2`) as rich warm retro-amber / warm tungsten `Neon`, and added 4 warm bay `SpotLight`s (`ServiceBayLights`).
+    - Preserved 100% of existing gameplay hooks (`DockingPad` + `GarageAudio` ProSoundEffects sounds, `DockingZone`, all 10 `RunwayLEDs` centered inside the sculpted steel bezels, and `TerminalConsole.ScreenPart` with `ShopPrompt` + retro-amber `StandbyScreenGui` raycast-aligned flush inside the new CRT visor with zero clipping).
+- **Studio Paths Modified/Created:**
+  - `Workspace.StartArea.VanUpgradeStation.BlenderServiceBay` (created: 9 PBR `MeshPart`s + `ServiceBayColliders` + `ServiceBayLights`)
+  - `Workspace.StartArea.VanUpgradeStation.TerminalConsole.ScreenPart` (aligned flush inside CRT bezel & restyled `StandbyScreenGui`)
+  - `Workspace.StartArea.VanUpgradeStation.DockingPad` (hidden `Transparency = 1`, `CanCollide = true`, `GarageAudio` preserved)
+  - Removed replaced old blocky geometry from `Workspace.StartArea.VanUpgradeStation` and `Workspace.StartArea.WarehouseDecor.VanStationDetail`.
+- **Verification:** Live Play-mode tested: swept `Blockcast` (`RespectCanCollide = true`, `11.0W × 9.5H` from `X = 40` to `X = 84`) confirmed `100%` unobstructed drive-in clearance through the portal and 4-post lift; `DeliveryVan` docked cleanly on `DockingPad` (`Pos = (79.07, 2.35, 349.54)`), triggering `10/10` `RunwayLEDs` to switch Red → Emerald Green `(40, 240, 100)` inside the sculpted bezels; `ShopPrompt` (`Enabled = true`) & `GarageAudio` (`2` sounds) verified intact; visual Play-mode `screen_capture` confirmed lighting, CRT alignment, and docked van framing with **zero console errors**. Studio returned cleanly to `Edit` mode.
