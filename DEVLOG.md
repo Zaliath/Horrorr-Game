@@ -1987,3 +1987,26 @@
   - `Workspace.DeliveryVan.VanDrive`
   - `ServerStorage.Modules.ChunkBuilder`
 - **Verification:** Edit-mode `loadstring` syntax check passed `14/14` scripts (`errors: []`); Play Solo verified `Animate` IDs (`84570383049367` / `122668571629696`), `< 35 HP` transition, `FlashlightAimPitch = 0.35`, `SkullBobbleJoint`, `VanFuel = 100`, `DepotFuelPump`, `6` `GasStationLandmark` spawns, `DeliveryFX` & `ShiftPaystub` (`PaystubModal`), and `0` game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 294**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Phase 2 Release Polish: Shift #1 Onboarding, Dispatch PA, 12-Monster Bestiary, Audio Signatures, Lightning, Cab Radio & Rare Highway Landmarks (`The game part` v296)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **12-Monster Field Guide / Bestiary (`BestiaryDefs`, `DataService`, `MonsterService`, `WristService`, `WristMenuController`, `NetDefs`):**
+    - Created `BestiaryDefs` covering all 12 nocturnal threats (`WindowMonster`, `ChaseMonster`, `DoorMonster`, `ForestHunter`, `GremlinMonster`, `StareMonster`, `CargoMonster`, `PorchMonster`, `PhantomSemiMonster`, `FogMonster`, `HitchhikerMonster`, `MidnightTraffic`) with threat tiers and counterplay tips.
+    - Added persistent `BestiaryUnlocked` storage in `DataService`, automatic unlock on surviving or dying to an encounter in `MonsterService` (`BestiaryUnlock` toast + `[ GUIDE ]` tab in `WristMenuController`), and `"Unlock All 12 Bestiary Entries"` Wrist Admin action.
+  - **Shift #1 Guided Onboarding & Warehouse Dispatch PA (`ShiftService`, `ShiftController`, `NetDefs`):**
+    - Added `OnboardingPanel` (4-step rookie checklist auto-hiding upon completion or Shift 2+) and `ClientOnboardingWaypoint` (`AlwaysOnTop` pulsing 3D `BillboardGui` guiding from Chute -> Van -> Stop #1 -> Porch Pad).
+    - Added `DispatchPA` (`S2C`) + `DispatchPABanner` radio subtitle bar for Shift #1 Prep welcome and Shift #1 departure announcements.
+  - **Audio Soundscape Overhaul, Shift 2+ Lightning & Cab Radio (`AudioController`, `VanAudioController`, `VanController`):**
+    - Expanded `AudioController` horror silence cues (`PorchThreatActive`, initial `ChaseActive`), added rising-edge monster audio signatures, and added Shift 2+ distant `LightningFlashGui` + rolling `DistantThunder`.
+    - Added rough-road `ChassisRattle` and a 4-channel `[R]` Cab Radio (`OFF`, `88.3 LO-FI`, `94.7 NUMBERS`, `101.9 DEAD AIR`) with monster static interference in `VanAudioController` (attached strictly via `Attachment` + `Sound`s) plus `[R] RADIO` button in `VanController`'s `SpeedoPanel`.
+  - **Rare Highway Landmarks (`ChunkBuilder`, `ShiftController`):**
+    - Added procedural `CoveredBridgeLandmark`, `PoliceRoadblockLandmark` (with `PoliceStrobeRed` / `PoliceStrobeBlue` alternating ~6 Hz flashers), and `BurningWreckLandmark` along highway spine cells with matching `BuildForestChunk` avoid-points.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.BestiaryDefs` (created)
+  - `ReplicatedStorage.Shared.NetDefs`
+  - `ServerScriptService.Server.Services.{DataService,MonsterService,ShiftService,WristService}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{AudioController,ShiftController,VanAudioController,VanController,WristMenuController}`
+  - `ServerStorage.Modules.ChunkBuilder`
+- **Verification:** Edit-mode `loadstring` syntax check passed `12/12` scripts (`errors: []`); Play Solo verified `BestiaryDefs` (`12` entries, idempotent `UnlockBestiary`), `DispatchPA` & `BestiaryUnlock` remotes, `OnboardingPanel` + `ClientOnboardingWaypoint`, `Tab_Guide` / `Page_Guide`, `AudioController:TriggerLightning()`, `VanAudioController:CycleRadio()` (`VanRadioAudioEmitter` `Attachment`), `CoveredBridgeLandmark`/`PoliceRoadblockLandmark`/`BurningWreckLandmark` spawns, and `0` game-script/sound errors. Stopped Play Solo and saved **`The game part`** **Version 296**.

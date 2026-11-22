@@ -138,3 +138,9 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 - **Dashboard Life:** 2nd-order spring-damper `SkullBobbleJoint` on `CabDetail.Trinkets.Skull` and live cab telltale warning lights for low hull, open doors, low fuel (`< 20%`), and latched monsters.
 - **Fuel / Gas System:** Authoritative `VanFuel` (`0–100`) draining faster under `[Q]` boost, empty-tank sputter, SpeedoPanel fuel bar, free `DepotFuelPump` in `StartArea`, and procedural roadside `GasStationLandmark`s every 5 spine steps.
 - **Delivery Payday Juice:** `DeliveryFX` drop-off scanner beep + cash chime + `+$120` popup + porch light flicker, and `ShiftPaystub` animated Corporate Paystub summary modal at shift end.
+
+## Implemented Release Polish (Phase 2 — v296)
+- **Shift #1 Onboarding & Dispatch PA:** `OnboardingPanel` 4-step checklist + `ClientOnboardingWaypoint` 3D pulsing marker, plus `DispatchPABanner` radio subtitles on Shift #1 Prep & departure.
+- **12-Monster Bestiary (`BestiaryDefs`):** Persistent `BestiaryUnlocked` tracking in `DataService`, automatic unlock on surviving or dying to any of the 12 threats, and `[ GUIDE ]` tab in `WristMenuController`.
+- **Audio, Lightning & Cab Radio:** Expanded horror silence cues, distinct monster audio signatures, Shift 2+ lightning/thunder, rough-road chassis rattles, and `[R]` toggleable 3-station Cab Radio with monster static interference.
+- **Rare Highway Landmarks (`ChunkBuilder`):** Procedural `CoveredBridgeLandmark`, `PoliceRoadblockLandmark` (alternating red/blue strobes), and `BurningWreckLandmark`.
