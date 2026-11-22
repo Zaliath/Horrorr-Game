@@ -140,7 +140,7 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 - **Delivery Payday Juice:** `DeliveryFX` drop-off scanner beep + cash chime + `+$120` popup + porch light flicker, and `ShiftPaystub` animated Corporate Paystub summary modal at shift end.
 
 ## Implemented Release Polish (Phase 2 — v296)
-- **Shift #1 Onboarding & Dispatch PA:** `OnboardingPanel` 4-step checklist + `ClientOnboardingWaypoint` 3D pulsing marker, plus `DispatchPABanner` radio subtitles on Shift #1 Prep & departure.
+- **Shift #1 Onboarding & Dispatch PA:** Minimal pulsing orange diamond hint (`> Press [M] to open menu`) pointing players into `WristMenuController`'s `TutorialOverlay` (replayable anytime in `[ SETTINGS ]`), plus text-only terminal streaming `DispatchPABanner` subtitles (`> ...█`). Destination address/distance/bearing displays directly on `DeliveryVan`'s in-cab `TrackerScreen` (`TrackerDestBanner`) instead of a world billboard.
 - **12-Monster Bestiary (`BestiaryDefs`):** Persistent `BestiaryUnlocked` tracking in `DataService`, automatic unlock on surviving or dying to any of the 12 threats, and `[ GUIDE ]` tab in `WristMenuController`.
 - **Audio, Lightning & Cab Radio:** Expanded horror silence cues, distinct monster audio signatures, Shift 2+ lightning/thunder, rough-road chassis rattles, and `[R]` toggleable 3-station Cab Radio with monster static interference.
 - **Rare Highway Landmarks (`ChunkBuilder`):** Procedural `CoveredBridgeLandmark`, `PoliceRoadblockLandmark` (alternating red/blue strobes), and `BurningWreckLandmark`.

@@ -2068,3 +2068,24 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController`
   - `ServerStorage.Modules.ChunkBuilder`
 - **Verification:** Edit-mode `loadstring` syntax check passed `3/3` scripts (`errors: []`); Play Solo verified `gasStationCount = 0`, `DepotFuelPump` present (`RefuelPrompt`), `PaystubModal` clean auto-timeout (`modalAfterTimeout = false`, `DismissPaystubBtn.Modal = true`), `StartNextShiftBtn` visible & `ShiftAction("ToggleReady")` transition to `Active`, and `0` game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 299**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — In-Menu Tutorial + Pulsing Diamond Hint, Tracker Destination Readout, Terminal Subtitles & Full Restart Position Reset (`The game part` v300)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **Moved Tutorial into Wrist Menu & Added Pulsing Orange Diamond Hint (`ShiftController`, `WristMenuController`):**
+    - Removed the on-screen `OnboardingPanel` and `ClientOnboardingWaypoint` from `ShiftController`.
+    - Added a minimal, background-free pulsing orange diamond indicator (`MenuHintFrame` / `MenuHintDiamond`) with soft periodic beep reading `> Press [M] to open menu` that hides once the player opens `[M]`.
+    - Added `TutorialOverlay` inside `WristTerminalGui` (auto-shown on first `[M]` open) plus a `REPLAY TUTORIAL` button inside `Page_Settings` so players can revisit the tutorial anytime.
+  - **Removed Floating Stop Billboard & Added In-Cab Tracker Destination (`ShiftService`, `ShiftController`):**
+    - Removed the giant floating orange `StopBillboard` and `StopBeacon` from `ShiftService.refreshActiveStopVisuals` (keeping the porch `StopHighlight` and `DeliverPrompt`).
+    - Added `TrackerDestBanner` onto `DeliveryVan.CabInterior.TrackerScreen.SurfaceGui.Screen` displaying the active stop number/address (or `NEXT FACTORY DEPOT`), distance in studs, and bearing (`^ AHEAD`, `<< LEFT`, `RIGHT >>`, `v BEHIND`).
+  - **Terminal-Style Subtitles (`ShiftController`):**
+    - Updated `DispatchPABanner` to be text-only (`BackgroundTransparency = 1`, no box/border) with monospace `> ` prefix, character-by-character streaming typewriter text, and blinking block cursor `█`.
+  - **Full Restart Position Reset (`MapService`, `ShiftService`):**
+    - Updated `MapService:ResetForShift` to restore every `depotParts` part back to `INITIAL_DEPOT_ANCHOR_CF * entry.RelCF`, reset `currentDepotAnchorCF`, clear `ShiftGateBarrier`, and refresh `ChuteService` bindings.
+    - Updated `ShiftService:ResetEverythingToZero` to reset `nextShiftMinSpine`, `currentDepot`, `gateActive`, `chaserSurvivedShift`, call `MonsterService:ResetAll()`, clear `AdminSpawnedProps`/`AmbientTraffic`, clear `CarryingPackage`, reset `VanSwallowed`/`VanFuel = 100`, run `prepareInitialShift()` before pivoting `DeliveryVan` back to `vanSpawnCF`, and re-roll Shift #1 contracts.
+- **Studio Paths Modified (`The game part`, placeId 93445054108906):**
+  - `ServerScriptService.Server.Services.{MapService,ShiftService}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{ShiftController,WristMenuController}`
+- **Verification:** Edit-mode `loadstring` syntax check passed `4/4` scripts (`errors: []`); Play Solo verified `hasOldOnboarding = false`, `hasOldWaypoint = false`, `hasDiamond = true`, `TutorialOverlay` & `ReplayTutorialBtn` present, `hasStopBillboard = false`, `hasStopBeacon = false`, `hasTrackerBanner = true`, `paTransparent = true` (`"> Terminal subtitle test.█"`), and `VoteRestart` restored `DeliveryVan` to `(-58, 340)` with `VanFuel = 100`. Stopped Play Solo and saved **`The game part`** **Version 300**.
