@@ -144,3 +144,9 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 - **12-Monster Bestiary (`BestiaryDefs`):** Persistent `BestiaryUnlocked` tracking in `DataService`, automatic unlock on surviving or dying to any of the 12 threats, and `[ GUIDE ]` tab in `WristMenuController`.
 - **Audio, Lightning & Cab Radio:** Expanded horror silence cues, distinct monster audio signatures, Shift 2+ lightning/thunder, rough-road chassis rattles, and `[R]` toggleable 3-station Cab Radio with monster static interference.
 - **Rare Highway Landmarks (`ChunkBuilder`):** Procedural `CoveredBridgeLandmark`, `PoliceRoadblockLandmark` (alternating red/blue strobes), and `BurningWreckLandmark`.
+
+## Implemented Release Polish (Phase 3 — v298)
+- **Dead Spectator CCTV (`DeathScreenController`):** `SPECTATE CCTV` toggle with VHS `REC` overlay cycling alive crew bodycams and 3 `DeliveryVan` CCTV cameras.
+- **Co-op `[G]` Team Ping:** Context-aware 450-stud raycast ping (`MONSTER` / `GAS` / `DROPOFF` / `VAN` / `ALERT`) visible to all teammates.
+- **Warehouse Leaderboard & Rotating Contracts (`MapService`, `ShiftService`):** Physical `EmployeeLeaderboardBoard` (`OrderedDataStore` + Studio fallback) and `ShiftContractsBoard` (3 rotating bonus contracts per shift).
+- **Badges & Cosmetics (`CosmeticDefs`, `DataService`):** 4 badge award hooks (`FirstShift`, `ChaserSurvivor`, `Shift5`, `CleanDriver`) and 10 Lobby Credit cosmetics (`VanPaint`, `Horn`, `Bobblehead`) purchasable/equippable in Wrist PDA `[ SUPPLY ]`.

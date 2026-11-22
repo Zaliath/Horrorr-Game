@@ -2010,3 +2010,24 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{AudioController,ShiftController,VanAudioController,VanController,WristMenuController}`
   - `ServerStorage.Modules.ChunkBuilder`
 - **Verification:** Edit-mode `loadstring` syntax check passed `12/12` scripts (`errors: []`); Play Solo verified `BestiaryDefs` (`12` entries, idempotent `UnlockBestiary`), `DispatchPA` & `BestiaryUnlock` remotes, `OnboardingPanel` + `ClientOnboardingWaypoint`, `Tab_Guide` / `Page_Guide`, `AudioController:TriggerLightning()`, `VanAudioController:CycleRadio()` (`VanRadioAudioEmitter` `Attachment`), `CoveredBridgeLandmark`/`PoliceRoadblockLandmark`/`BurningWreckLandmark` spawns, and `0` game-script/sound errors. Stopped Play Solo and saved **`The game part`** **Version 296**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Phase 3 Release Polish: Dead Spectator CCTV, `[G]` Co-op Ping, Warehouse Leaderboard Wall, Rotating Shift Contracts, Roblox Badge Hooks & Lobby Credit Cosmetics (`The game part` v298)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **Dead Spectator CCTV (`DeathScreenController`):**
+    - Added **`SpectateBtn`** (`SPECTATE CCTV`) alongside `HUB LOBBY` in `TabRecoveryOps`, plus a grainy VHS `SpectatorOverlay` (`● REC // CCTV FEED`, `PARALLAX FLEET SURVEILLANCE`, `[< PREV]`, `[NEXT >]`, `[EXIT CCTV]`) cycling between alive teammates' bodycams and `DeliveryVan`'s Dashcam, Rear Cam, and Cargo Bay CCTV feeds.
+  - **Co-op `[G]` Team Ping (`NetDefs`, `ShiftService`, `ShiftController`):**
+    - Added `TeamPing` (`C2S`) & `TeamPingFX` (`S2C`) so pressing `[G]` (when not carrying a parcel) raycasts up to 450 studs and places a 6.5s color-coded 3D `BillboardGui` waypoint (`MONSTER`, `GAS`, `DROPOFF`, `VAN`, `ALERT`) with subtle ping audio for the whole crew.
+  - **Warehouse Leaderboard Wall & 3 Rotating Shift Contracts (`MapService`, `ShiftService`, `DataService`, `WristService`, `WristMenuController`):**
+    - Added physical `EmployeeLeaderboardBoard` (Top Highest Shift & Top Credits Earned backed by `OrderedDataStore` + in-server fallback) and `ShiftContractsBoard` in `StartArea` (`SurfaceGui`s that relocate with every Factory Depot).
+    - Added 6-contract pool (`ZERO_DAMAGE`, `UNDER_TIME`, `FULL_CHUTE`, `SURVIVE_MONSTER`, `FUEL_DISCIPLINE`, `SURVIVE_CHASER`) rolling 3 rotating contracts per shift, awarding Team + Personal Cash bonuses on depot return, and mirrored in Wrist PDA `[ STATUS ]`.
+  - **Roblox Badge Hooks & Lobby Credit Cosmetic Slots (`CosmeticDefs`, `DataService`, `ShiftService`, `WristService`, `WristMenuController`):**
+    - Created `CosmeticDefs` with 10 cosmetics across `VanPaint`, `Horn`, and `Bobblehead` slots + 4 badge hooks (`FirstShift`, `ChaserSurvivor`, `Shift5`, `CleanDriver`).
+    - Added `BuyOrEquipCosmetic` + `AwardBadgeHook` in `DataService`, wired badge triggers in `ShiftService`, and added `// LOBBY CREDIT COSMETICS` to Wrist PDA `[ SUPPLY ]`.
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.CosmeticDefs` (created)
+  - `ReplicatedStorage.Shared.NetDefs`
+  - `ServerScriptService.Server.Services.{DataService,MapService,ShiftService,WristService}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DeathScreenController,ShiftController,WristMenuController}`
+- **Verification:** Edit-mode `loadstring` syntax check passed `9/9` scripts (`errors: []`); Play Solo verified `CosmeticDefs` (`10` cosmetics), `EmployeeLeaderboardBoard` (`99` chars) & `ShiftContractsBoard` (`218` chars), `AwardBadgeHook` (`FirstShift`), `RecordShiftStats` + `GetLeaderboardData`, `BuyOrEquipCosmetic("Stock")`, `TeamPing` / `TeamPingFX` (`TeamPing_<UserId>`), `DeathScreenController:SetSpectating(true/false)`, and `0` game-script/sound errors. Stopped Play Solo and saved **`The game part`** **Version 298**.
