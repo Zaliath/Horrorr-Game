@@ -2112,3 +2112,42 @@
   - Removed 49 old blocky visual parts from `Workspace.StartArea.DeliveryChute` and removed `Workspace.StartArea.WarehouseDecor.ChuteDetail`.
 - **New Dependencies:** None (uses existing `ChuteService` bindings and `MapService` depot relocation).
 - **Verification:** Live Play-mode verified: swept `Blockcast` (`RespectCanCollide = true`, `10.0W × 4.4H` from `X = -88` to `X = -110`) confirmed `100%` unobstructed backing lane; `DeliveryVan` backed cleanly onto the bay (`mouthLocal = (0.04, 1.57, 8.32)`), cycling `StatusLamp` through Red `(255,40,30)` (`idle`) → Orange `(255,170,40)` (`doorsClosed`) → Emerald Green `(60,255,90)` (`loading`) when rear doors opened, spawning & loading unanchored physics `DeliveryBox`es cleanly into `DeliveryVan` (`CARGO 5/24` verified visually in Play-mode `screen_capture`) with **zero console errors**. Studio returned cleanly to `Edit` mode.
+
+
+---
+
+## 2026-11-22 — Miah (via Antigravity) — Parking-Lot Horror Lobby, 20 Blender PBR Assets & Departure Van Boarding (`THE horror driving game`)
+- **Summary of Changes:**
+  - **20 Custom Blender PBR Lobby Models (`Assets/Lobby/LobbyKit.blend` + 4 compact `.fbx`/`.glb` packs + shared `1024×1024` PBR Atlas):**
+    - Modeled, textured, visually inspected via Blender `look`, imported under personal account into `ReplicatedStorage.Assets.LobbyKit`, and scaled exact `1 / 0.28×` to Roblox stud scale:
+      - **Pack 1 (Depot Shop Fronts):** `Lobby_ShopBay_VanSkins` (open service paint bay w/ rails & hazard bumpers), `Lobby_ShopBay_Items` (caged courier supply counter), `Lobby_ShopBay_Emotes` (walk-in locker & CRT lounge), `Lobby_GuardBooth` (gatehouse + raised barrier arm).
+      - **Pack 2 (Shop Props):** `Lobby_Prop_PaintStation`, `Lobby_Prop_SupplyCounter`, `Lobby_Prop_EmoteBoomboxBench`, `Lobby_Prop_DepotBoardFrame`.
+      - **Pack 3 (Lot Borders & Infrastructure):** `Lobby_Lot_StreetLamp`, `Lobby_Border_ChainFence` (angled barbed wire), `Lobby_Border_JerseyBarrier`, `Lobby_Prop_WheelStopAndCone`, `Lobby_Prop_SawhorseBarricade`, `Lobby_Prop_Dumpster`.
+      - **Pack 4 (Forest & Watchers):** `Lobby_Watcher_Wendigo`, `Lobby_Watcher_Skinwalker`, `Lobby_Watcher_Stare`, `Lobby_Watcher_Lurker`, `Lobby_DeadTree_Tall`, `Lobby_DeadTree_Gnarled`.
+  - **Full P.A.R.A.L.L.A.X. Lot 04 Foggy Parking-Lot Map (`Workspace.LobbyMap`):**
+    - Built the wet-asphalt parking lot with 3 physical shop bays along a unified North Depot facade (including live paint-preview `ShowcaseVan` grounded inside the Van Skins bay), west-courtyard bolted steel Leaderboard & Field Guide boards, East Guard Booth + Route 09 Exit Gate Arch seamlessly connected to real `HorrorKit_Roads` (`Road_Straight`, `Road_Cracked`, `Road_DamagedRough` + guardrails, utility poles, streetlamps, and fogged highway wreck), barbed-wire chain-link fence & Jersey barrier perimeter with invisible anti-glitch containment walls, 12 glossy reflective wet puddles, 7 sodium-amber streetlamps (2 flickering), and 145+ mixed dead forest trees + woodland props outside the fence.
+    - Created **6 painted Departure Van stalls** on the South row (`Bay_01..Bay_03` active with grounded `DepartureVan`s featuring real wooden/metal **rear cargo benches + 3 rear `Seat`s**, open rear doors, launch headlights, and overhead `BayStatusSign`s; `Bay_04..Bay_06` barricaded off as drop-in expansion stalls for scaling to 5–6 vans later).
+  - **Multi-Bay Departure Van Matchmaking & Shop Wiring (`NetDefs`, `HubLobbyService`, `HubLobbyController`):**
+    - Added `BayAction` (C2S) and `BayState` (S2C) remotes to `ReplicatedStorage.Shared.NetDefs`.
+    - Upgraded `HubLobbyService` to wire prompts onto all 3 shop bays (`VanSkinsPrompt`, `ItemsShopPrompt`, `EmotesShopPrompt`), mount live `Employee of the Month` Leaderboard & `DossierPrompt` on the courtyard frames, live-sync equipped `VanPaint` onto `ShowcaseVan` and the Host's `DepartureVan`, and run automatic walk-in boarding across all active bays (**1st player = Host in `DriverSeat`**, **players 2–4 = open rear cargo benches** `BackSeat1..3`, Ready-Up / solo Start, Difficulty toggle [`STANDARD` / `HARDCORE` Coming Soon], Public/Private bay lock, Host auto-promotion on leave, and **5s Launch Sequence** with headlight flare, rear doors slamming shut, and `PartyService:LaunchCrew`).
+    - Upgraded `HubLobbyController` with updated `HubTopBar`, retro-amber CRT `"COMING SOON"` preview modals (`HubItemsModal`, `HubEmotesModal`), and the inside-van **`LobbyBayHUD`**.
+  - **Hidden Peeking Deep-Forest Watchers, Drizzle & Lobby Audio (`LobbyAtmosphereController`, `ControllerList`):**
+    - Created and registered `LobbyAtmosphereController` driving the 4 hidden deep-forest watchers across 8 treeline trunk spots (staring directly at a watcher for `~2.2s` causes it to slowly slide back behind the trunk with a quiet rustle cue and relocate silently `12–22s` later), light shelter-aware midnight drizzle, lamp flicker, eerie ambient audio (`4/4` official `ProSoundEffects` tracks), and 3D spatial Departure Van engine crank / V8 rev / door-slam launch SFX.
+- **Studio Paths Modified/Created (`THE horror driving game`, placeId `124598324996118`):**
+  - `ReplicatedStorage.Assets.LobbyKit` (created — 20 Blender PBR `MeshPart`s + `LobbyVanTemplate` + `HorrorKit_Roads`/`Infrastructure`/`Props`)
+  - `Workspace.LobbyMap` (created — full parking lot, shops, 6 departure bays, highway, borders, puddles, forest & watchers)
+  - `ReplicatedStorage.Shared.NetDefs` (modified — added `BayAction`, `BayState`)
+  - `ServerScriptService.Server.Services.HubLobbyService` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.HubLobbyController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.LobbyAtmosphereController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified — registered `LobbyAtmosphereController`)
+- **Repository Files Added/Modified:**
+  - `Assets/Lobby/LobbyKit.blend`, `Lobby_Pack1..4.fbx`, `Lobby_Pack1..4.glb`, `LobbyKit_*.png/.jpg` (created)
+  - `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md` (modified)
+- **New Dependencies:**
+  - Remotes (`NetDefs`): `BayAction` (C2S), `BayState` (S2C).
+  - Replicated `DepartureVan` attributes: `BayIndex`, `BayOccupiedCount`, `BayLocked`, `BayDifficulty`, `BayLaunching`, `BayCountdown`, `BayHostUserId`.
+  - 20 personal-account Blender PBR meshes + 4 shared PBR textures imported into `ReplicatedStorage.Assets.LobbyKit` (remember to grant the group/universe asset permissions in Creator Dashboard before public release!).
+- **Next Steps / Known Issues:**
+  - Verified live via Edit-mode screenshots (`Lobby_Final_Showcase`) + Play Solo (`5/5` scripts syntax OK, `Loaded=true Ready=true Failed=nil`, `LobbyAmbientAudio=4/4 loaded`, `Prompts: VanSkins/Items/Emotes/Dossier/LeaderboardDisp=true`, `Bay_01` walk-in auto-seated Host into `DriverSeat`, `LobbyBayHUD` displayed, `ToggleLock` -> `BAY: LOCKED`, `HostStartNow` -> headlights `Brightness=4.6`, rear doors shut, spatial `BayEngineStart`/`BayEngineRev` playing, `LeaveBay` cleanly reset bay to `0/4`, `Watchers=4`, zero errors from lobby scripts). Studio returned cleanly to `Edit` mode.
+  - Remember to **Commit Drafts** (`NetDefs`, `HubLobbyService`, `HubLobbyController`, `LobbyAtmosphereController`, `ControllerList`) in Team Create and save/publish **`THE horror driving game`**.
