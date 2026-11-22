@@ -136,7 +136,7 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 ## Implemented Release Polish (Phase 1 — v294)
 - **Player Animations & Flashlight Aim:** Custom `Idle`, `Falling`, `Land`, and `< 35 HP` `IdleHurt` / `WalkHurt` / `RunHurt` animations plus synced 3rd-person `FlashlightAimPitch`.
 - **Dashboard Life:** 2nd-order spring-damper `SkullBobbleJoint` on `CabDetail.Trinkets.Skull` and live cab telltale warning lights for low hull, open doors, low fuel (`< 20%`), and latched monsters.
-- **Fuel / Gas System:** Authoritative `VanFuel` (`0–100`) draining faster under `[Q]` boost, empty-tank sputter, SpeedoPanel fuel bar, free `DepotFuelPump` in `StartArea`, and procedural roadside `GasStationLandmark`s every 5 spine steps.
+- **Fuel / Gas System:** Authoritative `VanFuel` (`0–100`) draining faster under `[Q]` boost, empty-tank sputter, SpeedoPanel fuel bar, and free warehouse `DepotFuelPump` in `StartArea` (relocating with every Factory Depot).
 - **Delivery Payday Juice:** `DeliveryFX` drop-off scanner beep + cash chime + `+$120` popup + porch light flicker, and `ShiftPaystub` animated Corporate Paystub summary modal at shift end.
 
 ## Implemented Release Polish (Phase 2 — v296)

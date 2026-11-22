@@ -2052,3 +2052,19 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.HubLobbyController` (created)
   - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`
 - **Verification:** Edit-mode `loadstring` syntax check passed `10/10` scripts (`errors: []`); Play Solo verified `HubDeparturePad`, `HubGarageKiosk`, `HubDossierKiosk`, `HubLeaderboardBoard` (`101` chars), `DispatchTerminalPrompt`, walkable boot (`CameraType.Custom`, `IsTerminalOpen = false`), `EnterTerminal` -> `ExitTerminal` camera toggle, `HubLobbyGui` (`HubTopBar`, `HubGarageModal`, `HubDossierModal`, `StepBackBar`), and `0` errors in all Hub/Lobby scripts. Stopped Play Solo and saved **`THE horror driving game`** **Version 59**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Fix Shift Paystub Loop & Start Shift Button; Remove Roadside Gas Stations (`The game part` v299)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **Fixed Depot Arrival Loop, Stuck Paystub & Missing Start Shift Button (`ShiftService`, `ShiftController`):**
+    - Moved `CONTRACT_POOL`, `activeContracts`, `chaserSurvivedShift`, `prevChaseActiveForBadge`, and `rollActiveContracts` **above** `arriveAtDepotAndPrepNext()` in `ShiftService` (previously declared later in the file, causing `ipairs(activeContracts)` to error on `nil` before `phase = "Prep"` and `shiftNumber += 1` ran, which re-triggered `arriveAtDepotAndPrepNext()` every 0.25s).
+    - Set `phase = "Prep"` immediately upon entering `arriveAtDepotAndPrepNext()`, wrapped contract/badge/leaderboard evaluation in `pcall`, and fired `ShiftPaystub` once with accurate totals.
+    - Updated `ShiftController.showCorporatePaystub` with crisp dark header strip text (`ZIndex = 21/22`), `dismissBtn.Modal = true`, and clean `paystubToken` invalidation on dismiss.
+  - **Removed Procedural Roadside Gas Stations (`ChunkBuilder`):**
+    - Removed `getGasStationSide`, `buildGasStationLandmark`, and roadside gas station spawns/avoid-points in `ChunkBuilder` so refueling happens exclusively at the warehouse `DepotFuelPump` (which tops `VanFuel` to `100` in one hold and relocates with every Factory Depot).
+- **Studio Paths Modified (`The game part`, placeId 93445054108906):**
+  - `ServerScriptService.Server.Services.ShiftService`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController`
+  - `ServerStorage.Modules.ChunkBuilder`
+- **Verification:** Edit-mode `loadstring` syntax check passed `3/3` scripts (`errors: []`); Play Solo verified `gasStationCount = 0`, `DepotFuelPump` present (`RefuelPrompt`), `PaystubModal` clean auto-timeout (`modalAfterTimeout = false`, `DismissPaystubBtn.Modal = true`), `StartNextShiftBtn` visible & `ShiftAction("ToggleReady")` transition to `Active`, and `0` game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 299**.
