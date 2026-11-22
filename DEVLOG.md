@@ -1934,3 +1934,33 @@
   - `ServerStorage.Modules.Monsters.ChaseMonster`
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController`
 - **Verification:** Play Solo end-to-end verified via `chasemonster ram`: `sawSwallowedAlive = true` -> `sawChasingPlayer = true` -> `sawGrabbingPlayer = true (hand = L)` -> `sawThrowingPlayer = true (maxY = 70.3, ragdollDelta = 2.50 rad, headUpY = 0.998)` -> `sawSlammingJaw = true`, `diedOnJawSlam = true` with **zero** game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 278**.
+
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Chaser 5 Multi-Attack Finishers, Van Swallowed Persistence, Remote Van Driving Fix, Full-Prop Ramming Fix, Categorized Wrist Admin Dropdowns & Prop Spawner (`The game part` v285)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **Chaser 5 Multi-Attack Finishers & Van Stays Disappeared After Being Eaten (`ChaseMonster`, `ChaseMonsterController`, `MonsterService`, `chasemonster`, `chasemonsterServer`, `DeathService`):**
+    - Updated `_setVanSwallowedCollision` and added `_finishHuntKeepVanEaten()` in `ChaseMonster` (plus guarding `destroyChaser()` in `ChaseMonsterController`) so once `DeliveryVan` is swallowed (`VanSwallowed = true`), it remains completely invisible (`Transparency = 1`), non-collidable (`CanCollide = false`), and hidden away both while the Chaser hunts surviving players AND after the Chaser finishes a crew wipe — only restoring `DeliveryVan` on Revive (`DeathService`), shift restart (`ResetEverythingToZero`), or `chasemonster clear`.
+    - Implemented 5 distinct cycled/randomizable post-van Chaser finishers (`ATTACK_ROTATION = { "SkyDevour", "PalmSlam", "RipApart", "FastballThrow", "AsphaltDrag" }`, testable via `chasemonster <sky|slam|throw|rip|drag>`):
+      1. **`SkyDevour`:** One-handed snatch -> high-air ragdoll toss -> 86° skyward open-jaw gaze (94°) -> jaw-slam devour.
+      2. **`PalmSlam`:** 0.50s overhead raised-palm telegraph (player can dodge) -> colossal palm crash into asphalt spawning a crater; flattens players in `<= 11.5` studs or blasts dodgers in `11.5..24` studs (`-35` HP).
+      3. **`FastballThrow`:** One-handed snatch + sidearm torso coil -> 115 studs/s horizontal ragdoll throw down the highway.
+      4. **`RipApart`:** Two-handed horizontal lift in front of roaring skull -> violent opposite-arm yank separating R6 lower limbs (`Left/Right Hip`) from torso with a dark crimson-black void/mist burst and bone-snap audio.
+      5. **`AsphaltDrag`:** Pins player face-down under one clawed hand and scrapes them along the asphalt while hauling forward (`0.95s`), then violently flings them behind (`0.65s`).
+  - **Remote Van Physical Movement Fix (`VanDrive`, `VanController`):**
+    - Fixed Remote Van not moving `DeliveryVan` when the developer is outside/away from the van: kept `chassis` physics ownership on the server during `RemoteDriverUserId ~= 0` (so client `SimulationRadius` / streaming throttling never freezes the van), relayed live remote `WASD`/`Q`/`B`/`Shift` inputs via `"RemoteDrive"`, and drove `Motor_*` / `Steer_*` constraints and chassis velocity on the server `RunService.Heartbeat` in `VanDrive`. Also prevented `VanController.refreshSeatState` from clearing `currentVan` while `remoteDriveActive == true`, and skipped `LayerCollector`/`ViewportFrame` descendants during `VanDrive` welding/unanchoring.
+  - **Van Ramming & Wrecking Fix for All Props & Moving Sedans (`VanController`, `VanDamageService`, `ChunkBuilder`, `TrafficService`):**
+    - Fixed `VanController`'s front ram probe box height bug (`CFrame.new(0, 2.5, -14.8)` was at `world Y = 8.26`, above all ground-level props and sedans!). Moved the probe box to bumper/grille height (`CFrame.new(0, -1.8, -15.0)`, size `(9.6, 5.4, 3.6)`) and lowered ram speed threshold to `18` (`15` server-side).
+    - Fixed `ChunkBuilder.acquireAsset` setting `CanQuery = false` on non-colliding verge props/trees, allowed Remote Van drivers in `VanDamageService`'s `VanImpact` handler, and included `AdminSpawnedProps` and boulders/rocks/blinds in `VanDamageService.tryRamTarget` so mailboxes, guardrails, wooden fences, barrels, boulders, wrecks, and `TrafficSedan`s all wreck cleanly on impact.
+  - **Wrist `[ ADMIN ]` Dropdown UI & Developer Prop Spawner (`WristMenuController`, `WristService`, `TrafficService`, `spawnprop`, `spawnpropServer`):**
+    - Replaced the cluttered 42-button wall in `Page_Admin` with 4 clean categorized cards and interactive dropdown selector overlays (`1. MONSTERS & FINISHERS` with linked Monster + Action/Finisher dropdowns, `2. PROP SPAWNER`, `3. VAN & OPERATOR`, and `4. ECONOMY & RESOURCES`).
+    - Added `WristService:SpawnAdminProp`, `TrafficService:SpawnAtCFrame`, and Cmdr command `spawnprop <kind> [count]` / `spawnprop clear` supporting 27 props/houses/traffic sedans spawned on the ground in front of the player or `DeliveryVan`.
+- **Studio Paths Modified/Created:**
+  - `ServerStorage.Modules.{ChunkBuilder,Monsters.ChaseMonster}`
+  - `ServerScriptService.Server.Services.{DeathService,MonsterService,TrafficService,VanDamageService,WristService}`
+  - `ServerScriptService.Cmdr.Commands.{chasemonster,chasemonsterServer}`
+  - `ServerScriptService.Cmdr.Commands.{spawnprop,spawnpropServer}` (created)
+  - `Workspace.DeliveryVan.VanDrive`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{ChaseMonsterController,VanController,WristMenuController}`
+- **Verification:** Play Solo end-to-end verified: Remote Van drove `DeliveryVan` `17.29` studs (`-39.0,-179.9 -> -38.0,-197.2`); `spawnprop` + `VanImpact` wrecked `Mailbox`, `Guardrail`, `Fence`, `Barrels`, and `TrafficSedan` (`wrecked = true`); all 5 Chaser finishers (`sky`, `slam`, `throw`, `rip`, `drag`) transitioned cleanly with `VanSwallowed = true` (`Transparency = 1.0`, `CanCollide = false`); Wrist `[ ADMIN ]` categorized cards & dropdown buttons verified present; **zero** game-script console errors. Stopped Play Solo and saved **`The game part`** **Version 285**.
