@@ -1780,3 +1780,21 @@
   - `ServerStorage.Modules.Monsters.DoorMonster` (modified)
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController` (modified)
 - **Verification:** Play Solo seated `DriverSeat` test (`doormonster rip`): verified clean extraction at `t = 0.9s` (`seat = false`, `dragAttr = true`, `hp = 125 -> 90`, `dStart = 11.5`, `y = 3.1`, `cg = VanSeat`), smooth drag to `dStart = 52.2` (`dVan = 46.5`) at `t = 2.7s`, and clean release at `t = 3.8s` (`dStart = 59.2`, `dVan = 53.5`, `plat = false`, `cg = Default`) with zero console or `AntiExploit` errors; saved **`The game part`** **Version 257**.
+
+### Follow-up same date — Door-Ripper 1st-Person Deep-Forest Leg Drag, Flailing-Arms Animation & Fight-Back Kick QTE (`The game part` v259)
+- **Summary of Changes:**
+  - **First-Person Lock Throughout Extraction & Forest Drag (`VanController`, `DoorMonster`, `DoorMonsterController`):**
+    - Sets `DoorRipDragging = true` before breaking `SeatWeld` and skips `setFirstPersonLock(false)` in `VanController.leaveVanCamera` while dragging; `DoorMonsterController` maintains `CameraMode = LockFirstPerson` with visible first-person arms, legs, and torso (`LocalTransparencyModifier = 0`, `Head = 1`) and restores `Classic` cleanly on escape or release.
+  - **Deep-Forest Drag Vector & Lethal Stakes (`DoorMonster`):**
+    - Changed drag vector to veer off the left highway shoulder deep into the woods (`(-flatRight * 0.90 - flatLook * 0.43).Unit`) across **`205` studs** (`DragSpeed = 19.5` studs/s, `RipSeconds = 11.8s`, initial `-25 HP` rip damage + lethal deep-forest maul if dragged all `205` studs without escaping), dynamically raycasting terrain/forest floor height (`sampleRoadGroundY` / `sampleClientGroundY`).
+  - **Leg-Drag + Flailing-Arms Procedural Animation (`DoorMonsterController`):**
+    - Positions the victim face-up (`+74°` pitch, feet pointing toward the Door-Ripper) and drives canonical R6 `Motor6D.C0` (`CANONICAL_R6_C0`) post-Animator via `RunService.Stepped` on every client: gripped `Right Leg` held extended into the Door-Ripper's claws, free `Left Leg` kicking/bracing (and snapping violently into the monster's face on every QTE kick), and both arms flailing/clawing frantically in front of your face trying to grab passing ground/roots.
+    - Door-Ripper stomps backward hunched low into the trees with both claws physically clamped around the victim's `Right Leg` ankle/shin, recoiling on kicks and tumbling away into the forest on `"KickedOff"`.
+  - **Look-at-Monster `"Fight Back"` `ProximityPrompt` & 5-Key Kick-Off QTE (`MonsterService`, `DoorMonster`, `DoorMonsterController`):**
+    - Mounted `DoorRipFightBackPrompt` (`[E] Fight Back`) on `DoorRipperPromptAnchor`, enabled strictly when the dragged victim looks directly at the Door-Ripper (`LookVector` dot `>= 0.50`).
+    - Triggering opens a retro-amber `KickQTEFrame` with a randomized 5-key sequence (`Q`, `E`, `R`, `T`, `Space` + gamepad/touch) and a `1.75s` per-key bar (`0.14s` trigger debounce so the opening `[E]` press never fails key #1). Each hit fires `"KickStep"` (staggering drag speed down to `3` studs/s for `0.65s` + kick animation/ichor burst); wrong key/timeout fires `"KickFail"` (`1.45×` speed surge + `-8 HP` before re-enabling the prompt); completing all 5 fires `"KickFree"` to boot the Door-Ripper off (`"KickedOff"`) and drop the player cleanly onto their feet.
+- **Studio Paths Modified:**
+  - `ServerScriptService.Server.Services.MonsterService` (modified: passes QTE action string through `DoorMash`)
+  - `ServerStorage.Modules.Monsters.DoorMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DoorMonsterController,VanController}` (modified)
+- **Verification:** Play Solo confirmed `LockFirstPerson` held through extraction & drag (`rArm=0.0, lArm=0.0, rLeg=0.0, head=1.0`, `faceUpY = 0.96`), active flailing arms (`rArmY = +0.75` above torso, `flailing = true`), look-away vs look-at prompt gating (`enAway = false, enLook = true`), `KickStep` stagger & `KickFree` `"KickedOff"` escape restoring exact `CANONICAL_R6_C0` (`restoredR = true, restoredL = true`, `cam = Classic`, `plat = false`), zero console errors; saved **`The game part`** **Version 259**.
