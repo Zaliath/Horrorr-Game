@@ -1811,3 +1811,16 @@
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{PromptUIController,DoorMonsterController}` (modified)
   - `ServerStorage.Modules.Monsters.DoorMonster` (modified)
 - **Verification:** Play Solo verified `KickQTEFrame` gone, Stage 0 (`[E] Fight Back`) -> Stage 1 -> `2.4s` timeout fail (`hp: 110 -> 96`, non-lethal) -> retry Stage 0 -> Steps `1..5` rendering exact letters (`R`, `C`, `Q`, `R`, `T`) on `CircularPrompt_DoorRipFightBackPrompt` -> `KickedOff` (`hp = 94`, `alive = true`, `CameraMode = Classic`, `PlatformStand = false`, `CollisionGroup = Default`), plus non-lethal end-of-drag forest drop (`hp = 90`, `alive = true`), with zero game-script console errors; saved **`The game part`** **Version 261**.
+
+---
+
+## 2026-11-22 — justhyne1205 (via Antigravity) — Roundabout Centerpiece Dead Tree Landmark
+- **Summary of Changes:**
+  - **`ServerStorage.Modules.ChunkBuilder`:**
+    - Added `ROUNDABOUT_TREE_CANDIDATES` (`Prop_DeadTree_A`, `DeadTree_01_Fork`, `DeadTree_02_Spire`, `DeadTree_04_Twin`, `DeadTree_05_Snag`, `DeadTree_06_Crook` — excluding wide/leaning `Prop_DeadTree_B` and `DeadTree_03_Leaner`) and validated `roundaboutTreeNames` in `ensureInit()`.
+    - Updated `ChunkBuilder.BuildRoadChunk` under `elseif cell.Kind == "Roundabout" then` to compute `plinthTopY = roadPart.Position.Y + roadPart.Size.Y * 0.5` dynamically, spawn 1 deterministic upright dead tree centered on the octagonal stone planter plinth (`scale = 0.80..0.95`, random Y rotation, sunk `0.5` studs into `plinthTopY`, `collideOverride = false` so `Default` convex-hull bounds never snag the van, `TrafficService` cars, or hold-`V` chase-cam raycasts, `castShadowOverride = true`), surround the trunk base with 2–3 tight non-collidable `Prop_DeadGrass_Cluster` tufts (`radius = 2.2..3.4`, `scale = 0.45..0.65`) plus a 40% chance of 1 `Prop_BrambleBush_Dead` (`radius = 2.2..3.2`, `scale = 0.45..0.60`), all registered via `addAssetToRecord` for automatic chunk pooling/despawning.
+    - Offset the roundabout landmark `addLampLight` cleanly beside the lower trunk (`r = 4.5`, `Y = 9.5`, `Range = 60`, `Brightness = 2.35`) so the light is never trapped inside the trunk and silhouettes the tree for approaching drivers.
+- **Studio Paths Modified:**
+  - `ServerStorage.Modules.ChunkBuilder` (modified)
+- **New Dependencies:** None (uses existing `ReplicatedStorage.Assets.MapModels.HorrorKit_Props` templates and `ChunkBuilder` object pool).
+- **Verification:** Live Play-mode tested across 6 generated `Roundabout` cells from `ProceduralRoadGraph`: every roundabout spawned `1` allowed upright tree (`Prop_DeadTree_A`, `DeadTree_01_Fork`, `DeadTree_04_Twin`, `DeadTree_06_Crook`, `botY = 3.76` cleanly rooted into `plinthTopY = 4.26`, `CastShadow = true`) + `2–3` grass tufts (`0–1` bramble, `maxR <= 3.34` inside the stone plinth), all `CanCollide = false` / `CanQuery = false`, `light = (r=4.50, y=9.50)`; `ChunkBuilder.ReleaseChunk` verified `stillParented = 0` across all 5 released chunks; Play-mode `screen_capture` confirmed clean rooting, zero plinth overhang, and moody silhouette lighting with zero game-script console errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`ChunkBuilder`) in Team Create!
