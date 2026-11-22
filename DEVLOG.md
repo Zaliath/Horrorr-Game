@@ -2161,3 +2161,26 @@
 - **Studio Paths Modified:**
   - `ServerStorage.Modules.ChunkBuilder` (modified)
 - **Verification:** Live Play-mode tested via `ChunkBuilder.BuildRoadChunk` + swept collision `Blockcast` (`22W × 11H` across the full `96`-stud length) on real East-West & North-South `Bridge`, East-West `PoliceRoadblock`, and East-West `BurningWreck` chunks: all 5 tests reported **`100% CLEAR 22W × 11H`** (`wallLook = (1, 0, 0)` on E-W, `(0, 0, -1)` on N-S, `distFromCenter = 27.5`), Play-mode `screen_capture` confirmed front-to-back lantern alignment down the open E-W bridge, and `get_console_output` showed **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`ChunkBuilder`) in Team Create!
+
+## 2026-11-22 — Riplatki (via Antigravity) — Full Restart Van Respawn & Chaser Respawn Fix + Zero-Gore RipApart Finisher
+- **Summary of Changes:** Fixed the full-restart flow (`VoteRestart` / `executeFullRestart` / `ShiftService:ResetEverythingToZero`), Chaser respawn after eating the van, and optimized Chaser Finisher 4 (`RipApart`) to eliminate lag and match the horizontal chest-height split animation without gore or blood (saved `"The game part"` placeId 93445054108906 at Version 310).
+  1. **Full Restart & Van Respawn (`ShiftService`, `DeathService`, `TaxService`):**
+     - Captured a pristine snapshot of `DeliveryVan`'s `BasePart` `Transparency`/`CanCollide` and `Light`/`Beam`/`ParticleEmitter`/`SurfaceGui`/`ProximityPrompt` `Enabled` states at startup (`captureVanPristineSnapshot`) and restored it in `ShiftService:ResetEverythingToZero()`.
+     - Anchored `DeliveryVan.PrimaryPart` before map/chunk reset, reset all monsters (`MonsterService:ResetAll()`), pivoted `DeliveryVan` to `vanSpawnCF + Vector3.new(0, 2.2, 0)` (safe clearance above `Factory.Main_Floor_Slab`), zeroed all part velocities, and unanchored after `0.15s` so the van settles cleanly on its suspension at the depot instead of falling through the floor or staying invisible/non-collidable.
+     - Made `TaxService:SettlePlayerRun(..., "Restart", ...)` flush `DataService` asynchronously (`task.spawn`) and wrapped settlement in `pcall` inside `DeathService.executeFullRestart()` so DataStore latency can never stall or abort a crew restart.
+     - Fixed `DeathService.executeFullRestart()` `SpawnLocation` fallback lookup so respawned players always land cleanly on `SpawnLocation`.
+  2. **Chaser Respawn Cleanup (`ChaseMonster`):**
+     - Updated `ChaseMonster:Reset()` and `ChaseMonster:_beginChase()` to always clean up devour constraints (`DevourAlignPosition`, `DevourAlignOrientation`, `DevourGrabAttachment`), restore van collision/visibility (`_setVanSwallowedCollision(van, false)`), reset all hunt/finisher state, and unanchor/release any grabbed players (`_releaseVictimState`), ensuring `chasemonster spawn` works cleanly after a swallow or restart.
+  3. **Zero-Lag, Zero-Gore Chaser Finisher 4 (`ChaseMonster`, `ChaseMonsterController`):**
+     - Replaced the laggy 14-part crimson debris burst and 18-stud stretched R6 hip `Motor6D.C0` offset with a clean horizontal chest-height grab (`RipLift`, anchored victim facing front-on camera with subtle struggle shake) followed by a smooth outward two-half visual silhouette split (`ChaserCleanSplitFX`, anchored non-colliding upper/lower halves sliding outward `±7.5` studs and fading over `0.72s`) with zero blood, gore, or organs matching the user's reference video keyframes.
+- **Studio Paths Modified/Created (`The game part`, placeId `93445054108906`):**
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `ServerScriptService.Server.Services.DeathService` (modified)
+  - `ServerScriptService.Server.Services.TaxService` (modified)
+- **Verification (Play Solo, `"The game part"` v310):**
+  - Triggered `chasemonster rip` -> confirmed `VanSwallowed = true`, `RipLift` -> `RipSplit` -> player death with zero lag and zero game-script errors.
+  - Fired `ReviveRequest("VoteRestart")` -> confirmed `VanSwallowed = false`, `VanFuel = 100`, `DeliveryVan` restored within `0.75` studs of original depot spawn (`43,756` visible parts, `38` solid parts, `0` leftover devour constraints, `Anchored = false`), and player respawned `3.49` studs from `SpawnLocation`.
+  - Triggered `chasemonster spawn` immediately after restart -> confirmed `ChaseActive = true`, `ChaseState = "Spawning"`.
+- **New Dependencies:** None.
