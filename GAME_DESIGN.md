@@ -12,8 +12,8 @@ Horror delivery game. Players load a delivery van (the "Graveyard Express") at a
 it down a forest road to deliver packages to houses.
 
 ## Observed: Start Area (`Workspace.StartArea`)
-- `DeliveryChute`: loads boxes into the van (see Systems).
-- `VanUpgradeStation`, `PersonalUpgradeStation`: upgrade terminals.
+- `DeliveryChute`: custom 5-module Blender PBR industrial chute (`BlenderDeliveryChute` + `ChuteColliders` + `ChuteLights`, preserving `ChuteMouth`, `BoxSpawn`, and live `StatusLamp`) loading physics boxes into the van (see Systems).
+- `VanUpgradeStation` (custom 5-module Blender PBR industrial service bay `BlenderServiceBay` + `ServiceBayColliders` + `ServiceBayLights`, preserving `DockingPad`, `DockingZone`, `RunwayLEDs`, and `TerminalConsole.ScreenPart`), `PersonalUpgradeStation`: upgrade terminals.
 - `WarehouseLights`, `WarehouseDecor`: set dressing.
 - Shop ids fwired to ProximityPrompts: `VanUpgrades` (garage terminal), `PersonalUpgrades` (counter terminal), `Weapons` (gun rack), `Stamina` (vending machine), `Gear` (lockers).
 
