@@ -150,3 +150,7 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 - **Co-op `[G]` Team Ping:** Context-aware 450-stud raycast ping (`MONSTER` / `GAS` / `DROPOFF` / `VAN` / `ALERT`) visible to all teammates.
 - **Warehouse Leaderboard & Rotating Contracts (`MapService`, `ShiftService`):** Physical `EmployeeLeaderboardBoard` (`OrderedDataStore` + Studio fallback) and `ShiftContractsBoard` (3 rotating bonus contracts per shift).
 - **Badges & Cosmetics (`CosmeticDefs`, `DataService`):** 4 badge award hooks (`FirstShift`, `ChaserSurvivor`, `Shift5`, `CleanDriver`) and 10 Lobby Credit cosmetics (`VanPaint`, `Horn`, `Bobblehead`) purchasable/equippable in Wrist PDA `[ SUPPLY ]`.
+
+## Implemented Walkable Hub / Lobby (`THE horror driving game` — v59)
+- **Free-Roam Hub & On-Demand 3D Terminal:** Players spawn on foot (`CameraType.Custom`) and can walk around the depot, interact with `MenuCluster` (`DISPATCH TERMINAL`), `HubGarageKiosk`, `HubDossierKiosk`, `HubLeaderboardBoard`, or step into `HubDeparturePad` (10s boarding countdown) to launch into `"The game part"`.
+- **Shared Hub Progression:** `HubGarageModal` (10 Lobby Credit cosmetics previewed live on the hub `DeliveryVan`) and `HubDossierModal` (Career Stats, 4 Badges, 12-Monster Field Guide).

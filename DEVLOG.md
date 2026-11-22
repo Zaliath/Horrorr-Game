@@ -2031,3 +2031,24 @@
   - `ServerScriptService.Server.Services.{DataService,MapService,ShiftService,WristService}`
   - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{DeathScreenController,ShiftController,WristMenuController}`
 - **Verification:** Edit-mode `loadstring` syntax check passed `9/9` scripts (`errors: []`); Play Solo verified `CosmeticDefs` (`10` cosmetics), `EmployeeLeaderboardBoard` (`99` chars) & `ShiftContractsBoard` (`218` chars), `AwardBadgeHook` (`FirstShift`), `RecordShiftStats` + `GetLeaderboardData`, `BuyOrEquipCosmetic("Stock")`, `TeamPing` / `TeamPingFX` (`TeamPing_<UserId>`), `DeathScreenController:SetSpectating(true/false)`, and `0` game-script/sound errors. Stopped Play Solo and saved **`The game part`** **Version 298**.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Walkable Interactive Hub / Lobby Conversion (`THE horror driving game` v59)
+- **Summary of Changes (`Riplatki (via Antigravity)`):**
+  - **Walkable Hub Free-Roam (`MainMenuController`, `HubLobbyController`, `ControllerList`):**
+    - Converted `MainMenuController` so players spawn on foot in free-roam (`CameraType.Custom`, `IsTerminalOpen() == false`) with `Screen_Main` lit as an ambient 3D display, and added `EnterTerminal(screenName)` / `ExitTerminal()` to lock into the 3D screens only on demand.
+    - Created `HubLobbyController` (`HubLobbyGui`) with `HubTopBar` (`PARALLAX HUB`, live Credits/Revives, quick-jump buttons `PLAY / DISPATCH`, `GARAGE`, `FIELD GUIDE`, `SETTINGS`), `StepBackBar` (`[ESC] STEP BACK TO HUB`), `HubGarageModal` (10 Lobby Credit cosmetics), and `HubDossierModal` (Career Stats, 4 Badges, 12-Monster Field Guide).
+  - **Physical Hub Stations & Walk-In Departure Bay (`HubLobbyService`, `ServiceList`, `PartyService`, `DataService`):**
+    - Created `HubLobbyService` spawning `HubDeparturePad` (walk-in boarding zone with 10s countdown -> `PartyService:LaunchCrew`), `DispatchTerminalPrompt` on `MenuCluster`, `HubGarageKiosk` (+ `VanUpgradeStation` prompt), `HubDossierKiosk` (+ `PersonalUpgradeStation` prompt), and `HubLeaderboardBoard` (`Employee of the Month` `SurfaceGui` backed by `OrderedDataStore` + in-server fallback).
+    - Synced `CosmeticDefs`, `BestiaryDefs`, `BuyOrEquipCosmetic`, `GetHubSummary`, and `GetLeaderboardData` in `"THE horror driving game"` (`NetDefs`: `HubAction`, `HubState`).
+- **Studio Paths Modified/Created (`THE horror driving game`, placeId 124598324996118):**
+  - `ReplicatedStorage.Shared.{CosmeticDefs,BestiaryDefs}` (created)
+  - `ReplicatedStorage.Shared.NetDefs`
+  - `ServerScriptService.Server.Services.{DataService,PartyService}`
+  - `ServerScriptService.Server.Services.HubLobbyService` (created)
+  - `ServerScriptService.Server.Core.ServiceList`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.MainMenuController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.HubLobbyController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`
+- **Verification:** Edit-mode `loadstring` syntax check passed `10/10` scripts (`errors: []`); Play Solo verified `HubDeparturePad`, `HubGarageKiosk`, `HubDossierKiosk`, `HubLeaderboardBoard` (`101` chars), `DispatchTerminalPrompt`, walkable boot (`CameraType.Custom`, `IsTerminalOpen = false`), `EnterTerminal` -> `ExitTerminal` camera toggle, `HubLobbyGui` (`HubTopBar`, `HubGarageModal`, `HubDossierModal`, `StepBackBar`), and `0` errors in all Hub/Lobby scripts. Stopped Play Solo and saved **`THE horror driving game`** **Version 59**.
