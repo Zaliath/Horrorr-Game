@@ -2558,3 +2558,20 @@
   - Replace `ProductId = 0` and `PassId = 0` placeholders in `ServerStorage.Data.Monetization.{Products,Passes}` with live Creator Hub IDs when ready to publish monetization.
   - Unrelated existing warning noted during cold Play Solo boot: `VanCamController:190` (`populateViewportScene` timeout).
   - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+---
+
+## 2026-11-23 — Antigravity (Removed `ResponsiveUIController` UI Scaler)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Deleted `StarterPlayer.StarterPlayerScripts.Client.Controllers.ResponsiveUIController` and removed it from `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`.
+  - Removed `ResponsiveBaseScale`, `ScaledBasePosX`, and `ScaledBasePosY` attribute lookups from `StarterPlayer.StarterPlayerScripts.Client.Controllers.SprintController` and `ReplicatedStorage.Shared.UITheme` (restoring direct `1.0` tween scale targets).
+- **Verified:**
+  - Static `script_grep` confirmed `0` matches for `ResponsiveUIController`, `ResponsiveBaseScale`, and `ScaledBasePos`.
+  - Play Solo confirmed `HasResponsiveUIController=false`, `NonOneUIScales=[]`, `ScalerAttributes=[]`, crisp HUD rendering (`PlaySolo_ScalerRemoved`), `0` `[Loader]` slow-start warnings, `0` game script errors, and `[AssetPreloadController] Preloaded 97/97 assets (33 animations, 64 images, 0 failed)`. Studio stopped cleanly to `Edit` mode.
+- **Studio Paths Modified/Removed (`The game part`):**
+  - Removed: `StarterPlayer.StarterPlayerScripts.Client.Controllers.ResponsiveUIController`
+  - Modified: `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.SprintController`, `ReplicatedStorage.Shared.UITheme`
+- **Repository Files Modified:**
+  - `GAME_DESIGN.md`, `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
