@@ -2341,3 +2341,16 @@
 ## Remove Head Look Movement (Riplatki)
 - **Removed Head Look Tilt/Yaw (`SprintController`, `StarterGui.Realism Mod.Realistic Head Movement`):** Removed the on-foot `Torso.Neck.C0` pitch/yaw loop from `SprintController` and disabled `StarterGui.Realism Mod.Realistic Head Movement` (`Disabled = true`), keeping 1st-person body visibility (`FPBodyVisibility`), mouse flashlight aim, denser revive glitch pixels, and vault removal intact.
 - **Verified:** Play Solo `Client` check confirmed `neckUnchanged = true`, `torsoLTM = 0`, `legLTM = 0`, `opticsMouseDot = 0.9798`, zero game script errors.
+
+## CreepyCrawlie Swarm Monster, Procedural Wall-Crawling & Stomp/Vengeance (Riplatki)
+- **Server AI (`ServerStorage.Modules.Monsters.CreepyCrawlieMonster` + `MonsterService`):**
+  - Day 2+ outside-only spawner starting with 1 scout and escalating over shift time & days up to an 8-crawler swarm (never enters depot or sealed van).
+  - 3D multi-raycast surface-normal crawling across floors, walls, and roofs with ceiling/eave drop-pounce ambushes.
+  - Adaptive learning AI: tracks flashlight exposure to flank outside beam cones and records high-traffic player hotspots.
+  - Flashlight counterplay scatters lone scouts, while swarms (`3+`) and enraged crawlers resist.
+  - Instant pack finishers (`PullApart` with 2+ crawlers, `LegsUpDevour` with 3+ crawlers) plus solo ankle-bites (`-12 HP`), all wired to `DeathService` & `BestiaryDefs`.
+  - Stomp-to-kill (`[E]` or jump-landing on a crawler) instantly kills it, triggers a hive vengeance shriek (all survivors enrage and relentlessly hunt the killer), and spawns `+2` extra enraged crawlers.
+- **Client Procedural Animation & FX (`CreepyCrawlieController`, `NetDefs`):**
+  - Added procedural 5-leg `Bone.Transform` gait & body scuttle across `Leg_FL`, `Leg_FR`, `Leg_ML`, `Leg_MR`, and `Leg_Rear` layered with existing `Neck / Head / Jaw` tracking.
+  - Wired `[E]` stomp input (`CrawlieStomp`) and `CrawlieFX` squish/shriek/finisher audio & alerts.
+- **Verified:** Play Solo `Server` & `Client` tests confirmed scout spawn, `IsDead` on stomp + 2 enraged reinforcement spawns, `legMoved = true`, `bodyMoved = true`, zero game script errors; saved to Team Create version 338.
