@@ -2222,3 +2222,21 @@
   - Fired `ReviveRequest("VoteRestart")`: confirmed player respawned inside warehouse at `(-40.1, 4.9, 301.4)` (`HP=125`, `Dead=false`), `DeliveryVan` restored at depot `(-57.2, 1.9, 340.2)` with `VanSwallowed=false`, `VanFuel=100`, `LocHid=0`, and server `Anch=0, Unanch=2035, Invis=49` (identical to startup).
   - Triggered `chasemonster spawn` immediately after restart: confirmed `ChaseActive=true`, `ChaseState=Spawning`.
 - **New Dependencies:** None (`ServerStorage.DeliveryVanBackup` runtime backup clone).
+
+---
+
+## 2026-11-22 — justhyne1205 (via Antigravity) — `CreepyCrawlieController`: Eerie Face Tracking, Sideways Head Tilt & Proximity Jaw Reaction
+- **Summary of Changes:**
+  - Created `StarterPlayer.StarterPlayerScripts.Client.Controllers.CreepyCrawlieController` (`--!strict`, `Loader`-managed, registered in `ControllerList`) driven automatically by `CollectionService` tag `"CreepyCrawlie"` (plus `Workspace.DescendantAdded` fallback for cloned templates).
+  - Drives additive conjugated bone rotations on `Neck` (`35%` yaw/pitch, `18%` roll) and `Head` (`65%` yaw/pitch, `82%` roll) relative to `Body.TransformedWorldCFrame`'s canonical forward/up/right basis so every CreepyCrawlie tracks the nearest living player's `Head` within `55` studs (`±120°` yaw, `-38°..+68°` pitch) with an eerie drifting sideways head-cock (`~22°`) — working cleanly at any world rotation/climb angle and layering smoothly on top of `CreepyCrawlie_Move` without breaking animations.
+  - Drives proximity `Jaw` opening (`0° → -30°` from `26` down to `5.5` studs) with periodic nervous micro-twitch bursts as players step close.
+  - Supports optional `LookTarget` (`Vector3`) and `LookDisabled` (`boolean`) model attributes for future scripted encounters.
+  - Tagged both `Workspace.MonsterModels.CreepyCrawlie` and `ReplicatedStorage.Assets.Monsters.CreepyCrawlie` with `"CreepyCrawlie"` so all future cloned instances inherit face tracking and jaw reactions automatically.
+- **Studio Paths Modified/Created:**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.CreepyCrawlieController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `Workspace.MonsterModels.CreepyCrawlie` & `ReplicatedStorage.Assets.Monsters.CreepyCrawlie` (tagged `"CreepyCrawlie"`)
+- **New Dependencies:**
+  - `CollectionService` tag: `"CreepyCrawlie"`.
+  - Optional model attributes: `LookTarget` (`Vector3`), `LookDisabled` (`boolean`).
+- **Verification:** Live Play-mode verified on a runtime-cloned `ReplicatedStorage.Assets.Monsters.CreepyCrawlie` angled `45°` off-axis at `10.1` studs from the player: confirmed automatic controller registration, `Exact faceDot = 0.9864` aimed straight at `LocalPlayer.Character.Head`, eerie sideways head tilt (`roll = -18.5°`), proximity jaw unhinge (`jawX = -21.2°`), clean bone reset on `LookDisabled = true` (`0.00°`), Play-mode `screen_capture` visually confirming the twisted head stare & open toothed jaw, and **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`CreepyCrawlieController`, `ControllerList`) in Team Create!
