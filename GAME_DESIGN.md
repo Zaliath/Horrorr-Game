@@ -174,7 +174,7 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - `PixelLobby_BayHUD` (Departure Van boarding panel, 5-pip launch countdown meter, 4 crew roster slots, host difficulty/lock toggles, `>> START SHIFT <<` / `LEAVE VAN`)
   - `PixelLobby_Settlement` (phosphor-green SA-98 Corporate Tax Audit statement, crimson Property Damage fines box, final balance readout)
   - `PixelLobby_Notification` (top-right `CanvasGroup` toast template `Popup` + `Message`)
-- **Main-Game Studio `ScreenGui` Templates (`StarterGui.PixelGame_*` in `The game part`, built UI-first ready for future controller hookup):**
+- **Main-Game Studio `ScreenGui` Templates (`StarterGui.PixelGame_*` in `The game part` — live & wired across all 15 main-game client controllers via `UITheme` pixel helpers):**
   - `PixelGame_ShiftHUD` (`TopStatusBar`, `ObjectiveBar`, `ActionRow`, `MenuHintFrame`, `DispatchPABanner`, `PackageConditionHUD`, `TerminalReceiptBox`, `[Tab] CargoManifestOverlay`, `PaystubModal`, `ToastFrame`)
   - `PixelGame_Hotbar` (`HotbarRoot` 4-slot bar, `WalkieCalloutWheel` `[C]`, `WalkieSubtitle`)
   - `PixelGame_Stamina` (`StaminaBarContainer` with 14 pips + `35%` `RecoveryTick`, `MobileSprintBtn`)
@@ -186,3 +186,4 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - `PixelGame_DeathScreen` (`Phase0Intro` w/ `Graphic_FlatlineECG`, `Phase1Terminal`, `Phase2Overview` w/ `Tile_DitherHeader_Crimson` + `Graphic_DeathSkullBanner`, `SpectatorOverlay`)
   - `PixelGame_MonsterAlerts` (`TopAlertStack`: `ChaseBanner`, `WindowAlert`, `CargoLatchAlert`; `BottomAlertStack`: `CrawlieStrugglePrompt`, `DoorMashHUD` + `TouchMashButton`)
   - `PixelGame_Notification` (top-right `CanvasGroup` toast template `Popup` + `Message`)
+  - **UI Animations, SFX & Placeholder Tracking:** Wired through `ReplicatedStorage.Shared.UITheme` (`WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`). Remaining placeholder/deferred UI items (including Lobby `PixelLobby_*` controller wiring) are tracked in `UI_PLACEHOLDERS.md`.

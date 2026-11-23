@@ -2464,3 +2464,25 @@
 - **Scaled QTE Keys (`CreepyCrawlieMonster`):** `HitsNeeded` now scales with swarm size (`math.clamp(2 + #participants, 3, 8)` — 4 keys for 2 crawlers, 5 for 3, up to 8 for larger swarms).
 - **Hard Total Spawn Budget (`CreepyCrawlieMonster`):** Added `TotalSpawnedThisShift` tracking across all natural and vengeance backup spawns (Level 2: `3`, Level 3: `5`, Level 4: `8`, Level 5+: `10+`). Once exhausted and cleared, no more spawn (including backups) except via Admin/Cmdr commands.
 - **Verified:** Play Solo `Server` test confirmed `s4Blocked = true`, `cmdAllowed = true`, `slowedNotKnocked = true`, `knockedAfterOverpower = true`, `hitsNeededFor2 = 4`, zero game script errors; saved to Team Create version 349.
+
+## 2026-11-23 — Antigravity (Main-Game Pixel UI Code Wiring, Play Solo Verification & Placeholder Rules)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Extended `ReplicatedStorage.Shared.UITheme` with pixel-native helpers (`WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`) and CRT hover/click SFX + blink/sweep loops.
+  - Aligned all 11 `StarterGui.PixelGame_*` template hierarchies (`ShiftHUD`, `Hotbar`, `Stamina`, `Speedometer`, `VanImmersion`, `MonsterAlerts`, `Notification`, `VanUpgrades`, `PersonalUpgrades`, `WristPDA`, `DeathScreen`), cleaned stray labels/template states, enforced `Modal=true` & `SortOrder=LayoutOrder`, and re-ran `AssetCatalog.ApplyAssets(..., true)`.
+  - Wired all 15 main-game client controllers (`NotificationController`, `HotbarController`, `SprintController`, `VanImmersionController`, `PersonalUpgradeController`, `UpgradeShopController`, `VanController`, `ShiftController`, `DeathScreenController`, `WristMenuController`, `WindowMonsterController`, `DoorMonsterController`, `CargoMonsterController`, `ChaseMonsterController`, `CreepyCrawlieController`) persistently to `StarterGui.PixelGame_*` (keeping fullscreen FX layers & 3D `SurfaceGui`s intact and eliminating legacy runtime `ScreenGui` construction).
+  - Resolved first-pass Play Solo bugs: forward-declared `refresh` and removed leftover shadowed procedural `buildGui` code (lines 673–1223) in `UpgradeShopController` that recreated `VanUpgradesGui` and threw at line 1024; wrapped synchronous `PlayerGui`/`PixelGame_*` `WaitForChild` calls inside `task.spawn(..., 30)` across startup-bound UI controllers (`DeathScreen`, `WristMenu`, `WindowMonster`, `DoorMonster`, `CargoMonster`, `VanImmersion`, `Van`, `Sprint`, `Hotbar`, `Shift`).
+  - Added the synced **Pixel UI Asset Reuse & Placeholder Tracking Rule** and `UI_PLACEHOLDERS.md` checklist to `GEMINI.md`, `CLAUDE.md` (preserving `Riplatki (via Claude)`), and `README.md`; created `UI_PLACEHOLDERS.md`; updated `GAME_DESIGN.md` and `LESSONS.md`.
+- **Verified (Play Solo on `The game part`):**
+  - `GamePackageLoaded=true`, `GamePackageReady=true`, `GamePackageFailed=nil`, **0** `[Loader]` slow-start (>5s) warnings, **0** UI controller script errors (`VanCamController:190` had an unrelated cold-boot `populateViewportScene` script timeout).
+  - `MissingPixel=0 []` across all 11 `PixelGame_*` GUIs, `FoundLegacy=0 []` across all 14 replaced legacy names, `VisibleImagesLoaded=28/28` (`VisibleUnloaded=0 []`; 480 hidden/disabled modal images), clean `false -> true -> false` modal toggle checks on `PixelGame_WristPDA`, `PixelGame_VanUpgrades`, `PixelGame_PersonalUpgrades`, `PixelGame_DeathScreen`, plus live Play Solo captures (`PlaySolo_HUD_Check1`, `PlaySolo_HUD_Verified2`).
+- **Studio Paths Modified/Created (`The game part`, `placeId: 93445054108906`):**
+  - `ReplicatedStorage.Shared.UITheme`
+  - `StarterGui.PixelGame_ShiftHUD`, `PixelGame_Hotbar`, `PixelGame_Stamina`, `PixelGame_Speedometer`, `PixelGame_VanImmersion`, `PixelGame_MonsterAlerts`, `PixelGame_Notification`, `PixelGame_VanUpgrades`, `PixelGame_PersonalUpgrades`, `PixelGame_WristPDA`, `PixelGame_DeathScreen`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{Notification,Hotbar,Sprint,VanImmersion,PersonalUpgrade,UpgradeShop,Van,Shift,DeathScreen,WristMenu,WindowMonster,DoorMonster,CargoMonster,ChaseMonster,CreepyCrawlie}Controller`
+- **Repository Files Added/Modified:**
+  - `UI_PLACEHOLDERS.md`, `GEMINI.md`, `CLAUDE.md`, `README.md`, `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - `UITheme` pixel helpers (`WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`).
+- **Next Steps / Known Issues:**
+  - Wire Lobby (`THE horror driving game`, `placeId: 124598324996118`) controllers to `StarterGui.PixelLobby_*` and replace/complete items tracked in `UI_PLACEHOLDERS.md`.
+  - Commit all open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
