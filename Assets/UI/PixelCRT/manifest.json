@@ -13,6 +13,7 @@
     "Badge_Tag": "rbxassetid://90218397003367",
     "Tile_DitherHeader_Amber": "rbxassetid://74357835991243",
     "Tile_DitherHeader_Green": "rbxassetid://118030604877065",
+    "Tile_DitherHeader_Crimson": "rbxassetid://86478900491614",
     "Tile_HazardStripe_Amber": "rbxassetid://136591906295911",
     "Tile_HazardStripe_Crimson": "rbxassetid://132888619460277",
     "Tile_CRTScanlines": "rbxassetid://109854947544807",
@@ -22,6 +23,11 @@
     "Pip_Crimson": "rbxassetid://98729745484390",
     "Pip_Empty": "rbxassetid://119531940559514",
     "Divider_Pixel": "rbxassetid://83245784791812",
+    "Graphic_VanWireframe": "rbxassetid://94285750263706",
+    "Graphic_FlatlineECG": "rbxassetid://83217200927592",
+    "Graphic_ECGHeartbeat": "rbxassetid://91461201880196",
+    "Graphic_DeathSkullBanner": "rbxassetid://88168136117094",
+    "Icon_ParcelWireframe": "rbxassetid://73013830947416",
     "Icon_Van": "rbxassetid://115997314388023",
     "Icon_Credits": "rbxassetid://131278604879062",
     "Icon_Revive": "rbxassetid://117253821939466",
@@ -42,6 +48,16 @@
     "Icon_Receipt": "rbxassetid://126429898809625",
     "Icon_Warning": "rbxassetid://98314112872956",
     "Icon_MonsterUnknown": "rbxassetid://117339827709949",
-    "Icon_Close": "rbxassetid://119288416157931"
+    "Icon_Close": "rbxassetid://119288416157931",
+    "Icon_Clock": "rbxassetid://91882779299108",
+    "Icon_Wrench": "rbxassetid://74982680078379",
+    "Icon_Engine": "rbxassetid://139613435040016",
+    "Icon_FlipVan": "rbxassetid://100622976779726",
+    "Icon_PDA": "rbxassetid://73473677057422",
+    "Icon_Radio": "rbxassetid://112089839233976",
+    "Icon_Cassette": "rbxassetid://85661715808449",
+    "Icon_Walkie": "rbxassetid://90050789772323",
+    "Icon_Eye": "rbxassetid://138864030500163",
+    "Icon_Settings": "rbxassetid://88697222611961"
   }
 }
