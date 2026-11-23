@@ -2330,3 +2330,10 @@
   14. **Reverted Circular Stamina Bar (`SprintController`):** Set `USE_CIRCULAR_RETICLE_STAMINA = false` to restore the classic linear stamina bar.
   15. **Rarer Porch Cassette Tapes (`ShiftService`):** Reduced `PorchCassetteTape` spawn rate to ~18% per stop.
 - **Verification (Play Solo, `"The game part"` v330–v332):** Confirmed `StatusVanBox` fits cleanly inside `Body`, `StaminaReticleArc.Visible = false`, `WindshieldMudOverlay` & `ClientGloveBoxLid` removed, `GloveBoxPrompt` attached to built-in `GloveboxPanel` and disabled outside van, `ChuteKickPromptAnchor` present, `Revive` after Chaser preserved `$250` cash & restored `VanSwallowed = false` with `ReviveCinematicGui`, and `VoteRestart` cleared `BackFogBarrier`.
+
+## Follow-up Fixes: Head Tilt/Yaw, Mouse Flashlight Aim, 1st-Person Body, Denser Glitch & Vault Removal (Riplatki)
+- **Head Tilt & Left/Right Yaw + Mouse Flashlight Aim (`SprintController`, `FlashlightController`, `FlashlightService`):** Removed the detached `Z = -0.20` neck offset, fixed `Torso.Neck.C0` rotation sign, clamped pitch (`[-0.45, 0.45]`) and added left/right yaw (`[-0.55, 0.55]`) tracking, and updated flashlight aiming to raycast toward the mouse cursor (`ViewportPointToRay`) with replicated `FlashlightAimYaw`.
+- **1st-Person Body Visibility (`SprintController`):** Bound `FPBodyVisibility` at `Enum.RenderPriority.Camera.Value + 5` so `LocalTransparencyModifier = 0` persists after Roblox's `TransparencyController` when zoomed all the way in.
+- **Denser Revive Glitch Pixels (`DeathScreenController`):** Ramped `playReviveDecompileSequence()` RGB glitch cubes quadratically from `8` to `96` over `0.60s`.
+- **Vaulting Removed (`SprintController`):** Completely removed `tryLowObstacleVault()` and its `Space` input binding.
+- **Verified:** Play Solo `Client` check confirmed `torsoLTM = 0`, `legLTM = 0`, `neckPos = (0, 1, 0)`, `pitchAttr = -0.29`, `yawAttr = 0.26`, `opticsMouseDot = 0.9998`, `vaultAttr = nil`, zero game script errors; saved to Team Create version 333.
