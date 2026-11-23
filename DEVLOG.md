@@ -2597,3 +2597,27 @@
 - **Next Steps / Known Issues:**
   - User to apply `UIAspectRatioConstraint` via Studio plugin across the fixed-shape panels and square icons/wireframes checklist.
   - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+
+---
+
+## 2026-11-23 — justhyne1205 (via Antigravity) (Van Seat-Entry Animation Overhaul)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Replaced the stiff sideways floating diagonal slide when pressing `[F]` to enter `DeliveryVan` seats with a grounded, weighted **3-phase cab climb-in (`EnterFront`)** and **rear bench sit-down (`EnterRear`)**, replicated to all clients in co-op while preserving 100% pure-translation `VanEnterWeld` stability (zero van hop/tilt).
+  - **`Workspace.DeliveryVan.VanDrive` (`animateIntoSeat`, `clearTransitionAttrs`):**
+    - Tuned entry durations (`0.86s` front cab climb-in, `0.62s` rear bench sit-down) and computed shortest horizontal yaw delta (`VanSwitchYawDelta`) + cab side (`VanEnterSide`, `-1` Driver / `+1` Passenger / `0` Rear) for client-side cosmetic body swivel.
+    - Replaced the straight diagonal lerp with a **2-stage grounded pure-translation path**: Phase 1 (`0.00..0.44`) hoists smoothly onto the running-board doorway threshold (`StepL`/`StepR` top `Y=+0.62`, `midPos.Y=2.55`, horizontal shift lagging vertical step-up); Phase 2 (`0.44..1.00`) pulls cleanly inside and settles onto the seat cushion with a subtle clearing arch.
+  - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`:**
+    - Added dedicated `EnterFront` and `EnterRear` torso (`RootJoint`/`Waist`), head gaze (`Neck`), and 4-limb choreography instead of falling through into the `[C]` passenger↔driver seat-switch targets.
+    - `EnterFront` uses 3-point-of-contact cab climbing: inner hand grabs the A-pillar/dash handle then releases to the wheel/lap; outer hand hauls on the rear B-pillar doorframe then braces the bolster/sill before reaching the wheel/lap; inner leg lifts from actual ground level (`VanSwitchFromLocal.Y - 2.85`) onto `StepL`/`StepR` and swings over the sill first; trailing outer leg pushes off the ground, steps onto the running board, and clears the sill second.
+    - Smoothly swivels `RootJoint`/`Waist` from standing facing into forward seated facing (`liveYawToTarget - switchYawDelta * (1 - turnU)`), ducks forward `-22°` under the cab roofline, lands with a subtle cushion settle dip, and resets `leanJoint.C0` in `PreSimulation` (`solveRigs`) the exact frame `SeatWeld` arrives (eliminating any 1-frame double-turn flicker on handoff).
+- **Verified (`Play Solo` on `The game part`, video + per-frame telemetry):**
+  - Real `[E]` door open + `[F]` driver-seat entry from outside the open door recorded smooth climb-in (`fwdDot: 0.003 → 0.996 → 1.000`, `maxNegRight = -5.8e-11` zero landing-frame twist, forward duck `duckDot = +0.403`, grounded step-up onto `StepL`, van `maxYDrift = 0.0036` studs, `maxAngVel = 0.041 rad/s`).
+  - Verified `[C]` seat switch (`DriverSeat` → `FrontPassengerSeat`, `vanAngVel = 0.0006 rad/s`) still works cleanly with `0` console errors. Returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `Workspace.DeliveryVan.VanDrive`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAnimController`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts (`VanDrive`, `VanAnimController`) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
