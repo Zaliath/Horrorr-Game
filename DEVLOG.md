@@ -2197,3 +2197,28 @@
   - `ReplicatedStorage.Assets.Monsters.CreepyCrawlie` (created template copy)
   - `ServerStorage.RBX_ANIMSAVES.CreepyCrawlie` (renamed from `Scene`)
 - **Verification:** Visual Studio `screen_capture` (`CreepyCrawlieLineup`) confirmed clean ground contact (`botY = 0.00`), forward facing matching the rest of the `MonsterModels` lineup, crisp PBR textures, and proportional scale next to `Monster4_Gremlin`, `Monster5_Cargo`, and `Rig`.
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — Swallowed Van Void-Fall Fix, Warehouse Respawn Fix & Smooth Visible Finisher 4
+- **Summary of Changes:** Diagnosed and fixed the three root causes behind the swallowed van vanishing after restart, players respawning at their road death location instead of the warehouse, and Chaser Finisher 4 (`RipApart`) killing instantly with a client lag spike (saved `"The game part"` placeId 93445054108906 at Version 316).
+  1. **Swallowed Van Permanently Falling Into Void (`ChaseMonster`, `ShiftService`):**
+     - Root cause: `ChaseMonster:_setVanSwallowedCollision(van, true)` set `CanCollide = false` on all 2,035 van parts without anchoring them, so gravity immediately dropped `DeliveryVan` straight through the floor past `FallenPartsDestroyHeight (-500)` and Roblox permanently deleted `DeliveryVan` (leaving restart unable to find it and `chasemonster spawn` returning `"DeliveryVan is not ready yet."`).
+     - Fix: Anchored all `BasePart`s (and zeroed velocities) inside `_setVanSwallowedCollision(van, true)` before disabling collision, and cleanly unanchored all parts in a second pass after restoring collision on `_setVanSwallowedCollision(van, false)`. Removed `van:PivotTo(safeCF)` from `ChaseMonster:Reset()` so full restarts keep the van at the warehouse depot.
+     - Added a pristine `ServerStorage.DeliveryVanBackup` safety clone in `ShiftService` and updated `ShiftService:ResetEverythingToZero()` to anchor during chunk teardown, restore pristine `Transparency`/`CanCollide`, pivot to `vanSpawnCF + Vector3.new(0, 2.2, 0)`, and cleanly unanchor all 2,035 van parts after `0.12s` (avoiding re-anchoring Edit-mode parts captured before `VanDrive` unanchors them).
+  2. **Warehouse Respawn Fix on Restart & Post-Swallow Revive (`DeathService`):**
+     - Root cause: `executeFullRestart()` ran `plr:LoadCharacter()` followed by `plr.Character or plr.CharacterAdded:Wait()`, which grabbed the old dead character model instead of waiting for the newly spawned character; additionally `mode == "Revive"` fell back to `st.LastDeathCF` when `VanSwallowed == true`, teleporting players back to their road death spot with no van.
+     - Fix: Connected `plr.CharacterAdded:Once(...)` *before* calling `plr:LoadCharacter()` to guarantee the new character is teleported to `SpawnLocation` inside the warehouse with zeroed velocity. Updated `VoteRestart` to execute immediately for developers or when `VanSwallowed == true`, and routed `Revive` when `VanSwallowed == true` through `executeFullRestart()`.
+  3. **Visible, Lag-Free, Zero-Gore Chaser Finisher 4 (`ChaseMonster`, `ChaseMonsterController`):**
+     - Root causes: `ChaseMonster` called `killVictim` at `0.18s` into `RipSplit` (instantly opening the death screen before the animation played), `ChaseMonsterController` triggered `triggerSwallowBlackout(1.0, 0.65)` on `RipSplit` (blinding the victim), and `setVanHiddenForSwallow()` iterated `vv:GetDescendants()` across **84,630 cloned world parts** inside `CabInterior.CamMonitor`'s `ViewportFrame`, freezing the client for ~0.91s whenever the van was swallowed.
+     - Fix: Extended `RipLift` to `0.85s` and `RipSplit` to `1.20s` with `killVictim` delayed until `0.95s` into `RipSplit`; removed `triggerSwallowBlackout` and part-cloning FX in favor of clean `Motor6D.C0` limb separation offsets; slowed arm pull IK (`0.55s`) for readability; updated `setVanHiddenForSwallow` to skip `ViewportFrame`/`SurfaceGui`/`BillboardGui`/`ScreenGui` subtrees so only the ~2,035 real van parts are touched.
+- **Studio Paths Modified (`The game part`, placeId `93445054108906`):**
+  - `ServerStorage.Modules.Monsters.ChaseMonster` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController` (modified)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `ServerScriptService.Server.Services.DeathService` (modified)
+- **Verification (Play Solo, `"The game part"` v316):**
+  - Moved player onto the road `(0, 6, 80)` and triggered `chasemonster rip`: confirmed `RipLift` (`t=0.00s`, `hp=125`) -> `RipSplit` (`t=0.49s`, `hp=125`) -> kill at end of split (`t=1.42s`, `hp=0`), `ripSplitMaxDt=0.0683s`, zero blackout, and `DeliveryVan` stayed alive (`vanExists=true`).
+  - Fired `ReviveRequest("VoteRestart")`: confirmed player respawned inside warehouse at `(-40.1, 4.9, 301.4)` (`HP=125`, `Dead=false`), `DeliveryVan` restored at depot `(-57.2, 1.9, 340.2)` with `VanSwallowed=false`, `VanFuel=100`, `LocHid=0`, and server `Anch=0, Unanch=2035, Invis=49` (identical to startup).
+  - Triggered `chasemonster spawn` immediately after restart: confirmed `ChaseActive=true`, `ChaseState=Spawning`.
+- **New Dependencies:** None (`ServerStorage.DeliveryVanBackup` runtime backup clone).
