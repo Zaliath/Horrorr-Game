@@ -2384,3 +2384,8 @@
 - **3-Hit Key QTE (`CreepyCrawlieMonster`, `CreepyCrawlieController`, `MonsterService`):** Replaced `[E]` mash (which was intercepted by `StompPrompt`) with a 3-hit random key QTE (`Q`, `R`, `Z`, `X`, `Space`) with `QTEUpdate` prompts, wrong-key penalty, and `StompPrompt.Enabled = false` during grabs.
 - **Exact Limb Aiming & Stretch (`CreepyCrawlieController`):** Replaced Euler approximation in `stepGrabbedLimbs` with `fromToRotation(-restWorld.UpVector, wantDir)` in `motor.C0` space so grabbed R6 limbs rotate directly toward the backing-up crawler and stretch outward as `RipProgress` increases.
 - **Verified:** Play Solo `Server` & `Client` tests confirmed `promptDisabled = true`, `brokeFree = true`, `moved = true`, `tfPos = 0.35`, `resetClean = true`, zero game script errors; saved to Team Create version 347.
+
+## Fix Motor6D.C0 Limb Rip Aiming & ProximityPrompt-Style QTE UI (Riplatki)
+- **Fixed Limb Aiming (`CreepyCrawlieController`):** Switched `stepGrabbedLimbs` from `Motor6D.Transform` (which Roblox `Animator` overwrote every frame) to `Motor6D.C0` (saving/restoring `defaultMotorC0`), verified in live Play Solo `PullApart` (`aimDot = 0.999` on `Left Shoulder`, `0.997` on `Right Hip`, `c0Pos` stretching outward to `±1.41`).
+- **ProximityPrompt-Style QTE UI (`CreepyCrawlieController`):** Replaced the rectangular struggle bar with the exact `PromptUIController` circular prompt (`54x54` dark circle, `GothamBold` keycap, dual-arc 360° golden progress ring, and `"Break Free (0/3)"` pill).
+- **Saved:** Team Create version 348.
