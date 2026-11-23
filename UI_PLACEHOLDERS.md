@@ -20,7 +20,6 @@ This document tracks every UI screen, icon, widget, or procedural control that i
 | UI Element | Studio Hierarchy / Path | Controller / Owner | Temporary Fallback Used | Needed Custom Art for Next UI Pass |
 | --- | --- | --- | --- | --- |
 | 12 Monster Bestiary Portraits | `StarterGui.PixelGame_WristPDA.BottomRightDock.Body.Page_Guide.GuideList.EntryTemplate.PortraitFrame.Icon` (and Lobby `PixelLobby_Dossier`) | `WristMenuController` | Shares `Icon_MonsterUnknown`, `Icon_Skull`, and `Tile_DitherStatic` | 12 unique 32×32 dithered pixel monster portraits (one per monster) |
-| Death Screen Killer Emblem | `StarterGui.PixelGame_DeathScreen.Root.Phase2Overview.TabPages.Page_Dossier.DossierHeaderCard.DeathEmblem` | `DeathScreenController` | Shares `Graphic_DeathSkullBanner` for every cause of death | Optional per-monster killer emblem variants synced to cause of death |
 | Secondary Monster Threat HUDs | Runtime `PlayerGui.ForestHunterHUD`, `StareMonsterHUD`, `PorchMonsterHUD`, `HitchhikerHUD` | `ForestHunterController`, `StareMonsterController`, `PorchMonsterController`, `HitchhikerController` | Separate runtime `ScreenGui`s instead of unified `PixelGame_MonsterAlerts` banners | Consolidate remaining secondary monster prompts/alerts into `StarterGui.PixelGame_MonsterAlerts` |
 
 ---
@@ -35,13 +34,14 @@ This document tracks every UI screen, icon, widget, or procedural control that i
 | Flip Van Cooldown Overlay | `StarterGui.PixelGame_Speedometer.FlipVanContainer.FlipVanBtn.CooldownFill` | `VanController` | Flat semi-transparent cooldown overlay `Frame` | Replace with pixel dither cooldown sweep / pip countdown indicator |
 | Parcel Damage Crack Overlays | `StarterGui.PixelGame_ShiftHUD.PackageConditionHUD.WireframeParcel.Crack1` & `Crack2` | `ShiftController` | Rotated flat `Frame` diagonal lines | Swap in dedicated pixel crack overlays over `Icon_ParcelWireframe` |
 | Remote Van Feed Mini Boost Fill | `StarterGui.PixelGame_WristPDA...LiveVanFeedContainer.MiniTelemetryBox.MiniBoostTrack.MiniBoostFill` | `WristMenuController` | Flat `Frame` fill bar inside `MiniBoostTrack` | Replace with micro segmented `Pip_*` row |
-| Death Intro Flatline Progress Bar | `StarterGui.PixelGame_DeathScreen.Root.Phase0Intro.FlatlineBar` | `DeathScreenController` | Flat progress `Frame` animated over `Graphic_FlatlineECG` | Replace with pixel scan reveal / segmented CRT wipe |
 
 ---
 
 ## 4. Intentionally Procedural / Diegetic / Reverted Elements (Keep As-Is)
 
-These layers are fullscreen optical/camera VFX, 3D world-space diegetic monitors, or smooth calibrated bars intentionally reverted per user design and should **not** be replaced with 2D pixel frame or pip templates:
+These layers are fullscreen optical/camera VFX, 3D world-space diegetic monitors, or smooth calibrated / procedural terminal layers intentionally kept or reverted per user design and should **not** be replaced with 2D pixel frame or pip templates:
+- **Reverted P.A.R.A.L.L.A.X. Procedural CRT Terminal Death Screen (`DeathScreenController` -> `PlayerGui.DeathScreenGui`):**
+  - Intentionally reverted from `StarterGui.PixelGame_DeathScreen` (removed from `StarterGui`) back to the procedural CRT `DeathScreenGui` (`Phase0Intro` oscilloscope flatline, `Phase1Terminal` PowerShell typewriter, 4-quadrant `Phase2Overview` with responsive `Scale` layout + `UITextSizeConstraint`, and `SpectatorOverlay`).
 - **Reverted Smooth Calibrated Gauge & Progress Bars (Keep Pre-Overhaul Style):**
   - `StarterGui.PixelGame_Stamina.StaminaBarContainer.BarTrack` (`StaminaFill`, `DrainGhost`, `SliderThumb`, `RecoveryTick` — `SprintController`)
   - `StarterGui.PixelGame_Speedometer.SpeedoPanel.BoostRow.BoostTrack` (`BoostFill`, `BoostThumb`) & `FuelRow.FuelTrack` (`FuelFill` — `VanController`)

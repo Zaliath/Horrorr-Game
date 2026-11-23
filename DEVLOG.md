@@ -2530,3 +2530,31 @@
   - `ResponsiveUIController` and GUI attributes `ResponsiveBaseScale`, `ScaledBasePosX`, `ScaledBasePosY` (`_RespOrigPos*`).
 - **Next Steps / Known Issues:**
   - Commit open script Drafts (`UITheme`, `ControllerList`, `ResponsiveUIController`, updated controllers) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+---
+
+## 2026-11-23 — Antigravity (MonetizationService Overhaul, DeathScreenGui Revert & Asset Preloader)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - **Centralized Monetization Data & `MonetizationService`:** Moved all Developer Products (`TeamCash500`, `PersonalCash500`, `RevivePack1`, `RevivePack3`) and GamePasses (`TacticalFlashlight`, `CourierBoots`, `HazardSuit`) into `ServerStorage.Data.Monetization.{Products,Passes}` (with updated `ReplicatedStorage.Shared.Types`), completely rewrote `ServerScriptService.Server.Services.MonetizationService` for this game (removing stale Clockwork Incremental logic, owning sole `ProcessReceipt` + `PromptGamePassPurchaseFinished` + `ProductCatalog`/`GamepassCatalog` + Studio test grants + `OnPassGranted`/`OnProductGranted`), and routed `WristService`, `SprintService` (`CourierBoots` +25% `MaxStamina` + `1.25×` regen), `FlashlightController` (`TacticalFlashlight` wider/brighter optics), and `WristMenuController` through `MonetizationService`.
+  - **Death Screen UI Reverted (`DeathScreenGui`):** Restored the pre-overhaul procedural P.A.R.A.L.L.A.X. CRT `DeathScreenGui` in `DeathScreenController` (wrapping startup `PlayerGui` lookup in `task.spawn` and adding proportional `Scale` Tab 2/4 geometry + `UITextSizeConstraint` so all 4 tabs render without clipping/overlap even at `945×425`), updated `WristMenuController` to check `DeathScreenGui`, and removed unused `StarterGui.PixelGame_DeathScreen`.
+  - **Animation & Image Preloader (`AssetPreloadController`):** Added `StarterPlayer.StarterPlayerScripts.Client.Controllers.AssetPreloadController` (Phase 2 in `ControllerList`) to deduplicate and batch-preload animations (`StarterCharacterScripts.Animate` clips, `ReplicatedStorage.Assets.Animations`, `StarterPlayer`, `ReplicatedStorage`, `Workspace`, spawned characters) and images (`AssetCatalog.Images`, `IconCatalog`, `PlayerGui`, `ReplicatedStorage.Assets`, `Lighting.Sky`) non-blockingly via `Animation`/`ImageLabel` instances inside `task.spawn`.
+- **Verified (Play Solo on `The game part`):**
+  - Static grep confirmed `MarketplaceService` appears solely in `MonetizationService` and 0 `PixelGame_DeathScreen` / `ChronoPetals` / `EarlyAutoCollect` / `BetterFlashlight` references remain.
+  - Runtime tests verified `ProductCatalog` (4) & `GamepassCatalog` (3), Studio-test grants for `RevivePack1` (`StoredRevives` `3 -> 4`), `TeamCash500` (`$500`), `CourierBoots` (`GP_CourierBoots = true`, `MaxStamina = 125`), `HazardSuit` (`GP_HazardSuit = true`, `MaxHealth = 125`), and `TacticalFlashlight` (`GP_TacticalFlashlight = true`).
+  - Death Screen live death -> `Phase1` -> `Phase2Overview` (`DeathScreen_Reverted_Scaled_Phase2`) + `ReviveRequest` (`DeathGuiEnabledAfterRevive = false`, `MaxHealthAfterRevive = 125`) verified with 0 overlapping buttons/clipped text; Studio test passes were left granted on the Studio test save profile.
+  - `AssetPreloadController` preloaded **`97/97` assets (`33` animations, `64` images, `0` failed)** with **0 `[Loader]` slow-start warnings** and **0 errors** across modified/new scripts (`VanCamController:190` had an unrelated cold-boot `populateViewportScene` script timeout).
+- **Studio Paths Modified/Created (`The game part`, `placeId: 93445054108906`):**
+  - `ReplicatedStorage.Shared.Types`
+  - `ServerStorage.Data.Monetization.{Products,Passes}`
+  - `ServerScriptService.Server.Services.{MonetizationService,WristService,SprintService}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{AssetPreloadController,DeathScreenController,FlashlightController,WristMenuController}`
+  - `StarterGui.PixelGame_DeathScreen` (removed)
+- **Repository Files Modified:**
+  - `UI_PLACEHOLDERS.md`, `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md`
+- **New Dependencies / Attributes:**
+  - `MonetizationService` (`OnPassGranted`, `OnProductGranted`), `AssetPreloadController` (`IsComplete`, `GetProgress`, `PreloadAnimations`, `PreloadImages`, `OnProgress`, `OnComplete`), `LocalPlayer` attributes `AssetsPreloaded`, `AssetsPreloadProgress`, `AssetsPreloadLoaded`, `AssetsPreloadTotal`, `AssetsPreloadCount`, `AssetsPreloadFailed`.
+- **Next Steps / Known Issues:**
+  - Replace `ProductId = 0` and `PassId = 0` placeholders in `ServerStorage.Data.Monetization.{Products,Passes}` with live Creator Hub IDs when ready to publish monetization.
+  - Unrelated existing warning noted during cold Play Solo boot: `VanCamController:190` (`populateViewportScene` timeout).
+  - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
