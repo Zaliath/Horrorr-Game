@@ -2248,3 +2248,65 @@
   - Updated `StarterPlayer.StarterPlayerScripts.Client.Controllers.CreepyCrawlieController`: added `tryRegisterFromDescendant()` (registering on `CreepyCrawlie_Export_Mesh` `MeshPart` or `Head` `Bone` streaming in under a `CreepyCrawlie` ancestor) plus a lightweight `1.0s` periodic sweep over `CollectionService:GetTagged("CreepyCrawlie")` so late-streamed or reparented instances always bind cleanly.
   - Set `ModelStreamingMode = Enum.ModelStreamingMode.Atomic` on `Workspace.MonsterModels.CreepyCrawlie` and `ReplicatedStorage.Assets.Monsters.CreepyCrawlie` (removed temporary `Workspace.StartArea.CreepyCrawlie` test clone after Play-mode verification).
 - **Verification:** Live Play-mode tested directly on `Workspace.StartArea.CreepyCrawlie` (no manual test spawns): `Spawn_StraightOn` (`dist = 10.0`, `faceDot = 0.9978`, `roll = 24.2°`, `jawX = -21.4°`) -> moved to `Moved_Right_Flank` (`dist = 9.8`, `faceDot = 0.9901`, `roll = 25.1°`, `jawX = -21.4°`), with zero `CreepyCrawlieController` errors. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`CreepyCrawlieController`, `ControllerList`) in Team Create!
+
+---
+
+## 2026-11-22 — Riplatki (via Antigravity) — 4-Phase Front-Page Release Polish (29 Features)
+- **Summary of Changes:** Implemented and verified all 29 front-page release polish features across 4 batched phases in `"The game part"` (`placeId 93445054108906`, saved at Versions `324`, `326`, `328`, and `330`):
+  - **Phase 1 — Package Overhaul, Wrist Scanner & Cargo Manifest (`PackageService`, `ChuteService`, `ShiftService`, `SprintService`, `CarryAnimController`, `ShiftController`):**
+    1. Printed top/front shipping labels (`SurfaceGui`) with `#HOUSE ADDRESS`, parcel class, and barcode stripes; strict address validation on delivery (rejects mismatched parcels with red terminal error & abrasive buzzer).
+    2. Four distinct parcel shapes & materials: `StandardBox`, `HeavyCrate` (-15% walk speed via `CarryWeightMult`), `LongTube`, and crinkly `PlasticMailer` with custom handling audio.
+    3. Active Wrist-PDA Barcode Scanner delivery (`HoldDuration = 0.45s` on `DeliverPrompt` or `[LMB]` on porch pad) with left/right wrist-aim pose in `CarryAnimController` and live sweeping neon amber laser beam.
+    4. `[LMB]` Package Lob/Throw mechanic with material bounce audio and hard-impact integrity damage (`Condition` `25..100`).
+    5. Borderless, text-only top-right streaming terminal porch drop receipt (`GRADE: S`, speed bonus, cargo integrity).
+    6. Bottom-right Package Condition Wireframe HUD (with fracture lines below 90%) + in-world amber laser porch silhouette (`[ SCAN ZONE: #ADDRESS ]`).
+    7. `[Tab]` Van Cargo Manifest Checklist overlay inside `DeliveryVan` with green `[✓]` checkmarks and strikethroughs.
+  - **Phase 2 — Player Locomotion, Co-Op Juice & Industrial Hotbar (`NetDefs`, `ShiftService`, `FlashlightService`, `FlashlightController`, `VanDrive`, `SprintController`, `HotbarController`, `ControllerList`):**
+    8. `DeliveryVan` teammate bumper bump (> 8 mph): non-lethal comedic `-5 HP` knockback, 1.2s ragdoll tumble, squeaky shoe slide SFX, double-beep auto-honk, and bobblehead/dice rattle.
+    9. `[Space]` Low Obstacle Vaulting over waist-high guardrails/porch rails maintaining sprint momentum.
+    10. `[T]` Shoulder-Mounted Flashlight Clip (`FlashlightShoulderClip` + `ShoulderFlashlightBracket` on chest/torso, hands free while carrying).
+    11. True First-Person Body Awareness (torso/arms/legs/boots visible when zoomed in + turn/stop camera inertia sway).
+    12. Surface-specific dynamic footsteps (wet asphalt, wood porch, metal van floor, grass/mud) + dark radial panic vignette, panting, and boosted heartbeat when stamina < 15% or monster <= 35 studs.
+    13. Hold `[C]` Quick Retro Walkie Callout Wheel (4 wedges + radio-filtered squelch SFX & crew subtitles).
+    14. Docked Industrial Amber Hotbar (`HotbarController`, Slots 1–4: Flashlight, Active Package, Emergency Jerrycan `+35%` fuel, Wrist PDA).
+    15. Circular Segmented Stamina Arc around Center Crosshair with clean 1-line revert flag (`local USE_CIRCULAR_RETICLE_STAMINA = true` in `SprintController`).
+  - **Phase 3 — Van Cab & Driving Immersion (`ShiftService`, `VanAudioController`, `VanImmersionController`, `ControllerList`):**
+    16. Moving Van Cargo Hop-In (`[E]` behind open moving rear bumper hauls runner inside cargo bay).
+    17. `[P]` Dual Articulated Windshield Wipers + squeak SFX + 1st-person windshield mud splatter overlay.
+    18. Live Rearview Mirror threat readout glass + 2nd-order Spring-Physics hanging Fuzzy Dice.
+    19. Clickable spring-loaded Passenger Dashboard Glove Box with 2-slot stash UI.
+    20. Handbrake (`[Space]`/`[B]`) pooled dark rubber skid marks, rear tire smoke emitters, and asphalt squeal audio.
+    21. In-Cab Acoustic Muffling (`EqualizerSoundEffect` low-pass on storm/rain when cab is sealed) + metallic tin-roof rain patter.
+    22. Collectible Porch Cassette Tapes + unlockable tape radio channel + EBS monster warning alerts + 3-second rotating-reel Cassette Tape HUD with VU needle.
+  - **Phase 4 — Warehouse Depot Life, Revive Cinematic & Threat Interference (`ChuteService`, `ShiftService`, `DeathService`, `WristMenuController`, `DeathScreenController`, `VanImmersionController`):**
+    23. Wired up existing `StartArea.PersonalUpgradeStation.Stamina_Vending_Unit_Node` (`$15` Team Cash -> coin drop, physical soda can drop, 30s Infinite Sprint buff).
+    24. Integrated `PdaStartShiftBtn` (`>>> START SHIFT #X (PUNCH IN) <<<`) directly onto the first PDA screen (`Page_Status` in `WristMenuController`).
+    25. Chute Jam & `[E] KICK CHUTE` unjam mechanic with hollow iron clang & 2-box burst.
+    26. `StartArea.MonsterEncounterCorkboard` with 12 clean Polaroid encounter frames (zero scribbled warnings) unlocking dynamically as monsters are encountered.
+    27. `StartArea.DepotPASpeaker` playing muffled crackling 1980s lounge jazz + 60Hz fluorescent hum + periodic ballast flicker & `DepotPowerTransformer` storm sparks.
+    28. Full Terminal Revive Decompile Sequence (`DeathScreenController.playReviveDecompileSequence`): CRT vertical collapse -> moving scanline void -> exponential hyper-FOV dolly zoom (`70° -> 115°`) -> RGB chromatic glitch sweep -> inside-to-corner tile dissolve + RGB body reconstruction + defib crack & gasp.
+    29. Dynamic Monster Threat Interference on HUD (<= 40 studs: VHS tracking tears, RGB edge chromatic bars, and speedometer odometer jitter).
+- **Studio Paths Modified/Created (`The game part`, placeId `93445054108906`):**
+  - `ReplicatedStorage.Shared.NetDefs` (modified)
+  - `ServerScriptService.Server.Services.PackageService` (modified)
+  - `ServerScriptService.Server.Services.ChuteService` (modified)
+  - `ServerScriptService.Server.Services.ShiftService` (modified)
+  - `ServerScriptService.Server.Services.SprintService` (modified)
+  - `ServerScriptService.Server.Services.FlashlightService` (modified)
+  - `ServerScriptService.Server.Services.DeathService` (modified)
+  - `Workspace.DeliveryVan.VanDrive` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.CarryAnimController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ShiftController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.FlashlightController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.SprintController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.HotbarController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanAudioController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanImmersionController` (created)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.WristMenuController` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.DeathScreenController` (modified)
+- **Verification (Play Solo across all 4 phases, final v330):**
+  - Verified all 4 phases in Play Solo with **zero game script errors** and **zero failed asset loads** (swapped invalid `9114221895` to verified `9112857056`; fixed `FlashlightController` `aimPitchSmooth` scope reference).
+  - Confirmed multi-shape labeled boxes, `PorchScanSilhouette`, `HoldDuration = 0.45s` wrist scan, `IndustrialHotbarGui`, `StaminaReticleArc`, `ShoulderFlashlightBracket`, `WalkieCalloutFX`, `ClientVanImmersionFX` (wipers/dice/glovebox/smoke/rearview glass), `PorchCassetteTape`, `DepotVendingPrompt` (29.7s sprint buff), `MonsterEncounterCorkboard` (12 polaroids), `DepotPASpeaker` (jazz + 60Hz hum), `PdaStartShiftBtn`, and `ReviveCinematicGui` (`PeakFOV = 101.9° -> EndFOV = 70.0°`, clean teardown).
+- **New Dependencies:**
+  - `NetDefs` remotes: `WalkieCallout` (C2S), `WalkieCalloutFX` (S2C), `PlayerAction` (C2S), `PlayerActionFX` (S2C).
