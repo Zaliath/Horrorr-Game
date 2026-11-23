@@ -2575,3 +2575,25 @@
   - `GAME_DESIGN.md`, `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+---
+
+## 2026-11-23 — Antigravity (Compact Scale-Only Resize/Reposition of `PixelGame_*` UIs)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - **Compact Scale-Only `StarterGui.PixelGame_*` Overhaul (`620` `GuiObject`s, `0` non-zero Offsets, `UIAspectRatioConstraint` untouched at `1`):**
+    - Downsized and repositioned all 10 `StarterGui.PixelGame_*` GUIs (`PixelGame_ShiftHUD`, `PixelGame_Hotbar`, `PixelGame_Stamina`, `PixelGame_Speedometer`, `PixelGame_MonsterAlerts`, `PixelGame_Notification`, `PixelGame_VanImmersion`, `PixelGame_VanUpgrades`, `PixelGame_PersonalUpgrades`, `PixelGame_WristPDA`) cleanly toward screen edges so the center horror viewport stays open with zero overlaps.
+    - Fixed structural issues from initial plugin conversion: restored `PixelGame_VanUpgrades.Backdrop` from `(0.847, 1.412)` to `(1, 1)` (`Panel` `0.48×0.62`), shrank `PixelGame_WristPDA.BottomRightDock` from `(0.525, 1.459)` to `(0.28×0.62)`, re-balanced `WristPDA.TabBar` button widths to sum to `1.000`, re-normalized `WristPDA` page/template/tutorial Y-scales, moved `PixelGame_ShiftHUD.PackageConditionHUD` cleanly to bottom-left (`AP=(0,1)` `Pos=(0.014, 0.980)` `Sz=(0.20, 0.102)`), normalized `DefendCargoPrompt.Size.X.Scale` to `1.0`, docked `FlipVanContainer` (`0.150×0.080`) flush above `SpeedoPanel` (`0.150×0.295`), and lowered `SpeedValue.UITextSizeConstraint.MinTextSize` from `16` to `10`.
+    - Compiled an itemized `UIAspectRatioConstraint` Studio plugin checklist for the user (without adding constraints automatically).
+  - **Runtime Offset Cleanup in Client Controllers (`StarterPlayer.StarterPlayerScripts.Client.Controllers`):**
+    - Removed remaining runtime `UDim2.fromOffset`/`UDim2.new` Offset writes in `ShiftController` (`showToast` Scale tween from `toastBasePos`), `VanController` (`refreshSeatHint` Scale sizing + `flipCdFill` Scale fill), `UpgradeShopController` (`RepairRow_Template` `FixAllSectionBtn` Scale toggles `0.24` / `0.145`), `WristMenuController` (`dockFullSize` fallback `0.28×0.62` + pure-Scale CRT fold/unfold tweens), `SprintController` (pure-Scale fallback & shake), and `VanImmersionController` (pure-Scale threat glitch bars & odometer jitter).
+- **Verified (`Edit` & `Play Solo` on `The game part`):**
+  - Edit-mode inspection & capture (`EditMode_AfterCompactResize`): `620` `GuiObject`s across 10 `PixelGame_*` GUIs with `0` non-zero Offsets and `1` existing `UIAspectRatioConstraint` (`VanWireframe`).
+  - Play Solo inspection (`PlaySolo_DefaultHUD`, `PlaySolo_Preview1` Speedometer/FlipVan/DropPackage/VanSeatHint/MobileSprintBtn, `PlaySolo_WristPDA_{Status,Settings,Supply,Admin}`, `PlaySolo_VanUpgrades_{Upgrades,Repairs}`, `PlaySolo_PersonalUpgrades`): `917` live `GuiObject`s with `0` unintended runtime Offset leaks (only `3` `UITheme` 34px `PhosphorSweep` bars + `87` dev `Page_Admin` cards), healthy `ScrollingFrame` canvas sizes, **`0` errors**, **`0` `[Loader]` slow-start warnings**, and `[AssetPreloadController] Preloaded 97/97 assets (33 animations, 64 images, 0 failed)`. Studio stopped cleanly back to `Edit` mode.
+- **Studio Paths Modified (`The game part`, `placeId: 93445054108906`):**
+  - `StarterGui.PixelGame_{ShiftHUD,Hotbar,Stamina,Speedometer,MonsterAlerts,Notification,VanImmersion,VanUpgrades,PersonalUpgrades,WristPDA}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{ShiftController,VanController,UpgradeShopController,WristMenuController,SprintController,VanImmersionController}`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - User to apply `UIAspectRatioConstraint` via Studio plugin across the fixed-shape panels and square icons/wireframes checklist.
+  - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `The game part`.
