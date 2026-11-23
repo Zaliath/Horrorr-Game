@@ -39,8 +39,14 @@ This document tracks every UI screen, icon, widget, or procedural control that i
 
 ---
 
-## 4. Intentionally Procedural / Diegetic Elements (Keep As-Is)
+## 4. Intentionally Procedural / Diegetic / Reverted Elements (Keep As-Is)
 
-These layers are fullscreen optical/camera VFX or 3D world-space diegetic monitors and should **not** be replaced with 2D pixel frame templates:
-- Fullscreen screen-space vignettes, flashes, and cinematics: `WindowMonsterFX`, `ChaseMonsterFX` (`RearVignette`, `RamFlash`, `SwallowBlackout`), `DoorMonsterHUD` (`EdgeVignette`, `RipFlash`), `HorrorAtmosphereOverlay`, `LightningFlashGui`, and `ReviveCinematicGui`.
-- 3D world-space `SurfaceGui`s: `DeliveryVan.CabInterior.TrackerScreen` (`ShiftController` GPS radar) and `BrokenBorder_*` (`WindowMonsterController` shattered glass rim cracks).
+These layers are fullscreen optical/camera VFX, 3D world-space diegetic monitors, or smooth calibrated bars intentionally reverted per user design and should **not** be replaced with 2D pixel frame or pip templates:
+- **Reverted Smooth Calibrated Gauge & Progress Bars (Keep Pre-Overhaul Style):**
+  - `StarterGui.PixelGame_Stamina.StaminaBarContainer.BarTrack` (`StaminaFill`, `DrainGhost`, `SliderThumb`, `RecoveryTick` — `SprintController`)
+  - `StarterGui.PixelGame_Speedometer.SpeedoPanel.BoostRow.BoostTrack` (`BoostFill`, `BoostThumb`) & `FuelRow.FuelTrack` (`FuelFill` — `VanController`)
+  - `StarterGui.PixelGame_WristPDA.BottomRightDock.Body.Page_Status.ECGCard.HpTrack` (`HpFill` — `WristMenuController`)
+  - `StarterGui.PixelGame_MonsterAlerts.TopAlertStack.ChaseBanner.MeterBg` (`Fill` — `ChaseMonsterController`)
+  - `StarterGui.PixelGame_MonsterAlerts.BottomAlertStack.DoorMashHUD.MashBarFrame` (`MashFill` — `DoorMonsterController`)
+- **Fullscreen screen-space vignettes, flashes, and cinematics:** `WindowMonsterFX`, `ChaseMonsterFX` (`RearVignette`, `RamFlash`, `SwallowBlackout`), `DoorMonsterHUD` (`EdgeVignette`, `RipFlash`), `HorrorAtmosphereOverlay`, `LightningFlashGui`, and `ReviveCinematicGui`.
+- **3D world-space `SurfaceGui`s:** `DeliveryVan.CabInterior.TrackerScreen` (`ShiftController` GPS radar) and `BrokenBorder_*` (`WindowMonsterController` shattered glass rim cracks).

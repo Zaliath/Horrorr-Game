@@ -178,13 +178,13 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
 - **Main-Game Studio `ScreenGui` Templates (`StarterGui.PixelGame_*` in `The game part` — live & wired across all 15 main-game client controllers via `UITheme` pixel helpers):**
   - `PixelGame_ShiftHUD` (`TopStatusBar`, `ObjectiveBar`, `ActionRow`, `MenuHintFrame`, `DispatchPABanner`, `PackageConditionHUD`, `TerminalReceiptBox`, `[Tab] CargoManifestOverlay`, `PaystubModal`, `ToastFrame`)
   - `PixelGame_Hotbar` (`HotbarRoot` 4-slot bar, `WalkieCalloutWheel` `[C]`, `WalkieSubtitle`)
-  - `PixelGame_Stamina` (`StaminaBarContainer` with 14 pips + `35%` `RecoveryTick`, `MobileSprintBtn`)
-  - `PixelGame_Speedometer` (`SpeedoPanel` with MPH/Gear/Boost/Fuel pips/`CabRadioBtn`, `FlipVanContainer` with `RolloverStrip` + `FlipVanBtn`, `VanControlsHint`, `VanSeatHint`)
+  - `PixelGame_Stamina` (`StaminaBarContainer` with smooth calibrated `BarTrack`, `DrainGhost`, `SliderThumb`, and `35%` `RecoveryTick`; `MobileSprintBtn`)
+  - `PixelGame_Speedometer` (`SpeedoPanel` with MPH/Gear/smooth calibrated `BoostTrack` & `FuelTrack`/`CabRadioBtn`, `FlipVanContainer` with `RolloverStrip` + `FlipVanBtn`, `VanControlsHint`, `VanSeatHint`)
   - `PixelGame_VanUpgrades` (`UpgradesContainer` + `RepairsContainer` with `Graphic_VanWireframe` & 6 zone pips + `RepairAllBtn`)
   - `PixelGame_PersonalUpgrades` (4 courier perk rows with 3-pip tier indicators)
   - `PixelGame_VanImmersion` (`CargoHopInPrompt`, `GloveBoxStashPopup`, `CassetteTapeHUD` with 8-pip VU meter)
-  - `PixelGame_WristPDA` (`BottomRightDock` `PARALLAX_WRIST_OS v4.2` with 5 tabs: `Page_Status` w/ `Graphic_ECGHeartbeat` + `Graphic_VanWireframe`, `Page_Guide`, `Page_Supply`, `Page_Settings`, `Page_Admin` w/ `VanChaseViewport` + `TutorialOverlay`)
+  - `PixelGame_WristPDA` (`BottomRightDock` `PARALLAX_WRIST_OS v4.2` with 5 tabs: `Page_Status` w/ `Graphic_ECGHeartbeat`, smooth `HpTrack`, + `Graphic_VanWireframe`, `Page_Guide`, `Page_Supply`, `Page_Settings`, `Page_Admin` w/ `VanChaseViewport` + `TutorialOverlay`)
   - `PixelGame_DeathScreen` (`Phase0Intro` w/ `Graphic_FlatlineECG`, `Phase1Terminal`, `Phase2Overview` w/ `Tile_DitherHeader_Crimson` + `Graphic_DeathSkullBanner`, `SpectatorOverlay`)
-  - `PixelGame_MonsterAlerts` (`TopAlertStack`: `ChaseBanner`, `WindowAlert`, `CargoLatchAlert`; `BottomAlertStack`: `CrawlieStrugglePrompt`, `DoorMashHUD` + `TouchMashButton`)
+  - `PixelGame_MonsterAlerts` (`TopAlertStack`: `ChaseBanner` w/ `MeterBg`, `WindowAlert`, `CargoLatchAlert`; `BottomAlertStack`: `CrawlieStrugglePrompt` w/ 8-pip QTE, `DoorMashHUD` w/ `MashBarFrame` + `TouchMashButton`)
   - `PixelGame_Notification` (top-right `CanvasGroup` toast template `Popup` + `Message`)
-  - **UI Animations, SFX & Placeholder Tracking:** Wired through `ReplicatedStorage.Shared.UITheme` (`WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`). Remaining placeholder/deferred UI items (including Lobby `PixelLobby_*` controller wiring) are tracked in `UI_PLACEHOLDERS.md`.
+  - **Responsive Scaling, Animations, SFX & Placeholder Tracking:** Universal multi-screen scaling via `ResponsiveUIController` (1280×720 baseline per-widget `UIScale` + proportional offset positioning + `TextScaled` & `UITextSizeConstraint`), animations/SFX via `ReplicatedStorage.Shared.UITheme` (`ResponsiveBaseScale`-aware `WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`), and deferred/reverted UI tracking in `UI_PLACEHOLDERS.md`.

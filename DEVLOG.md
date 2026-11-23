@@ -2507,3 +2507,26 @@
   - `ServerStorage.Modules.ChunkBuilder` (modified: added `BindFuelPump`, updated `CreateFuelPump`)
   - `ServerScriptService.Server.Services.MapService` (modified: binds existing `StartArea.DepotFuelPump` or spawns flush on `Main_Floor_Slab`)
 - **Verification:** Edit-mode `screen_capture` (`FuelStationStudioFrontL`) confirmed crisp PBR materials, warm canopy light pools, zero floor clipping (`botY = 1.91`), and clean clearance beside `DeliveryVan`. Live Play-mode verified `StartArea` pump count = `1`, `FuelPumpBound = true`, `RefuelPrompt` (`'DEPOT FUEL PUMP'` / `'Refuel Van (FREE)'`, `Enabled = true`, `MaxActivationDistance = 18`), `FuelGlugSfx` present, `ChunkBuilder.CreateFuelPump` spawning the Blender PBR template (`hasBlenderMesh = true`), and **zero console errors**. Studio returned cleanly to `Edit` mode. Remember to **Commit Drafts** (`ChunkBuilder`, `MapService`) in Team Create and **Save / Publish**!
+
+## 2026-11-23 — Antigravity (Universal Responsive UI Scaling & Reverted Smooth Gauge Bars)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Reverted ONLY the 6 continuous gauge/progress bars in `StarterGui.PixelGame_*` and their controllers back to their pre-overhaul smooth calibrated bars (`StaminaBarContainer.BarTrack`, `SpeedoPanel.{BoostRow.BoostTrack, FuelRow.FuelTrack}`, `ECGCard.HpTrack`, `ChaseBanner.MeterBg`, `DoorMashHUD.MashBarFrame`), while keeping all pixel frames/cards/icons/buttons and discrete tier/damage/QTE/VU pips untouched.
+  - Normalized oversized/clamped modal panels (`PixelGame_VanUpgrades` `688×492`, `PixelGame_PersonalUpgrades` `608×380`, `PixelGame_DeathScreen.Phase2Overview` `684×504`, `PixelGame_WristPDA.BottomRightDock` `496×620`, `MobileSprintBtn` `64×64`), enabled `TextScaled = true` + `UITextSizeConstraint` across all non-`AutomaticSize.Y` labels, and polished single-line constraints (`MenuHintFrame`, Hotbar `SlotSub`).
+  - Added `StarterPlayer.StarterPlayerScripts.Client.Controllers.ResponsiveUIController` (registered in `ControllerList` Phase 3) scaling widgets and offsets from `1280×720` (`[0.32, 1.85]`) across camera `ViewportSize` changes, and updated `ReplicatedStorage.Shared.UITheme` + `SprintController` to respect `ResponsiveBaseScale`, `ScaledBasePosX`, and `ScaledBasePosY`.
+- **Verified (Play Solo on `The game part`):**
+  - `GamePackageLoaded=true`, `GamePackageReady=true`, `GamePackageFailed=nil`, **0** `[Loader]` slow-start warnings, **0** game script errors in console output.
+  - All 6 reverted smooth bar structures (`Stamina`, `Boost`, `Fuel`, `WristHP`, `Chase`, `DoorMash`) verified `OK` with 0 leftover continuous pips, while discrete pips (`VanTierPips`, `VanDmgPips`, `PersTierPips`, `CrawliePips`) remained intact.
+  - `ScaledWidgets=34/34` (`945×425` Studio pane), `TextScaled=319`, `TextConstrained=319`, `AutoYBad=0`, `ViewportBoundsClips=0` across `667×375`, `812×375`, `1024×768`, `1280×720`, `1920×1080`, and `3840×2160`.
+  - Visual Play Solo capture (`PlaySolo_Final_BarsAndScaling`) confirmed smooth Stamina/Boost/Fuel bars and clean 1-line `[M] WRIST PDA` and `PDA READY [M]`.
+- **Studio Paths Modified/Created (`The game part`, `placeId: 93445054108906`):**
+  - `StarterGui.PixelGame_{Stamina,Speedometer,WristPDA,MonsterAlerts,ShiftHUD,Hotbar,VanUpgrades,PersonalUpgrades,DeathScreen,VanImmersion,Notification}`
+  - `ReplicatedStorage.Shared.UITheme`
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.ResponsiveUIController` (new)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{SprintController,VanController,WristMenuController,ChaseMonsterController,DoorMonsterController}`
+- **Repository Files Modified:**
+  - `UI_PLACEHOLDERS.md`, `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - `ResponsiveUIController` and GUI attributes `ResponsiveBaseScale`, `ScaledBasePosX`, `ScaledBasePosY` (`_RespOrigPos*`).
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts (`UITheme`, `ControllerList`, `ResponsiveUIController`, updated controllers) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
