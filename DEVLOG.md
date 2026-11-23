@@ -2367,6 +2367,28 @@
 - **Van Roadkill (`CreepyCrawlieMonster`):** Added `DeliveryVan` overlap check (`speed >= 8` studs/s within van footprint) to squish & kill crawlers when run over.
 - **Verified:** Play Solo `Server` test confirmed `hasPrompt = true` and `movedDist = 7.25` studs in Prep/Depot; saved to Team Create version 343.
 
+## Fix CreepyCrawlie Orientation, Level Caps, Delayed Backup, Slow Rip-Apart & Stomp Sound (Riplatki)
+- **Fixed Sideways Walking (`CreepyCrawlieMonster`):** Verified `MeshPart` local axes (`Head = -Z`, `Up = +Y`) and updated `buildCrawlieCFrame` to `CFrame.lookAt(p, p + fwd, n)` (`fwdDot = 1.0`, `upDot = 1.0`).
+- **Level Caps & Delayed Backup (`CreepyCrawlieMonster`):** Added `getMaxSwarmForShift` caps (Day 2: `3`, Day 3: `5`, Day 4: `8`, Day 5+: `10+`) and delayed vengeance backup spawns by `3–5s` instead of instant spawns.
+- **Slow Active Swarm Finisher & Attack Anims (`CreepyCrawlieMonster`, `CreepyCrawlieController`):** `PullApart` (`3.8s`) and `LegsUpDevour` (`4.2s`) now knock the player over (`PlatformStand = true` + topple impulse), swarm & tear over time with progressive HP ticks, animate rapid front-leg clawing/lunging (`IsAttacking`), and orbit a ground-level third-person camera around the downed player.
+- **Replaced Stomp Sound (`CreepyCrawlieController`):** Removed `impact_water.mp3` completely and replaced `"Squish"` with a heavy low-passed `action_jump_land.mp3` thud (`PlaybackSpeed = 0.62`).
+- **Verified:** Play Solo confirmed `fwdDot = 1`, `upDot = 1`, zero game script errors; saved to Team Create version 345.
+
+## CreepyCrawlie Fight-Back Mash, Face-Up Knockdown & Opposite-Side Limb Ripping (Riplatki)
+- **Face-Up Knockdown (`CreepyCrawlieMonster`):** Changed knockdown tilt to `CFrame.Angles(math.rad(82), 0, math.rad(6))` so knocked-down players lie on their back facing up (`LookVector.Y = 0.99`).
+- **Random Opposite-Side Limb Ripping (`CreepyCrawlieMonster`, `CreepyCrawlieController`):** Randomly assigns 1 Left-side limb (`Left Shoulder` / `Left Hip`) and 1 Right-side limb (`Right Shoulder` / `Right Hip`) across grabbing crawlers (never same side). As crawlers slowly back up (`pullDist` 2.0 -> 4.8 studs), `stepGrabbedLimbs` rotates and stretches the grabbed R6 `Motor6D.Transform`s toward each monster.
+- **Fight-Back Struggle (`NetDefs`, `MonsterService`, `CreepyCrawlieMonster`, `CreepyCrawlieController`):** Added `CrawlieMash` remote and `SWARM GRAB // MASH [E] TO BREAK FREE` struggle bar; mashing `[E]` / `[ButtonX]` pushes back `RipProgress` and breaks free (`PlatformStand = false`, scatters crawlers) when `BreakProgress >= 1`.
+- **Verified:** Play Solo `Server` test confirmed `faceUpY = 0.9903`, `oppositeSides = true`, `brokeFree = true`, zero game script errors; saved to Team Create version 347.
+
+## CreepyCrawlie 3-Hit QTE Fight-Back & Exact Limb Aiming (Riplatki)
+- **3-Hit Key QTE (`CreepyCrawlieMonster`, `CreepyCrawlieController`, `MonsterService`):** Replaced `[E]` mash (which was intercepted by `StompPrompt`) with a 3-hit random key QTE (`Q`, `R`, `Z`, `X`, `Space`) with `QTEUpdate` prompts, wrong-key penalty, and `StompPrompt.Enabled = false` during grabs.
+- **Exact Limb Aiming & Stretch (`CreepyCrawlieController`):** Replaced Euler approximation in `stepGrabbedLimbs` with `fromToRotation(-restWorld.UpVector, wantDir)` in `motor.C0` space so grabbed R6 limbs rotate directly toward the backing-up crawler and stretch outward as `RipProgress` increases.
+- **Verified:** Play Solo `Server` & `Client` tests confirmed `promptDisabled = true`, `brokeFree = true`, `moved = true`, `tfPos = 0.35`, `resetClean = true`, zero game script errors; saved to Team Create version 347.
+
+## Fix Motor6D.C0 Limb Rip Aiming & ProximityPrompt-Style QTE UI (Riplatki)
+- **Fixed Limb Aiming (`CreepyCrawlieController`):** Switched `stepGrabbedLimbs` from `Motor6D.Transform` (which Roblox `Animator` overwrote every frame) to `Motor6D.C0` (saving/restoring `defaultMotorC0`), verified in live Play Solo `PullApart` (`aimDot = 0.999` on `Left Shoulder`, `0.997` on `Right Hip`, `c0Pos` stretching outward to `±1.41`).
+- **ProximityPrompt-Style QTE UI (`CreepyCrawlieController`):** Replaced the rectangular struggle bar with the exact `PromptUIController` circular prompt (`54x54` dark circle, `GothamBold` keycap, dual-arc 360° golden progress ring, and `"Break Free (0/3)"` pill).
+- **Saved:** Team Create version 348.
 
 ---
 
