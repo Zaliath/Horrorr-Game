@@ -2438,3 +2438,23 @@
     - Brightened locked badge text in `PixelLobby_Dossier` (`Badge_ChaserSurvivor`, `Badge_Shift5`) to `RGB(165, 157, 144)` for clean contrast.
   - Restored `PixelLobby_TopBar.Enabled = true` and the other 7 `PixelLobby_*` GUIs to `Enabled = false`.
 - **Verification:** Re-captured `PixelLobby_Real_Garage_Fixed`, `PixelLobby_Real_Dossier_Fixed`, and `PixelLobby_Real_Settlement_Fixed` alongside `PixelLobby_Real_Items` and `PixelLobby_Real_BayHUD` via `screen_capture` — confirmed crisp 9-slice notched corners, corner screws, dithered headers, hazard stripes, segmented pips, scanlines, and 16×16 icons with zero overlap or clipping.
+
+## 2026-11-23 — Antigravity (Main-Game Pixel UI Overhaul: 16 New Group Assets & 11 `PixelGame_*` Studio ScreenGuis)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Reused all 43 shared Lobby pixel assets and generated **16 genuinely new main-game pixel art PNGs** in `Assets/UI/PixelCRT/` (`Tile_DitherHeader_Crimson`, `Graphic_VanWireframe`, `Graphic_FlatlineECG`, `Graphic_ECGHeartbeat`, `Graphic_DeathSkullBanner`, `Icon_ParcelWireframe`, `Icon_Clock`, `Icon_Wrench`, `Icon_Engine`, `Icon_FlipVan`, `Icon_PDA`, `Icon_Radio`, `Icon_Cassette`, `Icon_Walkie`, `Icon_Eye`, `Icon_Settings`) + `_PreviewSheet_MainGame.png`.
+  - Uploaded all 16 new PNGs directly to **Group `382676491`** via `open_cloud_invoke` (`POST /assets/v1/assets`, `Approved`), merged them into `Assets/UI/PixelCRT/manifest.json` (`59` total assets), and installed `ReplicatedStorage.Assets.PixelUI` (`AssetCatalog` + `18` `Prefabs`) in `The game part`. Verified **`59/59`** assets via `AssetService:CreateEditableImageAsync` with `0` failures.
+  - Built all **11 Main-Game Studio `ScreenGui` templates** under `StarterGui` without modifying any existing controller Lua code:
+    - `PixelGame_ShiftHUD` (`Enabled = true`), `PixelGame_Hotbar` (`Enabled = true`), `PixelGame_Stamina` (`Enabled = true`), `PixelGame_Speedometer` (`Enabled = true`)
+    - `PixelGame_VanUpgrades`, `PixelGame_PersonalUpgrades`, `PixelGame_VanImmersion`, `PixelGame_WristPDA`, `PixelGame_DeathScreen`, `PixelGame_MonsterAlerts`, `PixelGame_Notification` (all `Enabled = false` for clean toggling)
+  - Visually verified live Studio renders via `screen_capture` across HUD, Upgrades, Repair Bay (`Graphic_VanWireframe`), Wrist PDA (`Graphic_ECGHeartbeat` + `Graphic_VanWireframe`), Death Screen (`Tile_DitherHeader_Crimson` + `Graphic_DeathSkullBanner`), and Monster Alerts; fixed `MonsterAlerts` stacking (`TopAlertStack` / `BottomAlertStack` `UIListLayout`), added `UIAspectRatioConstraint` on Repair Bay `VanWireframe`, brightened `"MPH"` contrast on `SpeedoPanel`, and restored showcase default (`ShiftHUD`, `Hotbar`, `Stamina`, `Speedometer` enabled; all 7 modals/alerts disabled; `181` visible loaded, `62` never-opened modal images, `123` hidden template images across `366` total pixel image instances).
+- **Studio Paths Modified/Created (`The game part`, `placeId: 93445054108906`):**
+  - `ReplicatedStorage.Assets.PixelUI` (`AssetCatalog`, `Prefabs` × 18)
+  - `StarterGui.PixelGame_ShiftHUD`, `PixelGame_Hotbar`, `PixelGame_Stamina`, `PixelGame_Speedometer`, `PixelGame_VanUpgrades`, `PixelGame_PersonalUpgrades`, `PixelGame_VanImmersion`, `PixelGame_WristPDA`, `PixelGame_DeathScreen`, `PixelGame_MonsterAlerts`, `PixelGame_Notification`
+- **Repository Files Added/Modified:**
+  - `Assets/UI/PixelCRT/` (`16` new PNGs + `_PreviewSheet_MainGame.png` + `manifest.json`)
+  - `GAME_DESIGN.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - Instance attribute `PixelAsset` (string key in `ReplicatedStorage.Assets.PixelUI.AssetCatalog.Images`).
+- **Next Steps / Known Issues:**
+  - All existing client controllers (`ShiftController`, `VanController`, `WristMenuController`, `DeathScreenController`, `UpgradeShopController`, etc.) remain untouched and still create their runtime GUIs until wired to `StarterGui.PixelGame_*` in the next coding pass.
+  - Remember to **Save / Publish `The game part`** and **Commit Drafts** (`AssetCatalog`) in Team Create.

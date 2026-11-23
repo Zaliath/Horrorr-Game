@@ -158,11 +158,14 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - **Horror Atmosphere & Hidden Deep-Forest Watchers (`LobbyAtmosphereController`):** Cold dark-slate midnight fog hugging a barbed-wire chain-link fence & Jersey barrier perimeter, 145+ mixed dead forest trees & woodland props, flickering sodium-amber streetlamps, glossy reflective wet asphalt puddles, light outdoor drizzle (stopping under roofs/vans), eerie ambient soundscape, and **4 hidden deep-forest watcher silhouettes** (`Wendigo`, `Skinwalker`, `Stare`, `Lurker`) peeking from behind outer trunks with dim eyes that slowly duck back behind trees and silently relocate across 8 treeline spots if stared at for ~`2.2s`.
 
 
-## 16-Bit Dithered CRT Pixel UI System (Design Direction & Lobby Studio Templates)
-- **Visual Direction:** 16-bit Dithered CRT Terminal (*Papers, Please* / *Buckshot Roulette* / *Signalis* style) paired with **Refined Amber-Obsidian + Crimson & Phosphor Green** (`Obsidian #0A0908`, `DarkPanel #14110F`, `Charcoal #1F1A16`, `Amber #FFB000`, `AmberBright #FFD966`, `Green #38E54D`, `Crimson #E62E2D`, `Bone #EFE6D5`, `Steel #6E685F`).
+## 16-Bit Dithered CRT Pixel UI System (Design Direction, Lobby & Main-Game Studio Templates)
+- **Visual Direction:** 16-bit Dithered CRT Terminal (*Papers, Please* / *Buckshot Roulette* / *Signalis* style) paired with **Refined Amber-Obsidian + Crimson & Phosphor Green** (`Obsidian #0A0908`, `DarkPanel #14110F`, `Charcoal #1F1A16`, `Amber #FFB000`, `AmberBright #FFD966`, `Green #38E54D`, `Crimson #E62E2D`, `Bone #EFE6D5`, `Steel #6E685F`, `MutedText #A59D90`).
 - **Typography & Rendering:** Dual font pairing — `Enum.Font.Arcade` for headers, timers, KPI numbers, and primary buttons + `Enum.Font.Code` for item descriptions, logs, and tax breakdowns. All pixel `ImageLabel`/`ImageButton` assets use `ResampleMode = Enum.ResamplerMode.Pixelated`, integer icon scales (`16×16` / `32×32`), 9-slice frames (`SliceCenter = Rect.new(10, 10, 22, 22)`, `SliceScale = 2`), and subtle tiled CRT scanlines (`Tile_CRTScanlines`).
-- **HUD Density & Motion Plan (for upcoming in-game UI pass):** Lean & Diegetic-First 2D HUD (compact corner widgets, stamina only when draining, heavy info inside Wrist PDA `[M]` & 3D cab screens) + tactile CRT feedback (stepped pixel-pip bars, scanline sweeps, and monster-proximity glitch/static jitter).
-- **Generated Asset Kit (`Assets/UI/PixelCRT/` + `ReplicatedStorage.Assets.PixelUI` in `THE horror driving game`):** 43 pixel-art PNGs (11 9-slice panel/button/badge frames, 6 tileable CRT/dither/hazard textures, 4 gauge pips, 1 pixel divider, and 21 16×16 pixel icons) + `_PreviewSheet.png` + `manifest.json`, indexed in `ReplicatedStorage.Assets.PixelUI.AssetCatalog` (with `ApplyAssets` and `ClearFallbacks`) and 17 Studio UI `Prefabs`.
+- **HUD Density & Motion Plan (for controller integration):** Lean & Diegetic-First 2D HUD (compact corner widgets, stamina only when draining, heavy info inside Wrist PDA `[M]` & 3D cab screens) + tactile CRT feedback (stepped pixel-pip bars, scanline sweeps, and monster-proximity glitch/static jitter).
+- **Generated Asset Kit (`Assets/UI/PixelCRT/` + `ReplicatedStorage.Assets.PixelUI` in both places — 59 total assets):**
+  - **43 Shared Lobby Base Assets:** 11 9-slice panel/button/badge frames, 6 tileable CRT/dither/hazard textures, 4 gauge pips, 1 pixel divider, and 21 16×16 pixel icons (`_PreviewSheet.png` + `manifest.json`).
+  - **16 Group-Owned (`382676491`) Main-Game Additions:** `Tile_DitherHeader_Crimson`, `Graphic_VanWireframe` (64×96 top-down hull blueprint), `Graphic_FlatlineECG` (96×32), `Graphic_ECGHeartbeat` (96×32), `Graphic_DeathSkullBanner` (48×48), `Icon_ParcelWireframe` (32×32), plus 10 16×16 icons (`Icon_Clock`, `Icon_Wrench`, `Icon_Engine`, `Icon_FlipVan`, `Icon_PDA`, `Icon_Radio`, `Icon_Cassette`, `Icon_Walkie`, `Icon_Eye`, `Icon_Settings`) (`_PreviewSheet_MainGame.png`).
+  - Indexed in `ReplicatedStorage.Assets.PixelUI.AssetCatalog` (`Colors`, `Fonts`, `Slices`, `Images` × 59, `ApplyAssets`, `ClearFallbacks`) + 18 Studio UI `Prefabs`.
 - **Lobby Studio `ScreenGui` Templates (`StarterGui.PixelLobby_*` in `THE horror driving game`, built UI-first ready for future controller hookup):**
   - `PixelLobby_TopBar` (top depot header, live Credits/Revives chips, `SKINS`/`ITEMS`/`EMOTES`/`GUIDE` nav buttons)
   - `PixelLobby_Garage` (category filter tabs, equipped/available/locked cosmetic cards, `RowTemplate`)
@@ -171,3 +174,15 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - `PixelLobby_BayHUD` (Departure Van boarding panel, 5-pip launch countdown meter, 4 crew roster slots, host difficulty/lock toggles, `>> START SHIFT <<` / `LEAVE VAN`)
   - `PixelLobby_Settlement` (phosphor-green SA-98 Corporate Tax Audit statement, crimson Property Damage fines box, final balance readout)
   - `PixelLobby_Notification` (top-right `CanvasGroup` toast template `Popup` + `Message`)
+- **Main-Game Studio `ScreenGui` Templates (`StarterGui.PixelGame_*` in `The game part`, built UI-first ready for future controller hookup):**
+  - `PixelGame_ShiftHUD` (`TopStatusBar`, `ObjectiveBar`, `ActionRow`, `MenuHintFrame`, `DispatchPABanner`, `PackageConditionHUD`, `TerminalReceiptBox`, `[Tab] CargoManifestOverlay`, `PaystubModal`, `ToastFrame`)
+  - `PixelGame_Hotbar` (`HotbarRoot` 4-slot bar, `WalkieCalloutWheel` `[C]`, `WalkieSubtitle`)
+  - `PixelGame_Stamina` (`StaminaBarContainer` with 14 pips + `35%` `RecoveryTick`, `MobileSprintBtn`)
+  - `PixelGame_Speedometer` (`SpeedoPanel` with MPH/Gear/Boost/Fuel pips/`CabRadioBtn`, `FlipVanContainer` with `RolloverStrip` + `FlipVanBtn`, `VanControlsHint`, `VanSeatHint`)
+  - `PixelGame_VanUpgrades` (`UpgradesContainer` + `RepairsContainer` with `Graphic_VanWireframe` & 6 zone pips + `RepairAllBtn`)
+  - `PixelGame_PersonalUpgrades` (4 courier perk rows with 3-pip tier indicators)
+  - `PixelGame_VanImmersion` (`CargoHopInPrompt`, `GloveBoxStashPopup`, `CassetteTapeHUD` with 8-pip VU meter)
+  - `PixelGame_WristPDA` (`BottomRightDock` `PARALLAX_WRIST_OS v4.2` with 5 tabs: `Page_Status` w/ `Graphic_ECGHeartbeat` + `Graphic_VanWireframe`, `Page_Guide`, `Page_Supply`, `Page_Settings`, `Page_Admin` w/ `VanChaseViewport` + `TutorialOverlay`)
+  - `PixelGame_DeathScreen` (`Phase0Intro` w/ `Graphic_FlatlineECG`, `Phase1Terminal`, `Phase2Overview` w/ `Tile_DitherHeader_Crimson` + `Graphic_DeathSkullBanner`, `SpectatorOverlay`)
+  - `PixelGame_MonsterAlerts` (`TopAlertStack`: `ChaseBanner`, `WindowAlert`, `CargoLatchAlert`; `BottomAlertStack`: `CrawlieStrugglePrompt`, `DoorMashHUD` + `TouchMashButton`)
+  - `PixelGame_Notification` (top-right `CanvasGroup` toast template `Popup` + `Message`)
