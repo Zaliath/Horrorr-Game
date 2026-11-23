@@ -2337,3 +2337,7 @@
 - **Denser Revive Glitch Pixels (`DeathScreenController`):** Ramped `playReviveDecompileSequence()` RGB glitch cubes quadratically from `8` to `96` over `0.60s`.
 - **Vaulting Removed (`SprintController`):** Completely removed `tryLowObstacleVault()` and its `Space` input binding.
 - **Verified:** Play Solo `Client` check confirmed `torsoLTM = 0`, `legLTM = 0`, `neckPos = (0, 1, 0)`, `pitchAttr = -0.29`, `yawAttr = 0.26`, `opticsMouseDot = 0.9998`, `vaultAttr = nil`, zero game script errors; saved to Team Create version 333.
+
+## Remove Head Look Movement (Riplatki)
+- **Removed Head Look Tilt/Yaw (`SprintController`, `StarterGui.Realism Mod.Realistic Head Movement`):** Removed the on-foot `Torso.Neck.C0` pitch/yaw loop from `SprintController` and disabled `StarterGui.Realism Mod.Realistic Head Movement` (`Disabled = true`), keeping 1st-person body visibility (`FPBodyVisibility`), mouse flashlight aim, denser revive glitch pixels, and vault removal intact.
+- **Verified:** Play Solo `Client` check confirmed `neckUnchanged = true`, `torsoLTM = 0`, `legLTM = 0`, `opticsMouseDot = 0.9798`, zero game script errors.
