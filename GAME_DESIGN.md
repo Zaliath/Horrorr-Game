@@ -14,6 +14,7 @@ it down a forest road to deliver packages to houses.
 ## Observed: Start Area (`Workspace.StartArea`)
 - `DeliveryChute`: custom 5-module Blender PBR industrial chute (`BlenderDeliveryChute` + `ChuteColliders` + `ChuteLights`, preserving `ChuteMouth`, `BoxSpawn`, and live `StatusLamp`) loading physics boxes into the van (see Systems).
 - `VanUpgradeStation` (custom 5-module Blender PBR industrial service bay `BlenderServiceBay` + `ServiceBayColliders` + `ServiceBayLights`, preserving `DockingPad`, `DockingZone`, `RunwayLEDs`, and `TerminalConsole.ScreenPart`), `PersonalUpgradeStation`: upgrade terminals.
+- `DepotFuelPump`: custom 3-module Blender PBR heavy-industrial diesel refuel island (cloned from `ReplicatedStorage.Assets.DepotFuelStation` with `FuelStationColliders`, `FuelStationLights`, and `PromptMount` bound via `ChunkBuilder.BindFuelPump` for free depot refueling).
 - `WarehouseLights`, `WarehouseDecor`: set dressing.
 - Shop ids fwired to ProximityPrompts: `VanUpgrades` (garage terminal), `PersonalUpgrades` (counter terminal), `Weapons` (gun rack), `Stamina` (vending machine), `Gear` (lockers).
 
