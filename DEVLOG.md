@@ -2354,3 +2354,9 @@
   - Added procedural 5-leg `Bone.Transform` gait & body scuttle across `Leg_FL`, `Leg_FR`, `Leg_ML`, `Leg_MR`, and `Leg_Rear` layered with existing `Neck / Head / Jaw` tracking.
   - Wired `[E]` stomp input (`CrawlieStomp`) and `CrawlieFX` squish/shriek/finisher audio & alerts.
 - **Verified:** Play Solo `Server` & `Client` tests confirmed scout spawn, `IsDead` on stomp + 2 enraged reinforcement spawns, `legMoved = true`, `bodyMoved = true`, zero game script errors; saved to Team Create version 338.
+
+## Remove Custom Footsteps & Add CreepyCrawlie Admin Panel / Cmdr / Death Metadata (Riplatki)
+- **Removed Custom Footsteps (`SprintController`):** Removed `playSurfaceStep`, `stepRayParams`, `strideAccum`, and the stride-distance footstep loop so default Roblox footsteps are restored without water-splash audio.
+- **Admin Panel & Cmdr (`WristMenuController`, `ServerScriptService.Cmdr.Commands.creepycrawlie`, `creepycrawlieServer`):** Added `creepycrawlie` command (`spawn | swarm | clear`, aliases `cc`, `crawlie`, `swarm`) and the **Creepy Crawlie** section in the Wrist PDA Admin tab.
+- **Death Screen (`DeathService`):** Added `CreepyCrawlie` entry to `THREAT_META`.
+- **Verified:** `loadstring` syntax checks passed on all 5 scripts and saved to Team Create version 342.
