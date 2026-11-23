@@ -2373,3 +2373,9 @@
 - **Slow Active Swarm Finisher & Attack Anims (`CreepyCrawlieMonster`, `CreepyCrawlieController`):** `PullApart` (`3.8s`) and `LegsUpDevour` (`4.2s`) now knock the player over (`PlatformStand = true` + topple impulse), swarm & tear over time with progressive HP ticks, animate rapid front-leg clawing/lunging (`IsAttacking`), and orbit a ground-level third-person camera around the downed player.
 - **Replaced Stomp Sound (`CreepyCrawlieController`):** Removed `impact_water.mp3` completely and replaced `"Squish"` with a heavy low-passed `action_jump_land.mp3` thud (`PlaybackSpeed = 0.62`).
 - **Verified:** Play Solo confirmed `fwdDot = 1`, `upDot = 1`, zero game script errors; saved to Team Create version 345.
+
+## CreepyCrawlie Fight-Back Mash, Face-Up Knockdown & Opposite-Side Limb Ripping (Riplatki)
+- **Face-Up Knockdown (`CreepyCrawlieMonster`):** Changed knockdown tilt to `CFrame.Angles(math.rad(82), 0, math.rad(6))` so knocked-down players lie on their back facing up (`LookVector.Y = 0.99`).
+- **Random Opposite-Side Limb Ripping (`CreepyCrawlieMonster`, `CreepyCrawlieController`):** Randomly assigns 1 Left-side limb (`Left Shoulder` / `Left Hip`) and 1 Right-side limb (`Right Shoulder` / `Right Hip`) across grabbing crawlers (never same side). As crawlers slowly back up (`pullDist` 2.0 -> 4.8 studs), `stepGrabbedLimbs` rotates and stretches the grabbed R6 `Motor6D.Transform`s toward each monster.
+- **Fight-Back Struggle (`NetDefs`, `MonsterService`, `CreepyCrawlieMonster`, `CreepyCrawlieController`):** Added `CrawlieMash` remote and `SWARM GRAB // MASH [E] TO BREAK FREE` struggle bar; mashing `[E]` / `[ButtonX]` pushes back `RipProgress` and breaks free (`PlatformStand = false`, scatters crawlers) when `BreakProgress >= 1`.
+- **Verified:** Play Solo `Server` test confirmed `faceUpY = 0.9903`, `oppositeSides = true`, `brokeFree = true`, zero game script errors; saved to Team Create version 347.
