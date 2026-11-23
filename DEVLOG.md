@@ -2366,3 +2366,34 @@
 - **Visible `[E] Stomp` Prompt (`CreepyCrawlieMonster`):** Added a `ProximityPrompt` (`StompPrompt`, `ActionText = "Stomp"`, `ObjectText = "Creepy Crawlie"`, `MaxActivationDistance = 8.0`) directly on each crawler's `MeshPart`, wired to `_killCrawler`.
 - **Van Roadkill (`CreepyCrawlieMonster`):** Added `DeliveryVan` overlap check (`speed >= 8` studs/s within van footprint) to squish & kill crawlers when run over.
 - **Verified:** Play Solo `Server` test confirmed `hasPrompt = true` and `movedDist = 7.25` studs in Prep/Depot; saved to Team Create version 343.
+
+
+---
+
+## 2026-11-23 — Antigravity (16-Bit Dithered CRT Pixel UI Design, 43-Asset Kit & 8 Lobby ScreenGuis)
+- **Summary of Changes:**
+  - Conducted a full UI design walkthrough and locked in the **16-bit Dithered CRT Terminal** visual system (`Arcade` + `Code` font pairing, Obsidian/Amber/Phosphor-Green/Crimson palette, notched hardware 9-slice frames, stepped pixel pips, dither headers, and scanlines).
+  - Generated **43 crisp RGBA pixel-art PNG assets** (`Assets/UI/PixelCRT/`): 11 9-slice frames/buttons/tags (`Frame_Modal_Amber/Green/Crimson`, `Frame_Card_Dark/Green/Locked`, `Btn_Primary_Amber`, `Btn_Secondary_Dark`, `Btn_Danger_Crimson`, `Btn_Success_Green`, `Badge_Tag`), 6 tileable CRT/dither textures (`Tile_DitherHeader_Amber/Green`, `Tile_HazardStripe_Amber/Crimson`, `Tile_CRTScanlines`, `Tile_DitherStatic`), 4 gauge pips (`Pip_Amber/Green/Crimson/Empty`), `Divider_Pixel`, and 21 hand-crafted 16×16 pixel icons, plus `_PreviewSheet.png` and `manifest.json`.
+  - Uploaded all 43 PNGs via `Roblox_Studio.upload_image` and created **`ReplicatedStorage.Assets.PixelUI`** (`AssetCatalog` ModuleScript with `Colors`, `Fonts`, `Slices`, `Images`, `ApplyAssets`, and `ClearFallbacks`, plus 17 copy-pasteable Studio `Prefabs`) inside **`THE horror driving game`** (`placeId: 124598324996118`).
+  - Built all **8 Lobby Pixel `ScreenGui` templates** in **`THE horror driving game` -> `StarterGui`** without modifying any existing controller Lua code (ready to wire up later):
+    - `StarterGui.PixelLobby_TopBar` (`Enabled = true`)
+    - `StarterGui.PixelLobby_Garage` (`Enabled = true` showcase default)
+    - `StarterGui.PixelLobby_Items` (`Enabled = false`)
+    - `StarterGui.PixelLobby_Emotes` (`Enabled = false`)
+    - `StarterGui.PixelLobby_Dossier` (`Enabled = false`)
+    - `StarterGui.PixelLobby_BayHUD` (`Enabled = false`)
+    - `StarterGui.PixelLobby_Settlement` (`Enabled = false`)
+    - `StarterGui.PixelLobby_Notification` (`Enabled = false`)
+  - Verified all screens visually via Edit-mode `screen_capture`: caught and fixed `UIListLayout` default alphabetical sorting (`SortOrder = LayoutOrder`), `TopBar`-to-modal vertical clearance, `CanvasGroup` outer stroke clipping on `PixelLobby_Notification`, and added clean behind-image fallback styling (`HasFallbackBg` + `FallbackStroke` + `CloseBtn.FallbackLabel`) so the templates look crisp immediately while uploaded images await experience access sharing.
+- **Studio Paths Modified/Created (`THE horror driving game`, `placeId: 124598324996118`):**
+  - `ReplicatedStorage.Assets.PixelUI` (`AssetCatalog`, `Prefabs` × 17)
+  - `StarterGui.PixelLobby_TopBar`, `PixelLobby_Garage`, `PixelLobby_Items`, `PixelLobby_Emotes`, `PixelLobby_Dossier`, `PixelLobby_BayHUD`, `PixelLobby_Settlement`, `PixelLobby_Notification`
+- **Repository Files Added/Modified:**
+  - `Assets/UI/PixelCRT/*` (43 PNGs + `_PreviewSheet.png` + `manifest.json`)
+  - `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - Instance attributes on PixelUI elements: `PixelAsset` (string asset key), `HasFallbackBg` (boolean for `AssetCatalog.ClearFallbacks`).
+- **Next Steps / Known Issues:**
+  - **Image Permission Step Needed in Studio:** The 43 uploaded PNGs belong to `MillionPlayzGamesAlt` and log `The experience doesn't have access permission to use asset id ...` until shared with `THE horror driving game` (either click **Share access** in Studio / Creator Hub for those assets, or bulk-import `Assets/UI/PixelCRT/*.png` into the Group via Studio Asset Manager and update `AssetCatalog.Images`). Once authorized, run `require(game.ReplicatedStorage.Assets.PixelUI.AssetCatalog).ApplyAssets(game.StarterGui, true)` in the Studio Command Bar to strip the temporary fallback strokes/fills and display the full 9-slice pixel art.
+  - Existing Lobby controllers (`HubLobbyController`, `CurrencyController`, `NotificationController`) were deliberately left untouched; next step is wiring them to `StarterGui.PixelLobby_*` (or generating HUD/PDA pixel UIs next).
+  - Remember to **Save / Publish `THE horror driving game`** and **Commit Drafts** (`AssetCatalog`) in Team Create.
