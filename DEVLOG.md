@@ -2366,3 +2366,10 @@
 - **Visible `[E] Stomp` Prompt (`CreepyCrawlieMonster`):** Added a `ProximityPrompt` (`StompPrompt`, `ActionText = "Stomp"`, `ObjectText = "Creepy Crawlie"`, `MaxActivationDistance = 8.0`) directly on each crawler's `MeshPart`, wired to `_killCrawler`.
 - **Van Roadkill (`CreepyCrawlieMonster`):** Added `DeliveryVan` overlap check (`speed >= 8` studs/s within van footprint) to squish & kill crawlers when run over.
 - **Verified:** Play Solo `Server` test confirmed `hasPrompt = true` and `movedDist = 7.25` studs in Prep/Depot; saved to Team Create version 343.
+
+## Fix CreepyCrawlie Orientation, Level Caps, Delayed Backup, Slow Rip-Apart & Stomp Sound (Riplatki)
+- **Fixed Sideways Walking (`CreepyCrawlieMonster`):** Verified `MeshPart` local axes (`Head = -Z`, `Up = +Y`) and updated `buildCrawlieCFrame` to `CFrame.lookAt(p, p + fwd, n)` (`fwdDot = 1.0`, `upDot = 1.0`).
+- **Level Caps & Delayed Backup (`CreepyCrawlieMonster`):** Added `getMaxSwarmForShift` caps (Day 2: `3`, Day 3: `5`, Day 4: `8`, Day 5+: `10+`) and delayed vengeance backup spawns by `3–5s` instead of instant spawns.
+- **Slow Active Swarm Finisher & Attack Anims (`CreepyCrawlieMonster`, `CreepyCrawlieController`):** `PullApart` (`3.8s`) and `LegsUpDevour` (`4.2s`) now knock the player over (`PlatformStand = true` + topple impulse), swarm & tear over time with progressive HP ticks, animate rapid front-leg clawing/lunging (`IsAttacking`), and orbit a ground-level third-person camera around the downed player.
+- **Replaced Stomp Sound (`CreepyCrawlieController`):** Removed `impact_water.mp3` completely and replaced `"Squish"` with a heavy low-passed `action_jump_land.mp3` thud (`PlaybackSpeed = 0.62`).
+- **Verified:** Play Solo confirmed `fwdDot = 1`, `upDot = 1`, zero game script errors; saved to Team Create version 345.
