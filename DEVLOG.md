@@ -2360,3 +2360,9 @@
 - **Admin Panel & Cmdr (`WristMenuController`, `ServerScriptService.Cmdr.Commands.creepycrawlie`, `creepycrawlieServer`):** Added `creepycrawlie` command (`spawn | swarm | clear`, aliases `cc`, `crawlie`, `swarm`) and the **Creepy Crawlie** section in the Wrist PDA Admin tab.
 - **Death Screen (`DeathService`):** Added `CreepyCrawlie` entry to `THREAT_META`.
 - **Verified:** `loadstring` syntax checks passed on all 5 scripts and saved to Team Create version 342.
+
+## Fix CreepyCrawlie Movement, Stomp Prompt & Van Roadkill (Riplatki)
+- **Active Movement for Admin/Cmdr-Spawned Crawlers (`CreepyCrawlieMonster`):** Added `Forced = true` for Admin/Cmdr-spawned crawlers so `Update` ticks them even in Prep/Depot/Day 1 while keeping natural Day 2+ outside spawning gated.
+- **Visible `[E] Stomp` Prompt (`CreepyCrawlieMonster`):** Added a `ProximityPrompt` (`StompPrompt`, `ActionText = "Stomp"`, `ObjectText = "Creepy Crawlie"`, `MaxActivationDistance = 8.0`) directly on each crawler's `MeshPart`, wired to `_killCrawler`.
+- **Van Roadkill (`CreepyCrawlieMonster`):** Added `DeliveryVan` overlap check (`speed >= 8` studs/s within van footprint) to squish & kill crawlers when run over.
+- **Verified:** Play Solo `Server` test confirmed `hasPrompt = true` and `movedDist = 7.25` studs in Prep/Depot; saved to Team Create version 343.
