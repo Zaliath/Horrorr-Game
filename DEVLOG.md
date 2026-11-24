@@ -2931,3 +2931,31 @@
   - `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - Commit open script Drafts (`ProceduralRoadGraph`, `ChunkBuilder`, `MapService`, alongside prior pending Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+---
+
+## 2026-11-24 — Antigravity (Fix: Getting Trapped Inside `DepartureVan` Cab on Exit in Lobby)
+- **Root Cause (`THE horror driving game`, `placeId: 124598324996118`):**
+  - Destroying `SeatWeld` on `DepartureVan`'s anchored `DriverSeat` and setting `hrp.CFrame` in the same server frame inside `HubLobbyService.removePlayerFromBay` immediately returned network ownership of the unanchored `HumanoidRootPart` to the Client, whose physics step resumed from its pre-handoff cab `CFrame` (`(-43.79, 7.63, 46.50)`) inside the sealed cab collision box. Jumping out with Spacebar also waited up to `0.7s–0.9s` before server polling noticed `hum.SeatPart ~= m.Seat`.
+- **Summary of Changes:**
+  - **`ServerScriptService.Server.Services.HubLobbyService` (`removePlayerFromBay`, `Start`):**
+    - Cleaned up `SeatWeld` on both `hum.SeatPart` and `removedMember.Seat`, called `AntiExploitService:ExemptMovement(2.5)` + `NotifyTeleport`, pivoted `char:PivotTo(exitCF)` with zeroed linear/angular velocity plus a `0.12s` post-handoff server check, and sent `ExitCFrame = exitCF` on `BayState` (`InBay = false`).
+    - Tightened unseated-member detection in the `Heartbeat` poll (`0.7s -> 0.35s`) and added a sealed-cab safety-net escape check rescuing any unseated player trapped inside `Bay_01..Bay_03` cabs (`|X| < 5.2, 3.2 < Y < 11.8, -11.2 < Z < -3.6` relative to bay van pivot).
+  - **`StarterPlayer.StarterPlayerScripts.Client.Controllers.HubLobbyController`:**
+    - Added `applyExitCFrame(exitCF)` to pivot the client cleanly onto `exitCF` across `Heartbeat` until `hum.SeatPart == nil` and outside the cab whenever `BayState` reports `InBay = false` with `ExitCFrame`.
+    - Connected `UserInputService.JumpRequest` while seated in a bay (`cachedBay.InBay == true`) to immediately fire `BayAction("LeaveBay")`.
+- **Verified (`Play Solo` on `THE horror driving game`):**
+  - Passed `loadstring` syntax checks on both `HubLobbyService` and `HubLobbyController` (`"OK"`).
+  - Reproduced with a non-default van skin (`EquippedVanPaint = "HazardYellow"` in memory) and Server-pivoted boarding into `Bay_01` `DriverSeat` (`(-43.79, 7.63, 46.50)`):
+    - **`LeaveBay` button exit:** `Seat = nil`, `PixelLobby_BayHUD.Enabled = false`, `Pos = (-46, 3.00, 8)` (`0.20` studs from target exit at both `450ms` and `900ms`).
+    - **Jump exit (`hum.Jump = true`):** `Seat = nil`, `PixelLobby_BayHUD.Enabled = false`, `Pos = (-46, 3.00, 8)` (`0.20` studs from target exit at `500ms`).
+  - Console output showed **0 warnings and 0 errors** (`68/68` assets preloaded); Studio returned cleanly to `Edit` mode.
+- **Studio Paths Modified (`THE horror driving game`):**
+  - `ServerScriptService.Server.Services.HubLobbyService`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.HubLobbyController`
+- **New Dependencies:**
+  - `BayState` payload optional field `ExitCFrame: CFrame?`.
+- **Repository Files Modified:**
+  - `LESSONS.md`, `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts (`HubLobbyService`, `HubLobbyController`) in Studio's **Drafts** widget and **Save / Publish** `THE horror driving game`.
