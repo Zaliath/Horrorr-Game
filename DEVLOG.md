@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Fix Missed Boxes Deletion in `arriveAtDepotAndPrepNext`
+- **Summary of Changes:** Fixed the actual root cause of missed boxes disappearing at shift end in `ShiftService` and `ChuteService` (`"The game part"`, `placeId: 93445054108906`):
+  - The previous edit had matched `prepareInitialShift()` instead of `arriveAtDepotAndPrepNext()`, leaving `PackageService:ClearEmergencyBoxes()` at line 725 still deleting all leftover boxes on depot arrival.
+  - Restored `prepareInitialShift()` cleanly, removed `ClearEmergencyBoxes()` from `arriveAtDepotAndPrepNext()`, moved the `MissedPackage` tagging & `MissedPackagesRemaining` tracking directly into `arriveAtDepotAndPrepNext()`, and guarded `ChuteService:277` against ever destroying `MissedPackage` boxes.
+- **Verification:** Confirmed `ClearEmergencyBoxes()` only exists in `prepareInitialShift()` (Shift #1 init), `MissedPackage` tagging runs in `arriveAtDepotAndPrepNext()`, `loadstring` passed (`Syntax=true`), saved to Team Create.
+- **Studio Paths Modified:** `ServerScriptService.Server.Services.ShiftService`, `ServerScriptService.Server.Services.ChuteService`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Custom ProximityPrompt Struggle UI & Keep Missed Boxes Alive
 - **Summary of Changes:**
   1. **True Old Struggle UI — Custom ProximityPrompt Ring Template (`CreepyCrawlieController` & `DoorMonsterController`):** Replaced bottom struggle bar frames with real `ProximityPrompt` instances (`Style = Enum.ProximityPromptStyle.Custom`, `CustomRingProgress` attribute, `Exclusivity = AlwaysShow`): `CrawlieBreakFreePrompt` on the grabbed player's character for Creepy Crawlies, and `DoorMashCustomPrompt` on `activeRig.promptAnchor` during `Threat`/`CrawlingCab` for the Door Monster.
