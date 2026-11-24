@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Blender PBR Return Chute Remodel (`MissedPackagesChute`)
+- **Summary of Changes:** Remodeled `Workspace.StartArea.MissedPackagesChute` in **Blender 5.3** (`BlenderReturnChute`, `assetId: 74038970130832`) to match the industrial detail and palette of `DeliveryChute`, `DepotFuelPump`, and `VanUpgradeStation` (`"The game part"`, `placeId: 93445054108906`):
+  1. **Blender 5.3 Multi-Mesh Prop & `2048×2048` Industrial PBR Atlas (`Assets/ReturnChute/*`):** Built `ReturnChute_Main` (diamond-plate steel plinth with diagonal black-and-amber hazard chevron skirt, 2 safety bollards, 4 bolted I-beam portal columns with hazard base sleeves, flanged vertical return shaft with top exhaust stacks & side pneumatic pipe, recessed `RETURN CHUTE` marquee box with corner rivets & rain hood, angled 6-roller steel conveyor hopper with amber guide rails & 7 hanging rubber strip-curtain flaps, lower crimson louvered service cabinet, and side control console box with analog gauges, red pull-lever & E-stop) plus 3 separate emissive Neon meshes (`ReturnChute_LightsWhite`, `ReturnChute_LightsAmber`, `ReturnChute_LightsRed`).
+  2. **Warehouse Integration & Functional Preservation:** Installed `BlenderReturnChute` inside `Workspace.StartArea.MissedPackagesChute` facing `+X` flush on the warehouse floor (`Y = 1.91`) next to `DeliveryChute`, added `ReturnSignPlate` (`RETURN CHUTE` / `MISSED PACKAGES // DROP HERE` `SurfaceGui`) and warm `SpotLight`s + throat `PointLight`, and preserved `DropZone` + `ReturnMissedPackagePrompt` intact for `ShiftService`.
+- **Verification:** Studio `Edit` captures verified alignment, lighting, and unclipped marquee signage next to `DeliveryChute`; Play Solo confirmed `DropZone` and `ReturnMissedPackagePrompt` active with `0` script errors.
+- **Studio Paths Modified:** `Workspace.StartArea.MissedPackagesChute`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Blender PBR Highway Landmark Props (`Landmark_CoveredBridge`, `Landmark_PoliceRoadblock`, `Landmark_BurningWreck`)
 - **Summary of Changes:** Replaced the script-generated primitive highway landmarks in `ChunkBuilder` with real, reusable Blender 5.3 PBR prop `Model` assets in `"The game part"` (`placeId: 93445054108906`):
   1. **Blender 5.3 Multi-Mesh Props & `2048×2048` PBR Atlas (`Assets/Landmarks/*`):**
