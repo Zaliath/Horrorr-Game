@@ -1,5 +1,15 @@
 # Devlog
 
+## 2026-11-23 — Antigravity (Riplatki) — Follow-Up Fixes
+- **Summary of Changes:**
+  1. **Road Grass Patch Fix (`ChunkBuilder.BuildRoadChunk`):** Updated road & bridge `GrassGround` slab CFrame Y offsets (`GROUND_TOP_Y - 7.0` / `GROUND_TOP_Y - 11.7`) to match the `14`-stud slab thickness so grass no longer rises 6.5 studs above roads (`RoadsChecked=26, BadRoadSlabs=0` verified in Play Solo).
+  2. **Pilot / Morph Into Monsters Overhaul (`WristMenuController` & `WristService`):**
+     - Switched pilot camera to `Enum.CameraType.Scriptable` with smooth mouse-look orbit (`LockCenter` when PDA is closed) and clean `CameraType = Custom` / `CameraSubject = Humanoid` restore on release (eliminating camera fighting/jitter).
+     - Added procedural rig animation (`BulkMoveTo` across bone sub-models: stride leg/arm swing, body bob, jaw snap, wing flap, wheel spin, lunge attack, and `[Q]` roar) replicated via `PilotMoveSpeed`, `PilotAttackSeq`, and `PilotRoarSeq` attributes for all players.
+     - Wired `E` / `LMB` (`Attack`) in `WristService` to execute each monster's **actual** attack/finisher via `Cmdr.Dispatcher:EvaluateAndRun` (Chaser finishers/devour, Window attack, Door Ripper threat/rip, Cargo breach, Gremlin windshield, Stare strike, Porch ambush, CreepyCrawlie swarm, Fog strike, Forest Hunter charge, Phantom Semi ram, Hitchhiker attack).
+  3. **Far-From-Van Forest Hunter Enforcement (`ForestHunter`):** Added `FarFromVanWarnDist = 200`, `FarFromVanAttackDist = 240`, and `FarFromVanReturnDist = 175` so players who wander too far from `DeliveryVan` on foot (even along the road) get warned and then hunted/herded back toward the van by the Forest Hunter instead of walking off the end of generated chunks.
+- **Studio Paths Modified:** `ServerStorage.Modules.ChunkBuilder`, `ServerScriptService.Server.Services.WristService`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.WristMenuController`, `ServerStorage.Modules.Monsters.ForestHunter`.
+
 ## 2026-11-23 — Antigravity (Riplatki)
 - **Summary of Changes:** Resolved 13 gameplay, UI, camera, monster, and procedural map bugs in `"The game part"` (`placeId: 93445054108906`, Team Create v416):
   1. **Van 1st-Person Black Camera after Remote Van:** Guarded `StarterGui.Realism Mod.Realistic Head Movement` against `0/0` `NaN` (`dist <= 0.08`) and seated/drag/scriptable states, added `NaN` `Neck.C0` & `Camera.CFrame` healing in `VanController:setFirstPersonLock`, and ensured `stopRemoteVanCamera` always resets `CameraType = Custom` and `CameraSubject = Humanoid`.
