@@ -9,9 +9,7 @@ This document tracks every UI screen, icon, widget, or procedural control that i
 
 ## 1. Deferred Place Wiring (Pixel Templates Ready, Controllers Pending)
 
-| Place | Studio Template Paths | Current State | Work Needed |
-| --- | --- | --- | --- |
-| Lobby (`THE horror driving game`, `placeId: 124598324996118`) | `StarterGui.PixelLobby_TopBar`, `PixelLobby_Garage`, `PixelLobby_Items`, `PixelLobby_Emotes`, `PixelLobby_Dossier`, `PixelLobby_BayHUD`, `PixelLobby_Settlement`, `PixelLobby_Notification` | All 8 `PixelLobby_*` templates and `ReplicatedStorage.Assets.PixelUI` are built in Studio | Wire Lobby client controllers to bind to `StarterGui.PixelLobby_*` templates and `UITheme` pixel helpers instead of procedural GUIs |
+*None — all `StarterGui.PixelLobby_*` (`TopBar`, `Garage`, `Items`, `Emotes`, `Dossier`, `BayHUD`, `Settlement`, `Notification`, and `PixelLobby_Settings`) in `THE horror driving game` (`placeId: 124598324996118`) and all `StarterGui.PixelGame_*` templates in `The game part` (`placeId: 93445054108906`) are wired to live client controllers and `ReplicatedStorage.Shared.UITheme`.*
 
 ---
 

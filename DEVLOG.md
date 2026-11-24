@@ -2646,3 +2646,41 @@
   - `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - **Save / Publish** `The game part` in Studio when ready (no script edits needed).
+
+---
+
+## 2026-11-23 — Antigravity (Complete Lobby Overhaul: 16-Bit Pixel UI Wiring, Functional Shops/Emotes/Hardcore, On-Foot Sprint/Flashlight & 3D Lot Polish)
+- **Summary of Changes (`THE horror driving game`, `placeId: 124598324996118`):**
+  - **100% 16-Bit Dithered CRT Pixel UI Wiring (`StarterGui.PixelLobby_*`, `UITheme`, `AssetCatalog`):**
+    - Expanded `ReplicatedStorage.Assets.PixelUI.AssetCatalog` from 43 to all **59** pixel-art assets (`MutedText` + 16 Group-owned icons/graphics) and created `ReplicatedStorage.Shared.UITheme` (`WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`).
+    - Created `StarterGui.PixelLobby_Settings` (Audio/Video settings persisted to `Clockwork_Acc_v1` + Passes/Revives Supply Store) and upgraded `PixelLobby_TopBar` (`ReceiptBtn`, `SupplyBtn`, `SettingsBtn`, `ControlsHintBar`), `PixelLobby_Items` (`StageBtn` + `ActionBtn`), `PixelLobby_Emotes` (`PerformBtn` + `ActionBtn`), and `PixelLobby_Notification`.
+    - Rewrote `HubLobbyController`, `CurrencyController`, `NotificationController`, `SettingsController`, `MainMenuController`, and `MatchmakingController` to bind exclusively to `StarterGui.PixelLobby_*` templates (`0` duplicate procedural `HubLobbyGui` / `LobbySettlementGui`, `0` broken `NotificationUI` / `MenuCluster` timeout warnings).
+  - **Replaced Every `"COMING SOON"` & Broken Stub with Live Persistent Systems:**
+    - **Pre-Game Supply Cage (`LobbySupplyDefs`, `DataService`, `HubLobbyService`, `PartyService`):** 5 purchasable/stageable courier items (`TacticalMedkit`, `SpareJerrycan`, `RoadFlares`, `HighLumenBattery`, `StaminaShot`, max 3 stock each, max 3 staged) persisted in `Clockwork_Acc_v1` and packed per crew member into `TeleportOptions:SetTeleportData` (`CrewLoadouts`).
+    - **Crew Emotes Lounge (`LobbyEmoteDefs`, `LobbyPlayerController`, `HubLobbyService`):** 5 purchasable/equippable 3D co-op `Motor6D` emotes (`CrewWave`, `NervousScan`, `DispatchSalute`, `LeanChill`, `FlashlightCheck`) playable via `[B]`, `[1–5]`, or modal `PLAY` across R6 & R15 rigs.
+    - **Real `STANDARD` ↔ `HARDCORE` Bay Difficulty & Launch Polish (`HubLobbyService`, `PartyService`):** Host toggles `STANDARD` / `HARDCORE` (`1.5x` payout / aggressive threats, crimson bay sign & HUD styling, packed into `TeleportData.Difficulty`), Driver `[H]` rally horn, smooth `0.55s` rear-door close animation, and diesel launch exhaust plumes.
+    - **Synced Monetization & Bestiary (`MonetizationService`, `ServerStorage.Data.Monetization.{Products,Passes}`, `BestiaryDefs`, `LegacyCharacterFix`, `AssetPreloadController`):** Replaced broken Clockwork Incremental stubs with Graveyard Express passes (`TacticalFlashlight`, `CourierBoots`, `HazardSuit`) and products (`RevivePack1`, `RevivePack3`, `PersonalCash500`, `TeamCash500`), synced all 12 monster counterplay tips, added `LegacyCharacterFix` (`Abilities` guard), and added `AssetPreloadController` (`68/68` assets preloaded).
+  - **On-Foot Courier Mechanics & 3D `Workspace.LobbyMap` Visual Overhaul (`LobbyPlayerController`, `LobbyPromptController`, `LobbyAtmosphereController`):**
+    - Added smooth `[Shift]` sprinting (`16 → 25.5..34` studs/s + FOV widen), co-op replicated `[F]` tactical flashlight (`LobbyFlashlightAim`) that causes deep-forest Watchers' eyes to flare crimson before retreating into the woods, and 16-bit Pixel CRT custom `ProximityPrompt` `BillboardGui`s.
+    - Fixed all blank black / LOD-culled 3D `SurfaceGui` signs (`ZIndexBehavior.Sibling`, explicit `ZIndex = 2..3`, `MaxDistance = 500`), added double-sided `BayStatusGui_Back` on `Bay_01..06`, rotated `DepotBoard_Leaderboard` & `DepotBoard_Dossier` inward toward the courtyard with Edit-mode previews, sculpted 3D spring-physics `CabDetail.Trinkets.Skull` bobbleheads inside `ShowcaseVan` + all `DepartureVan`s, and built the rooftop `MasterDispatchBoard`, interactive `DepotEspressoMachine` (`+25s` speed boost), `TestHornPrompt`, rotating `BayHazardBeacon`s & `GuardBoothBeacon`, 6-bar `BoomboxEqualizer` + Lounge cassette loop, `DepotTransformer` arc sparks, horizon lightning/thunder, reflective `Glass` puddles, `GroundMistEmitters`, and `LobbyHorrorGrade`.
+- **Verified (`Play Solo` & `Edit` on `THE horror driving game`):**
+  - `[AssetPreloadController] Preloaded 68/68 assets (6 animations, 62 images, 0 failed)`, **0** game warnings, and **0** errors in console output.
+  - Verified all 9 `PixelLobby_*` GUIs (`LegacyGuisFound = []`), live modal row counts (`Garage = 10`, `Items = 5`, `Emotes = 5`, `Dossier = 12`, `Settings = 7`, `Supply = 3 passes + 4 products`), `[F]` flashlight + `CrewWave` emote start/stop (`64.7° -> 0.0°`), custom pixel prompt `BillboardGui`s, and `Bay_01` boarding (`HARDCORE` toggle, `5s` launch headlights + `71.3°` door swing + `MasterDispatchBoard` `DEPARTING` readout + clean `LeaveBay`). Studio returned cleanly to `Edit` mode (`Final_Lobby_Vista_1`, `Final_Lobby_Courtyard_2`).
+- **Studio Paths Modified/Created (`THE horror driving game`, `placeId: 124598324996118`):**
+  - `ReplicatedStorage.Assets.PixelUI.AssetCatalog` (rebuilt with all 59 assets)
+  - `ReplicatedStorage.Shared.{UITheme,LobbySupplyDefs,LobbyEmoteDefs}` (created) & `{BestiaryDefs,NetDefs,Types}` (modified)
+  - `ServerStorage.Data.Monetization.{Products,Passes}` (modified)
+  - `ServerScriptService.LegacyCharacterFix` (created) & `ServerScriptService.Server.Services.{DataService,PartyService,MonetizationService,HubLobbyService}` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList` (modified)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.{AssetPreloadController,LobbyPlayerController,LobbyPromptController}` (created) & `{HubLobbyController,CurrencyController,NotificationController,SettingsController,LobbyAtmosphereController,MainMenuController,MatchmakingController}` (modified)
+  - `StarterGui.PixelLobby_Settings` (created) & `StarterGui.PixelLobby_{TopBar,Items,Emotes,Notification}` (modified)
+  - `Workspace.LobbyMap` (`MasterDispatchBoard`, `DepotEspressoMachine`, `BayHazardBeacon`s, `GuardBoothBeacon`, `BoomboxEqualizer`, `DepotTransformer`, double-sided `BayStatusSign`s, courtyard boards, 3D `Skull` bobbleheads, puddles, `GroundMistEmitters`) & `Lighting.LobbyHorrorGrade`
+- **Repository Files Modified:**
+  - `UI_PLACEHOLDERS.md`, `GAME_DESIGN.md`, `LESSONS.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - C2S remotes `LobbyPlayerAction`, `LobbyFlashlightAim`; S2C remote `LobbyFX`.
+  - `Clockwork_Acc_v1` profile fields `PreGameInventory`, `PreGameLoadout`, `EmotesOwned`, `EquippedEmote`; `TeleportData` fields `Difficulty`, `CrewLoadouts`.
+  - Replicated `Player` attributes `FlashlightOn`, `FlashlightPitch`, `FlashlightYaw`, `ActiveEmote`, `ActiveEmoteSeq`, `EquippedEmote`, `EspressoBoostUntil`, `StagedGearCount`.
+- **Next Steps / Known Issues:**
+  - Wire `TeleportData.Difficulty` (`"HARDCORE"`) and `TeleportData.CrewLoadouts` consumption on arrival in `ShiftService` inside `The game part` (`placeId: 93445054108906`) when ready.
+  - Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `THE horror driving game`.
