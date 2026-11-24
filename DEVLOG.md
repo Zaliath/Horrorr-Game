@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Creepy Crawlie 3D Wall & Surface Climbing
+- **Summary of Changes:** Added full 3D surface climbing for the piloted **Creepy Crawlie** in `WristMenuController` (`"The game part"`, `placeId: 93445054108906`):
+  - 3-ray surface climber: forward wall/van/pillar latch probe, inward surface adhesion ray, and edge wrap-over probe (so you can crawl up walls, across ceilings, and smoothly wrap over the sides of `DeliveryVan` onto its roof).
+  - Camera-projected tangent movement (`W` climbs up when looking up a wall, `A`/`D` strafe along the surface), smooth 3D surface-normal body orientation (`CFrame.lookAt(pos, pos + lookOnSurf, devPilotSurfaceNormal)`), and wall-leap `[Space]` jump-off.
+- **Verification:** `loadstring` syntax check passed (`SyntaxOK`), saved to Team Create.
+- **Studio Paths Modified:** `StarterPlayer.StarterPlayerScripts.Client.Controllers.WristMenuController`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Creepy Crawlie Rig, Wall Collision, Jump, Van Standing & [R] Signature Specials
 - **Summary of Changes:** Resolved all 4 remaining Dev Monster Morph / Pilot issues in `"The game part"` (`placeId: 93445054108906`):
   1. **Creepy Crawlie Skinned Mesh Fix (`WristMenuController`):** Preserved `Animator`/`AnimationController` on skinned rigs, included visible `PrimaryPart` meshes (`CreepyCrawlie_Export_Mesh`) in `bulkParts` so the mesh moves with `rootCF`, and tagged the cloned rig `"CreepyCrawlie"` via `CollectionService` so `CreepyCrawlieController` automatically drives its 8 skinned spider legs, head tracking, jaw opening, and spatial chittering SFX.
