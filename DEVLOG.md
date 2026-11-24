@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Custom ProximityPrompt Struggle UI & Keep Missed Boxes Alive
+- **Summary of Changes:**
+  1. **True Old Struggle UI — Custom ProximityPrompt Ring Template (`CreepyCrawlieController` & `DoorMonsterController`):** Replaced bottom struggle bar frames with real `ProximityPrompt` instances (`Style = Enum.ProximityPromptStyle.Custom`, `CustomRingProgress` attribute, `Exclusivity = AlwaysShow`): `CrawlieBreakFreePrompt` on the grabbed player's character for Creepy Crawlies, and `DoorMashCustomPrompt` on `activeRig.promptAnchor` during `Threat`/`CrawlingCab` for the Door Monster.
+  2. **Missed Boxes Preserved for Warehouse Return Chute (`ShiftService`):** Removed `PackageService:ClearEmergencyBoxes()` from `arriveAtDepotAndPrepNext()` and tagged both `DeliveryBox` and `EmergencyBox` leftovers as `MissedPackage` so undelivered shift boxes stay in the van/world until players actually carry or toss them into `Workspace.StartArea.MissedPackagesChute`.
+- **Verification:** `loadstring` syntax check passed (`Errors=0`), saved to Team Create.
+- **Studio Paths Modified:** `ServerScriptService.Server.Services.ShiftService`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.CreepyCrawlieController`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.DoorMonsterController`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — 12 Gameplay, Terrain, Monster & UI Fixes
 - **Summary of Changes:** Resolved all 12 reported gameplay, terrain, monster, radio, and UI bugs in `"The game part"` (`placeId: 93445054108906`):
   1. **Porch Lurker External Tell on Mesh Houses (`PorchMonsterController`):** Pushed Lurker `+2.6` studs visibly onto the porch outside solid mesh walls, added a flickering crimson `PorchTellLight` `PointLight`, glowing neon pinpoint eyes, and periodic raspy audio tells while lurking.
