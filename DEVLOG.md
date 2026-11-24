@@ -2743,3 +2743,33 @@
   - Runtime SoundService Folder: `SoundService.PersonalUpgradeAudio`.
 - **Next Steps / Known Issues:**
   - Commit open script Draft (`PersonalUpgradeController`, alongside prior pending script Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+
+---
+
+## 2026-11-23 — justhyne1205 (via Antigravity) (Extended-Range Rain Overhaul, Layered Puddles & Dual-Wave Ripples, Wrist Menu `RAIN QUALITY` Toggle)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - **1. Rain Visuals Overhaul (`StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController`):**
+    - **13-Curtain 3-Ring Extended Sky Rain + Dual-Scale Silver Streaks:** Raised sky cloud decks (`46 / 56 / 66` studs) and added a 5-part `Horizon` ring (`RainHorizonFront`, `RainHorizonDeepFwd` extending `114+` studs ahead along camera/van heading, `RainHorizonLeft/Right/Back` — `HIGH` only) plus secondary `HeavySilverDrops` emitters (`HIGH` only) on all 8 Near & Far curtains for dense silver sheets in headlights and streetlamps.
+    - **Moody Wet-Road Mist & Raycast-Snapped Crown Splashes:** Enabled `RainStormMist` and `LowAsphaltSpray` (`88×2.2×88`) during all outdoor rain (`HIGH` only) and raycast-snapped `RainGroundSplash` (near) + `FarGroundSplash` (`HIGH` only, `78×0.25×78`) to live open-sky ground height every `0.10s`.
+    - **DeliveryVan Rain Bounce & Tire Spray (Anchored under `CurrentCamera.RainSystem` — Moving Van Physics Rule safe):** Added `VanHoodBounceSplash`, `VanRoofBounceSplash` (`HIGH` only), speed-scaled rear-tire `VanTireSprayL` / `VanTireSprayR` (`HIGH` only above `12` studs/s), and `VanPuddlePloughSplash` burst emissions when wheels drive through puddles.
+    - **Layered Puddles & Dual-Wave Ripples:** Expanded `GroundPuddles` to `54` (`14–24s` life, `6–92` stud spread on `HIGH`, batched `workspace:BulkMoveTo` updates), adding a darkened asphalt `WetRim` underneath each `Glass` puddle core and upgrading the `192×192` `SurfaceGui` to `3` paired concentric ripple waves (`OuterRing` + trailing `InnerRing` + impact center `ImpactDot` flash). Upgraded `GroundRipples` to `68` surface-normal-aligned dual-wave expanding rings.
+    - **`HIGH` / `LOW` Quality Scaling (Lighting Untouched):** Preserved existing sky/lighting untouched. On `LOW` (`SettingRainHighQuality == false`), disables `Horizon` sky sheets, `HeavySilverDrops`, `RainStormMist`, `LowAsphaltSpray`, `FarGroundSplash`, `VanRoofBounceSplash`, `VanTireSprayL/R`, and window `WakeBead3D` trails while keeping light Near/Far sky rain (`35%` rate), `OnFootCloseRain`, audible rain loops (`DrizzleLoop`, etc.), reduced puddles (`10–16`, single active ripple slot), reduced ground ripples (`<= 22`), `VanHoodBounceSplash`, lens droplets (`5–12`), and 3D `VanWindowDrops3D` beads (`45%` cap, `55%` rate).
+    - Also fixed `VanImmersionController:632` (`localPlayer` → `player`) so cab tin-roof audio checks run error-free.
+  - **2. Persistent `RAIN QUALITY` (`HIGH` / `LOW`) Toggle (`StarterGui.PixelGame_WristPDA`, `WristMenuController`, `DataService`):**
+    - Added `Row_RainQuality` (`LayoutOrder = 5`, `"RAIN QUALITY"`, `ToggleBtn`) to `StarterGui.PixelGame_WristPDA.BottomRightDock.Body.Page_Settings` (`Row_MasterVolume = 6`, `Row_ReplayTutorial = 7`), wired into `WristMenuController` (`refreshSettingsTab`, live toggle + `SettingRainHighQuality` listener) and saved persistently in `DataService` (`ACCOUNT_TEMPLATE.Settings.RainHighQuality = true`).
+- **Verified (`Play Solo` on `The game part`):**
+  - **Outdoors (`HIGH`, default):** Confirmed `QualityMode = "HIGH"`, `HorizonEnabled = true`, all `13` curtains + `HeavySilverDrops` active (`RainHorizonDeepFwd` at `Z=6`), `ActivePuddles = 27–38` (each with `WetRim`), `ActiveRipples = 20–21`, `DrizzleLoop.Volume = 0.5800`, `VanHoodBounceSplash` (`En=true, Rate=95`), `VanRoofBounceSplash` (`En=true, Rate=85`), and seated 1st-person `VanWindowDrops3D` (`VanWindowBeads = 140`, `WakeBeads = 78`).
+  - **Wrist Menu Toggle (`HIGH` ↔ `LOW`) + Seated `LOW` Check:** Toggled `Row_RainQuality.ToggleBtn` via `[M] → SETTINGS`: confirmed `SettingRainHighQuality = false`, button `"LOW"`, `HorizonEnabled = false`, mist/far splashes off, light sky rain (`115`/`141`) + audio (`0.5800`) intact, puddles smoothly trimmed `27 → 10`, and seated 1st-person 3D window beads stayed active (`VanWindowBeads = 63`, `WakeBeads = 0`). Restored `"HIGH"` (`SettingRainHighQuality = true`), verified **`0` console errors**, and returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `StarterGui.PixelGame_WristPDA.BottomRightDock.Body.Page_Settings` (`Row_RainQuality` added; `LayoutOrder` updated on `Row_MasterVolume` & `Row_ReplayTutorial`)
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.WristMenuController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanImmersionController`
+  - `ServerScriptService.Server.Services.DataService`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **New Dependencies:**
+  - Player Attribute & Setting: `SettingRainHighQuality` (`boolean`) / `DataService.ACCOUNT_TEMPLATE.Settings.RainHighQuality` (`boolean`, default `true`).
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts (`RainController`, `WristMenuController`, `VanImmersionController`, `DataService`, alongside prior pending Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
