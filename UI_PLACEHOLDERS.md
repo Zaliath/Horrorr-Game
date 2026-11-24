@@ -9,7 +9,15 @@ This document tracks every UI screen, icon, widget, or procedural control that i
 
 ## 1. Deferred Place Wiring (Pixel Templates Ready, Controllers Pending)
 
-*None — all `StarterGui.PixelLobby_*` (`TopBar`, `Garage`, `Items`, `Emotes`, `Dossier`, `BayHUD`, `Settlement`, `Notification`, and `PixelLobby_Settings`) in `THE horror driving game` (`placeId: 124598324996118`) and all `StarterGui.PixelGame_*` templates in `The game part` (`placeId: 93445054108906`) are wired to live client controllers and `ReplicatedStorage.Shared.UITheme`.*
+*None — all `StarterGui.PixelLobby_*` (`TopBar`, `Garage`, `Items`, `Emotes`, `Dossier`, `DailyLogin`, `BayHUD`, `Settlement`, `Notification`, and `PixelLobby_Settings`) in `THE horror driving game` (`placeId: 124598324996118`) and all `StarterGui.PixelGame_*` templates in `The game part` (`placeId: 93445054108906`) are wired to live client controllers and `ReplicatedStorage.Shared.UITheme`.*
+
+---
+
+## 1b. Missing Custom Pixel Art Using Temporary Catalog Fallbacks (`THE horror driving game`, `placeId: 124598324996118`)
+
+| UI Element | Studio Hierarchy / Path | Controller / Owner | Temporary Fallback Used | Needed Custom Art for Next UI Pass |
+| --- | --- | --- | --- | --- |
+| Daily Login Nav & Modal Header Icon | `StarterGui.PixelLobby_TopBar.TopBarFrame.NavButtons.DailyBtn.Icon` & `StarterGui.PixelLobby_DailyLogin.ModalRoot.HeaderBar.HeaderIcon` | `DailyLoginController` / `HubLobbyController` | Uses `AssetCatalog.Images.Icon_Clock` | Dedicated 16×16 pixel calendar / timecard punch icon (`Icon_Calendar`) |
 
 ---
 
