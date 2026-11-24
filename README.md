@@ -20,6 +20,25 @@ You are collaborating with a team of developers using both **Google Antigravity 
 - **Procedural Map Rule:** Keep infinite road/house generation memory-safe by despawning or pooling chunks behind the van.
 - **Pixel UI Asset Reuse & Placeholder Tracking Rule:** All new or modified 2D UIs must reuse existing pixel art assets from `ReplicatedStorage.Assets.PixelUI.AssetCatalog` (and Studio `Prefabs` / `StarterGui.PixelGame_*` or `PixelLobby_*` templates) using `ResampleMode = Enum.ResamplerMode.Pixelated`, `AssetCatalog.Fonts.Header` (`Arcade`) / `AssetCatalog.Fonts.Body` (`Code`), `AssetCatalog.Colors`, and `UITheme` pixel helpers (`WirePixelButton`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`). Do not create new smooth/rounded procedural GUIs or duplicate art uploads. If a feature needs custom pixel art not yet in `AssetCatalog.Images`, build a clean retro-CRT placeholder using existing catalog frames/icons (or flat pixel-aligned frames) and **immediately log it in `UI_PLACEHOLDERS.md`** with its Studio path, controller, temporary fallback, and desired art for the next UI overhaul.
 
+## 3D Modeling & Roblox Asset Standards (Horror)
+Mandatory rules for all Blender (`bpy`) / 3D modeling tasks:
+1. **Roblox Scale & Transform Standards:**
+   - Use exact Roblox proportions (`1 stud = 0.28 meters`; standard player reference height = `1.65m`).
+   - Set object origin to bottom-center at `(0, 0, 0)`, facing `-Z` forward.
+   - Apply all transforms (Location, Rotation, Scale) before exporting.
+2. **Topology, Polycount & Export Pipeline:**
+   - Keep every individual mesh strictly under `8,000–10,000` triangles to prevent Roblox import failures.
+   - Recalculate all normals outside and delete loose/stray vertices before export.
+   - Apply Smart UV Project (island margin `0.02`) and use named Principled BSDF materials with flat base colors/roughness (no complex procedural shader nodes that fail to bake to FBX).
+   - Export `.fbx` with `scale_units='FBX_SCALE_NONE'`, scale `1.0`, and Leaf Bones disabled.
+3. **Phased "Blockout-to-Detail" Execution:**
+   - Never generate complex organic shapes in a single unverified pass.
+   - Construct scripts in 4 phases: (1) Base primitive bounding box & proportion check, (2) Primary silhouette extrusions/tapers using `bmesh`, (3) Secondary horror details (damage, wear, jagged edges), and (4) Geometry cleanup, tri-count verification, and FBX export.
+4. **Horror Aesthetic & Geometric Rules:**
+   - Avoid vague adjectives ("scary", "creepy"); use measurable geometry cues (e.g., elongated limb ratios, `5–15` degree crooked offsets, sag depths).
+   - Break strict mirror symmetry by offsetting left/right angles and wear by `5–12` degrees for an unsettling, organic silhouette.
+   - Check existing scene/workspace reference bounds (doorways, player rigs) before sizing new assets so models fit without clipping.
+
 ## 3. End of Session (Log & Push Changes)
 - **Remind to Commit Drafts:** Remind the user to commit any open script drafts in Roblox Studio's **Drafts** widget if Team Create Collaborative Editing is active.
 - **Keep `GAME_DESIGN.md` Up to Date:** Whenever a new gameplay idea, mechanic, monster, upgrade, or system is proposed that is not yet in `GAME_DESIGN.md`, add or update it in `GAME_DESIGN.md` so the design doc stays the single source of truth.

@@ -2959,3 +2959,17 @@
   - `LESSONS.md`, `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - Commit open script Drafts (`HubLobbyService`, `HubLobbyController`) in Studio's **Drafts** widget and **Save / Publish** `THE horror driving game`.
+
+---
+
+## 2026-11-24 — Antigravity (Docs: Add `3D Modeling & Roblox Asset Standards (Horror)` Rules)
+- **Summary of Changes:**
+  - Appended `## 3D Modeling & Roblox Asset Standards (Horror)` cleanly after Section 2 in `GEMINI.md`, `CLAUDE.md`, and `README.md` (preserving all existing workflow rules, architecture guidelines, and attribution notes verbatim), covering Roblox scale/transform standards (`1 stud = 0.28m`, `1.65m` reference height, bottom-center origin, `-Z` forward), topology/polycount/FBX export rules (`< 8,000–10,000` tris, outside normals, Smart UV `0.02`, flat Principled BSDF materials, `FBX_SCALE_NONE`, no Leaf Bones), 4-phase Blockout-to-Detail `bmesh` scripting, and measurable asymmetry/reference-bounds horror geometry rules.
+- **Studio Paths Modified/Created:**
+  - None (repository instruction docs only).
+- **Repository Files Modified:**
+  - `GEMINI.md`, `CLAUDE.md`, `README.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - None.
+- **Next Steps / Known Issues:**
+  - None.
