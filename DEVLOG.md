@@ -1,5 +1,17 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Blender PBR Highway Landmark Props (`Landmark_CoveredBridge`, `Landmark_PoliceRoadblock`, `Landmark_BurningWreck`)
+- **Summary of Changes:** Replaced the script-generated primitive highway landmarks in `ChunkBuilder` with real, reusable Blender 5.3 PBR prop `Model` assets in `"The game part"` (`placeId: 93445054108906`):
+  1. **Blender 5.3 Multi-Mesh Props & `2048×2048` PBR Atlas (`Assets/Landmarks/*`):**
+     - **`Landmark_CoveredBridge` (`106432914786725`):** Timber-framed weathered wooden covered bridge (`64.6W × 28.9H × 67.0L` with sunken concrete abutments, Howe X-truss diagonal bracing, planked half-walls, pitched shingle gable roof with exposed rafters, and hanging `Lanterns` carrying warm `PointLight`s), preserving full 2-lane van clearance.
+     - **`Landmark_PoliceRoadblock` (`105103932872819`):** Detailed black-and-white police interceptor cruiser (sloped hood, push-bar bullbar, chrome grille, headlights, recessed `Glass` cabin, 4 wheels/rims, whip antenna) with separate `StrobeRed` / `StrobeBlue` Neon lightbar lenses + `PointLight`s and striped A-frame sawhorse `Barricades` + traffic cones.
+     - **`Landmark_BurningWreck` (`125023158786703`):** Crumpled, half-rolled charred crashed sedan (`~11.3W × 8.1H × 15.2L`) with buckled popped-open hood tilted up exposing a glowing `EngineEmber` mesh (`Fire`, `Smoke`, and warm `PointLight`), 3 crooked scorched tires + 1 torn-off tire & scrap fender.
+  2. **Real Prop Integration & Object-Pooled `ChunkBuilder` Refactor:**
+     - Installed all 3 hydrated models (`LandmarkRoot`, `PreciseConvexDecomposition` collisions, Glass/Neon/VFX setup) into both `Workspace.MapModels.HorrorKit_Props` and `ReplicatedStorage.Assets.MapModels.HorrorKit_Props`.
+     - Replaced all hardcoded `Instance.new("Part")` landmark builders in `ChunkBuilder.buildRareHighwayLandmark` with `addLandmarkModelToRecord` pooling from `HorrorKit_Props`, dynamically tagging/untagging `PoliceStrobeRed` and `PoliceStrobeBlue` on spawn/release.
+- **Verification:** `loadstring` passed (`ChunkBuilder: OK`); Studio Edit captures verified clean silhouettes/PBR textures; Play Solo confirmed `Landmark_CoveredBridge` & `Landmark_PoliceRoadblock` spawn from `HorrorKit_Props` with `PoliceStrobeRed`/`PoliceStrobeBlue` pulsing and `0` errors.
+- **Studio Paths Modified:** `Workspace.MapModels.HorrorKit_Props`, `ReplicatedStorage.Assets.MapModels.HorrorKit_Props`, `ServerStorage.Modules.ChunkBuilder`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Blender Plugin Package v2 House Fixes & 83,622-Part Lag Elimination
 - **Summary of Changes:** Resolved all Blender house geometry/visual defects, uploaded Package v2 directly through `roblox-blender-plugin`, and eliminated the root cause of severe in-game lag in `"The game part"` (`placeId: 93445054108906`):
   1. **Root Cause of In-Game Lag — `VanCamController` Exponential $2^N$ Recursive `ViewportFrame` Cloning Bug (`83,622` parts -> `2,028` parts):**
