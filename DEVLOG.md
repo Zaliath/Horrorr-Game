@@ -2621,3 +2621,28 @@
   - `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - Commit open script Drafts (`VanDrive`, `VanAnimController`) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+
+---
+
+## 2026-11-23 — justhyne1205 (via Antigravity) (Blender PBR Factory `ConveyorBelt` Remake & Studio Integration)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - **Custom 9-Module Industrial Blender Remake (`Assets/blender/ConveyorBelt/ConveyorBelt.blend` & `ConveyorBelt_Complete.glb`, `49,608` total tris):**
+    - Replaced the old 784 primitive Parts in `Workspace.StartArea.WarehouseDecor.ConveyorBelt` (`BoxFab`, `Palletizer`, `MainBelt`, `OverheadFeed`, `FactoryFlow`) with 9 1:1-stud-scale weathered 1980s industrial PBR modules (`24` imported `MeshPart`s) sharing a custom packed `1024×1024` 4-map PBR atlas (`ColorMap = rbxassetid://117323011594391`, `RoughnessMap = rbxassetid://127350636230522`, `MetalnessMap = rbxassetid://86923060596417`, `NormalMap = rbxassetid://84107770154560`):
+      1. `Conveyor_BoxFab3000` (`6,104` tris): two-tier amber/charcoal carton-former w/ OSHA hazard skirt, louvered service doors, recessed viewing bay showing rotating steel rollers & amber work lamp, jumbo corrugated roll on twin A-frame unwind stands w/ draped web, CRT console w/ E-Stop, blank feeder table + vacuum arm + scrap bin, rear riveted compressed-air tank w/ brass gauge & piping, twin 3-tier stack lights, sloped outfeed throat, and extruded cyan **`BOX FAB 3000`** marquee.
+      2. `Conveyor_Palletizer02` (`8,216` tris): 6-axis articulated robot palletizer (bolted base, cast turret w/ counterweight & servo canisters, dual-spar gusseted lower arm + hydraulic assist ram + cable conduit, wrist gimbal, 4-cup vacuum plenum gripping a taped box) over twin pine Euro-pallets loaded with cartons + spare pallet stack, matte safety-mesh cage fencing, E-Stop station, caged amber beacon, and **`PALLETIZER 02`** header.
+      3. `Conveyor_MainBelt_{East,Mid,West}` (`6,204` / `4,740` / `5,328` tris): C-channel steel trunk, directional chevron rubber belt (`top Y = 9.74`), flared amber & galvanized containment skirts w/ spur T-cutouts, return rollers & cast pillow-block bearings, under-belt galvanized cable tray, bolted H-frame stands w/ yellow floor anchor plates (`minY = 1.91`), `BoxFab` & `Palletizer` feeder spurs, pneumatic diverter/pusher assembly w/ brass ports & chrome guide rods, cobalt-blue finned TEFC gearmotors, and optical photo-eye stanchions.
+      4. `Conveyor_QCScanGantries` (`4,024` tris): twin East & West laser inspection portals w/ hazard crash pedestals, H-beam uprights, multi-lens scanner pods, front/rear **`QC SCAN`** 3D signage + green status LEDs, and fanned crimson tri-beam optical scanner rays.
+      5. `Conveyor_VerticalLiftTower` (`6,412` tris) & `Conveyor_OverheadBridge` (`6,984` tris): 45-stud H-beam elevator tower (`BOX LIFT 01` / `STAND CLEAR`, X-bracing, mesh guards, dual roller-chains, 12 carrier trays, penthouse w/ cobalt hoist motor & caged beacon) feeding the suspended overhead bridge (4 bracket-mounted lamps, cable tray w/ conduits, 90° transfer corner, riveted **DeliveryChute discharge hood** w/ rubber strip curtains, **`OVERHEAD CONVEYOR`** double-sided sign, and 6 trapeze hangers w/ 12 drop rods, brass turnbuckles & roof clamps up to `maxY = 76.47`).
+      6. `Conveyor_FlowBoxes` (`1,496` tris): all 22 corrugated shipping cartons w/ packing tape & barcode manifest labels seated flush across main belt, elevator trays, and overhead bridge.
+  - **Studio Integration (`Workspace.StartArea.WarehouseDecor.ConveyorBelt`):**
+    - Rigidly aligned all 24 `MeshPart`s to `(0, 1.91, 374)` (`worldMin = (-124.30, 1.91, 339.33)`, `worldMax = (101.60, 76.47, 406.45)`), configured `PreciseConvexDecomposition` collision on all 8 structural PBR meshes (`CanCollide = false` on `Conveyor_FlowBoxes_Mesh`), styled all 15 emissive `Neon` sub-meshes (amber/yellow/cyan/red/green), and added a 9-emitter `Lights` folder (`BoxFab_MarqueeLight`, `BoxFab_BayLight`, `BoxFab_StackLight`, `Palletizer_BeaconLight`, `QCScan_EastLight`, `QCScan_WestLight`, `LiftBeacon_Light`, `Overhead_Lamp1`, `Overhead_Lamp2`). Preserved `Flow_*` attributes on `ConveyorBelt`.
+- **Verified (`Edit` & `Play Solo` on `The game part`):**
+  - Edit-mode `screen_capture` (`ConveyorStudio_{BoxFabClear,QCScan,MainBelt,LiftAndChute}`) verified flush floor alignment (`minY = 1.91`), readable glowing 3D signage, fanned red QC laser beams, and clean overhead discharge alignment above `DeliveryChute`.
+  - Play Solo confirmed `conveyorMeshes = 24` (`9` PBR, `15` Neon), `9` `PointLight`s, `unanchored = 0`, `hasDeliveryChute = true`, `hasFuelPump = true`, `0` game script errors, and clean return to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `Workspace.StartArea.WarehouseDecor.ConveyorBelt`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - **Save / Publish** `The game part` in Studio when ready (no script edits needed).
