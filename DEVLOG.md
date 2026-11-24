@@ -2646,3 +2646,44 @@
   - `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - **Save / Publish** `The game part` in Studio when ready (no script edits needed).
+
+
+---
+
+## 2026-11-23 — justhyne1205 (via Antigravity) (CreepyCrawlie 3D SFX, Happy-Unsettling Factory Theme & Zone Silence, Wrist PDA `[M]` Open/Close SFX)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - **1. CreepyCrawlie 3D Spatial Audio Suite (`StarterPlayer.StarterPlayerScripts.Client.Controllers.CreepyCrawlieController`):**
+    - Attaches a `CrawlieSpatialAudio` folder to every live `CreepyCrawlie` rig's `MeshPart` (`CreepyCrawlie_Export_Mesh`), automatically skipping static authoring templates in `Workspace.MonsterModels` and `ReplicatedStorage.Assets.Monsters`:
+      - `CrawlieSkitterLoop` (`rbxasset://sounds/action_footsteps_plastic.mp3`, `Looped = true`, `RollOffMinDistance = 6`, `RollOffMaxDistance = 54`, chitin EQ `-10 / +4.5 / +7.5` dB): dynamically scales `Volume` (`0.28..0.80`) and `PlaybackSpeed` (`2.15..3.10` + gait flutter) with live movement speed & `IsAttacking`, dropping cleanly to `0` when stationary or dead.
+      - `CrawlieJawChitter` (`rbxassetid://9125802013`, `RollOffMaxDistance = 34`) & `CrawlieMandibleClick` (`rbxassetid://9118442066`, `RollOffMaxDistance = 32`): alternating proximity bursts inside `26` studs synced to `CurrentJawDeg > 2.0`, accelerating from `~1.6–2.6s` far away to rapid `0.42–0.77s` spasms up close.
+      - `CrawlieLockHiss` (`rbxassetid://9119299641`, `RollOffMaxDistance = 46`, + `ReverbSoundEffect`): triggers on `hasTarget` rising edge within `42` studs (`6.5s` per-crawler cooldown).
+    - Layered `CRUNCH_CRACK_ID` (`rbxassetid://9126169439`) onto stomp `Squish`, and replaced the two broken legacy sound IDs (`rbxassetid://9114221895`) on `VengeanceShriek` and `PullApart`/`LegsUpDevour` with verified `LOCK_HISS_ID` + `JAW_CHITTER_ID` / `CRUNCH_CRACK_ID` layers.
+  - **2. Happy-But-Unsettling Factory Theme + Complete Outdoor/Rain Silence + Monster Chase Cut-Out:**
+    - **Custom Synthesized Seamless `.wav` Loop (`Assets/audio/FactoryTheme_HappyUnsettling.wav`, untracked local asset):** Generated an original `32.0s` (`16`-bar, `120 BPM`, 44.1 kHz 16-bit stereo PCM) retro corporate Farfisa lounge organ + walking upright bass + whistling lead + detuned haunted celesta music-box chime + vinyl dust & periodic analog reel-to-reel tape wow/sag track ready for optional Studio upload (`CUSTOM_FACTORY_THEME_ID` / `SoundService.CustomFactoryTheme`).
+    - **Live In-Game Factory PA Theme & Zone Mixer (`AudioController`, `RainController`, `VanImmersionController`, `ShiftService`):**
+      - Dynamically resolves `Main_Floor_Slab` inside `Workspace.Factory` (`PointToObjectSpace`) so `InFactoryZone` stays accurate across `MapService` shift relocations without hardcoded coordinates, publishing `LocalPlayer:SetAttribute("InFactoryZone", isInFactory)`.
+      - Plays `FactoryTheme` (`rbxassetid://1840233094`, overhead PA horn `EqualizerSoundEffect` + warehouse `ReverbSoundEffect` + subtle `DistortionSoundEffect` + organic reel-to-reel pitch warble & periodic tape sag) layered with `FactoryUndertone` (`rbxassetid://1835966604`, faint detuned carousel undertone) inside the Factory while driving **all other ambience/music** (`EerieTrackA/B`, `AmbientDrone`, `EerieWind`, random stingers, distant thunder, `RainController` drizzle/storm/interior loops, `VanImmersionController` tin-roof rain patter, and legacy `DepotPASpeaker` loops) smoothly to `0`.
+      - **Monster Chase Cut-Out:** Detects any monster threat (`threat >= 0.34`, including live `CreepyCrawlie` spawns in `Workspace.CreepyCrawlieSwarm`) and performs a fast tape-drop cut-out (`rate = 9.5`, pitch-sagging `-0.18`) on `FactoryTheme`/`FactoryUndertone` so `TensionMusic` + `PanicDrone` take over immediately, then smoothly fades the cheerful PA theme back in once danger clears.
+  - **3. Wrist Menu (`[M]`) Retro-CRT Open & Close Sound Suite (`WristMenuController`):**
+    - Built `SoundService.WristMenuAudio` with Master Volume (`_WristBaseVol`) preservation and async preloading:
+      - **`Open()`:** Stage 1 (`t = 0.00s` horizontal phosphor snap) fires crisp mechanical housing click (`WristLatchClick`, `rbxassetid://10066968815`) + retro telemetry carrier beep (`WristBootCarrier`, `rbxassetid://9117060349`) + `WristBootChirp`; Stage 2 (`t = 0.12s` vertical CRT unfold) fires ascending computer readout blip (`WristUnfoldBlip`, `rbxassetid://9125389685`) + high harmonic ping.
+      - **`Close()`:** Plays analog CRT phosphor collapse (`WristCloseCollapse`, pitch-tweening `1.14 → 0.66` over `0.16s` while fading out) + lower-pitched latch shutoff click (`0.74x`).
+    - Also fixed 4 pre-existing `player` → `localPlayer` nil-index bug references around `DevControlledMonster` in `WristMenuController.buildGui`.
+- **Verified (`Play Solo` on `The game part`):**
+  - Confirmed 100% of new `Sound` instances report `IsLoaded == true` and `TimeLength > 0` with **`0` console errors or failed sound loads**.
+  - Verified Factory spawn (`InFactoryZone = true`: `FactoryTheme.Vol = 0.3400`, `FactoryUndertone.Vol = 0.0520`, all outdoor horror & rain loops `0.0000`), stepping outside (`Z = 180`: `FactoryTheme.Vol → 0.0002`, outdoor horror & rain fade in), re-entering Factory (`FactoryTheme.Vol → 0.3398`, outdoor & rain silence), Cmdr `creepycrawlie spawn` inside Factory (`CrawlieSkitterLoop` + `CrawlieLockHiss` + `CrawlieJawChitter` active, `FactoryTheme.Vol → 0.0000`, `TensionMusic.Vol → 0.2767`, then `creepycrawlie clear` restores `FactoryTheme.Vol → 0.3381`), and live `[M]` open/close telemetry. Returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.CreepyCrawlieController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.AudioController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.RainController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanImmersionController`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.WristMenuController`
+  - `ServerScriptService.Server.Services.ShiftService`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **New Dependencies:**
+  - Player Attribute: `InFactoryZone` (`boolean`, client-side published by `AudioController`).
+  - Runtime SoundService Folders: `SoundService.WristMenuAudio`; `CrawlieSpatialAudio` on live `CreepyCrawlie` `MeshPart`s.
+- **Next Steps / Known Issues:**
+  - Optional: Upload `Assets/audio/FactoryTheme_HappyUnsettling.wav` in Studio Asset Manager and paste its `rbxassetid://...` into `CUSTOM_FACTORY_THEME_ID` at the top of `AudioController` (or into a `Sound` named `SoundService.CustomFactoryTheme`).
+  - Commit open script Drafts (`CreepyCrawlieController`, `AudioController`, `RainController`, `VanImmersionController`, `WristMenuController`, `ShiftService`) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
