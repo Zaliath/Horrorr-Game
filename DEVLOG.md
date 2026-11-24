@@ -2842,3 +2842,22 @@
   - Player Attribute & Setting: `SettingRainHighQuality` (`boolean`) / `DataService.ACCOUNT_TEMPLATE.Settings.RainHighQuality` (`boolean`, default `true`).
 - **Next Steps / Known Issues:**
   - Commit open script Drafts (`RainController`, `WristMenuController`, `VanImmersionController`, `DataService`, alongside prior pending Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+---
+
+## 2026-11-24 — justhyne1205 (via Antigravity) (Blender PBR Remodel & Studio Integration: Employee Leaderboard & Shift Contracts Boards)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Replaced both old blocky factory boards (`Workspace.StartArea.EmployeeLeaderboardBoard` and `Workspace.StartArea.ShiftContractsBoard`) with the newly remodeled, custom-textured Blender 5.3.0 PBR industrial kiosk models (`EmployeeLeaderboardBoard.glb` & `ShiftContractsBoard.glb`, `1024×1024` 4-map PBR atlas `rbxassetid://76582873551643`):
+    - **Exact Placement & Floor Contact:** Rigidly aligned both imported models to the exact original board centers (`X = -10.00, Z = 362.00` and `X = -68.00, Z = 362.00`, facing `-Z` into the factory) and flush floor height (`minY = 1.911`), with `0` unanchored parts and all stray `Workspace.Scene` import wrappers removed.
+    - **Live `BoardDisplay` SurfaceGui Preserved:** Transferred each board's existing `BoardDisplay` `SurfaceGui` (`BodyText` `TextLabel` + header) directly onto the recessed dark-glass screen mesh (`EmployeeLeaderboard_Screen_Mesh` `14×9` and `ShiftContracts_Screen_Mesh` `13×9`, `Face = Enum.NormalId.Front`, `LightInfluence = 0.15`), keeping 100% compatibility with `MapService` live leaderboard & contract updates without any script changes.
+    - **Emissives & Visor Lighting:** Stripped `SurfaceAppearance` from `*_Emissive_Amber/Green/Red/Cyan_Mesh` sub-meshes and styled them as `Enum.Material.Neon` with industrial amber/green/red/cyan accents (visor brow LED strip, stack light, console status LEDs, rear disconnect indicator), plus an anchored invisible `VisorLightAnchor` `PointLight` (`Color = (255, 198, 108)`, `Range = 24`, `Brightness = 1.15`) tucked under each visor.
+- **Verified (`Edit` Mode Visual Capture & `Play Solo` on `The game part`):**
+  - Captured and inspected front and rear Edit-mode views of both kiosks: confirmed crisp readable screen headers/body text right-side-up, glowing Neon accents, bolted baseplates flush on the floor (`minY = 1.911`), detailed rear exhaust fans/louvers/service doors/conduits, and clean walking clearance from the conveyor line.
+  - Verified in **Play Solo**: `empCount = 1`, `conCount = 1`, `unanchored = 0`, `MapService` live-populated both `EmployeeLeaderboardBoard` (`HIGHEST SHIFT REACHED` / `MOST CREDITS EARNED`) and `ShiftContractsBoard` (`3` active shift contracts) with `0` console errors, and returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `Workspace.StartArea.EmployeeLeaderboardBoard` (replaced with PBR kiosk model)
+  - `Workspace.StartArea.ShiftContractsBoard` (replaced with PBR kiosk model)
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - **Save / Publish** `The game part` in Roblox Studio to persist the replaced leaderboard and shift contracts models.
