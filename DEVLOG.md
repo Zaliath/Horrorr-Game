@@ -1,5 +1,13 @@
 # Devlog
 
+## 2026-11-24 — justhyne1205 (via Antigravity) — Factory Departure Garage Shutter & Driveway Lockout Barricades
+- **Summary of Changes:** Sealed the Factory bay against re-entry once the crew and `DeliveryVan` depart (or after Purge execution) in `"The game part"` (`placeId: 93445054108906`):
+  1. **Dual Garage Shutter + Driveway Barricades (`ShiftService.sealFactoryBehindCrew` / `clearFactoryLockout`):** Once every alive player and `DeliveryVan` vacate the Factory during `Phase = "Active"` (whether on a normal departure or escaping a Purge Warning), or after a Purge executes stragglers while survivors remain outside, drops an animated metal `LockoutGarageShutter` across `Bay_Rollup_Door`, spawns 3 A-frame hazard barricades + 4 cones + `FACILITY SEALED // SHIFT ACTIVE // COMPLETE DELIVERIES` signboard + full-height `LockoutDrivewayBarrierWall` (`78 × 48 × 3.5`) across the `Bay_Floor_Apron` mouth inside `Workspace.FactoryLockoutFX`, and automatically unseals on `enterDepotApproach`, `prepareInitialShift`, `beginActiveShift`, and `ResetEverythingToZero`.
+  2. **Lockout Slam SFX (`AudioController`):** Listens to `FactorySealSeq` / `FactorySealed` to trigger distance-attenuated `PurgeSlamSfx` + `PurgeBoomSfx` behind departing players.
+- **Verification (`Play Solo` on `"The game part"`):** Verified escaping during `PurgeState = "Warning"` restores lights (`PurgeState = "None"`), deploys `FactoryLockoutFX` (`55` parts, `LockoutGarageShutter` at `(-39.12, 16.41, 177.93)`, `LockoutDrivewayBarrierWall` at `(-39.12, 25.11, 142.63)`), fires `PurgeSlamSfx` (`Vol = 0.315`), hides `PixelGame_PurgeOverlay` (`AlertVis = false`), and physically blocks walk-back re-entry at `Z = 140.35` with **`0` console errors**.
+- **Studio Paths Modified:** `ServerScriptService.Server.Services.ShiftService`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.AudioController`.
+- **Repository Files Modified:** `DEVLOG.md`.
+
 ## 2026-11-24 — justhyne1205 (via Antigravity) — Corporate Purge Protocol & Factory Timer-Expiry Fix
 - **Summary of Changes:** Fixed the factory loitering / timer-expiry grass-field bug and implemented the **P.A.R.A.L.L.A.X. Corporate Purge Protocol** in `"The game part"` (`placeId: 93445054108906`):
   1. **No-Relocation Guard (`ShiftService`):** Prevented `enterDepotApproach(true)` from calling `MapService:ReserveAndRelocateDepot()` while `DeliveryVan` has not departed or is still inside the Factory, triggering `triggerFactoryPurgeExecution(true)` instead and resetting the shift cleanly to `Prep` in place (`-$50` compliance fine) after liquidation.
