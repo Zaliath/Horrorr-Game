@@ -2861,3 +2861,25 @@
   - `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - **Save / Publish** `The game part` in Roblox Studio to persist the replaced leaderboard and shift contracts models.
+
+---
+
+## 2026-11-24 — justhyne1205 (via Antigravity) (Fix: Creepy Crawlies Getting Stuck & Oscillating on Walls)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Fixed AI Creepy Crawlies getting stuck on vertical walls and vibrating/oscillating wildly at wall-floor seams and corners in `ServerStorage.Modules.Monsters.CreepyCrawlieMonster`:
+    - **Separated Physics Normal vs. Visual Normal:** Kept `c.Normal` snapped immediately to the true surface normal on every surface transition (eliminating the wall-vs-floor raycast ping-pong where `c.Pos` jumped to the new surface while `c.Normal` only partially lerped) and added a smoothly exponentially interpolated `c.VisualNormal` solely for `buildCrawlieCFrame`. Reduced `RAY_DIST_WALL` (`2.6 → 1.5`).
+    - **Clean Wall Detach, Outward Hop & Reattach Cooldown:** Added `detachFromWall()` (pushes `c.Pos` `1.25` studs off the wall face, launches cleanly outward with `AirVelXZ` + `VelY`, sets `WALL_DETACH_COOLDOWN = 1.25s`, and deflects wall grazes while falling so crawlers land cleanly on walkable floors `Normal.Y >= 0.55`). Triggers automatically when the target is off the wall in open space (`outwardDot > 0.22`), when pouncing from above, when exceeding `MAX_WALL_STUCK_TIME = 1.15s`, on rapid corner flips (`RapidSwitchCount >= 3`), or via a `0.55s` net-displacement anti-stuck watchdog.
+    - **Smart Wall Navigation & Ground Wall-Sliding:** On vertical walls, aims upward & sideways when the target is *behind* the wall (to crest over or wrap around obstacles) and downward toward floor level otherwise (eliminating chest-height `Y ≈ tPos.Y` directional jitter). On the ground during wall cooldown, slides tangentially along walls around building corners instead of re-sticking.
+- **Verified (`Play Solo` on `The game part`):**
+  - Passed `loadstring` syntax check (`true OK`) and verified all 4 live `Play Solo` stress scenarios with `0` console errors:
+    - Chest-height vertical wall (`minD = 3.0`, `flips = 1`),
+    - 90° wall-to-wall + floor inside corner (`minD = 3.0`, `flips = 1`),
+    - High vertical wall `+13` studs (`minD = 3.0`, `flips = 1`),
+    - Flush-to-floor `9`-stud barrier between crawler and player (`minD = 3.0`, `flips = 2`).
+  - Returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `ServerStorage.Modules.Monsters.CreepyCrawlieMonster`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - Commit open script Draft (`CreepyCrawlieMonster`, alongside prior pending Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
