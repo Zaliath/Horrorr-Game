@@ -2687,3 +2687,23 @@
 - **Next Steps / Known Issues:**
   - Optional: Upload `Assets/audio/FactoryTheme_HappyUnsettling.wav` in Studio Asset Manager and paste its `rbxassetid://...` into `CUSTOM_FACTORY_THEME_ID` at the top of `AudioController` (or into a `Sound` named `SoundService.CustomFactoryTheme`).
   - Commit open script Drafts (`CreepyCrawlieController`, `AudioController`, `RainController`, `VanImmersionController`, `WristMenuController`, `ShiftService`) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+
+---
+
+## 2026-11-23 — justhyne1205 (via Antigravity) (Personal Upgrade Menu SFX)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Added Master-Volume-aware (`_WristBaseVol` / `SettingMasterVolume`) feedback sound effects to `StarterPlayer.StarterPlayerScripts.Client.Controllers.PersonalUpgradeController`:
+    - Built and preloaded `SoundService.PersonalUpgradeAudio` on startup via `ensureAudioRig()` containing 5 verified SFX: `PersonalUpgOpen` (`rbxassetid://9117060349`), `PersonalUpgClose` (`rbxassetid://10066968815`), `PersonalUpgConfirmChime` (`rbxassetid://9118046636`), `PersonalUpgConfirmBlip` (`rbxassetid://9125389685`), and `PersonalUpgDeny` (`rbxassetid://9119713951`).
+    - Plays a clean boot chirp on `OpenShop("PersonalUpgrades")`, a lower mechanical latch close click when closing via `DoneBtn` or `Escape` (guarded by `gui.Enabled`), a pitch-ascending tier-scaled (`1/2/3`) two-tone confirmation chime + harmonic UI blip on successful Health/Speed training upgrades, and a low deny tone if a purchase is rejected or fails.
+- **Verified (`Play Solo` on `The game part`):**
+  - Confirmed all 5 `SoundService.PersonalUpgradeAudio` sounds preload (`IsLoaded == true`, `TimeLength > 0`) with zero sound load failures.
+  - Verified live UI flows: `OpenShop("PersonalUpgrades")` (`PersonalUpgOpen`), out-of-range `BuyBtn` click (`PersonalUpgDeny`), `DoneBtn` close (`PersonalUpgClose`), and terminal-range Health Tier 1 upgrade purchase (`PersonalUpgConfirmChime` + `PersonalUpgConfirmBlip` `+0.07s`, `StatusLabel = >> UPGRADE PURCHASED!`). Returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.PersonalUpgradeController`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **New Dependencies:**
+  - Runtime SoundService Folder: `SoundService.PersonalUpgradeAudio`.
+- **Next Steps / Known Issues:**
+  - Commit open script Draft (`PersonalUpgradeController`, alongside prior pending script Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
