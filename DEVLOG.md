@@ -1,5 +1,18 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Creepy Crawlie Rig, Wall Collision, Jump, Van Standing & [R] Signature Specials
+- **Summary of Changes:** Resolved all 4 remaining Dev Monster Morph / Pilot issues in `"The game part"` (`placeId: 93445054108906`):
+  1. **Creepy Crawlie Skinned Mesh Fix (`WristMenuController`):** Preserved `Animator`/`AnimationController` on skinned rigs, included visible `PrimaryPart` meshes (`CreepyCrawlie_Export_Mesh`) in `bulkParts` so the mesh moves with `rootCF`, and tagged the cloned rig `"CreepyCrawlie"` via `CollectionService` so `CreepyCrawlieController` automatically drives its 8 skinned spider legs, head tracking, jaw opening, and spatial chittering SFX.
+  2. **Wall Collision + Grounded Jump + Stand on Van (`WristMenuController`):** Removed `DeliveryVan` from the pilot ground raycast exclude list so monsters can stand and jump on top of the van; added horizontal wall/obstacle raycast collision with tangent wall-sliding (no more noclipping through walls/shelves/van sides); replaced continuous `Space`-to-fly floating with a real grounded jump impulse (`Space` jumps once when grounded, gravity `-105 studs/s²` always pulls you back down).
+  3. **Monster-Specific `[R]` Signature Specials & Controls HUD (`WristService` & `WristMenuController`):** Added `[R]` (`DevMonsterControl("Special")`) executed directly by the morphed player (zero duplicate AI spawns) plus a bottom-center `DevPilotControlsHUD` bar showing each monster's exact `[E]` / `[R]` / `[Q]` / `[Space]` / `[X]` moves:
+     - **Colossal Chaser:** `[R]` **Eat/Devour Van** (ejects crew, deals `35` van dmg, hides/swallows `DeliveryVan` for 5s) or **Throw Player** (`115` studs/s fling + `55` dmg + ragdoll).
+     - **Phantom Semi / Ambient Traffic:** `[R]` **Aerial Spider Vault / Evade** (high acrobatic leap over van/hazards).
+     - **Creepy Crawlie:** `[R]` **Rip In Half** (lethal execution with `ChaserRippedApart` split) or skitter lunge.
+     - **Door Ripper:** `[R]` **Rip From Van** (yanks seated players straight out of `DeliveryVan` for `50` dmg).
+     - **Forest Hunter:** `[R]` **Predator Charge**; **Stare Phantom / Fogwardens:** `[R]` **Shadow Blink**; **Cargo Monster:** `[R]` **Cargo Breach**; **Gremlin / Window / Porch / Hitchhiker:** `[R]` **Sabotage (-20% Fuel) / Ambush Pounce**.
+- **Verification:** `loadstring` passed (`0` errors); Play Solo verified `Creepy Crawlie` (`Visual=true, Tagged=true, AnimCtrl=true, MeshDist=0.04, SpecStyle=DashCharge, SpecSeq=1`, `DevPilotControlsHUD` active), zero game errors.
+- **Studio Paths Modified:** `ServerScriptService.Server.Services.WristService`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.WristMenuController`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Phantom Semi Spider IK & Direct Morphed Pilot Attacks
 - **Summary of Changes:** Fixed Phantom Semi pilot animations and replaced duplicate AI-spawning attacks with direct morphed-user attacks in `"The game part"` (`placeId: 93445054108906`):
   1. **Phantom Semi & Phantom Van Hexapod Spider-Arm IK (`WristMenuController`):** Detected `Hull + Leg_L1_U/R1_U` rigs and wired `PhantomSemiController`'s authentic analytical 2-bone spider-leg IK (`LEG_L1 = 9.2`, `LEG_L2 = 15.6`), alternating hexapod tripod gait (`{L1, R2, L3}` / `{R1, L2, R3}`), hull suspension bob/pitch/roll, crouch-to-lunge Attack ram, and front-leg threat flare on Roar.
