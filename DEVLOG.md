@@ -2883,3 +2883,24 @@
   - `DEVLOG.md`
 - **Next Steps / Known Issues:**
   - Commit open script Draft (`CreepyCrawlieMonster`, alongside prior pending Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
+
+---
+
+## 2026-11-24 — justhyne1205 (via Antigravity) (Fix: Procedural Map Floor Gaps Leading to the Void)
+- **Summary of Changes (`The game part`, `placeId: 93445054108906`):**
+  - Fixed procedural map floor voids appearing beside roads around the starting factory (`(-1, 0)` / `(1, 0)`) and around Shift 2+ relocated depots (`510×510`–`600×600` stud excluded holes around the `290×350` `DepotGroundPad`) across `MapService`, `ChunkBuilder`, and `ProceduralRoadGraph`:
+    - **Always Spawn Solid Ground Slabs (`MapService.addForestBorderAround`, `ChunkBuilder.BuildForestChunk`):** Removed the cell-level exclusion of `IsCellReservedForDepot` and `IsPositionInFactory(wp, 58)` from forest chunk spawning so every non-road cell (`gz >= 0`) always spawns its solid `100×14×100` `GrassGround` slab.
+    - **Zero Grass/Trees Inside Factory (`ChunkBuilder`, `ProceduralRoadGraph`):** Tightened `ProceduralRoadGraph:IsCellReservedForDepot` padding (`+55 → +8`), kept a flat `1`-cell elevation collar around depot lots and `gz <= 0`, seated slabs strictly under the factory footprint `0.15` studs lower (`Y = 0.71`, cleanly beneath `Bay_Floor_Apron` `1.11` and `Main_Floor_Slab` `1.91`), suppressed `RollingHillMound` / `ElevationSlopeWedge` / river carving near depots, and passed `MapService:IsPositionInFactory` into `ChunkBuilder.BuildForestChunk`'s `isClear()` check so zero trees or props clip into the factory.
+    - **Multi-Tracker Streaming & Outer South Edge Safety (`MapService`, `ChunkBuilder`):** Boosted `MAX_SPAWNS_PER_TICK` (`14 → 24`), updated streaming distance checks (`minDistToTrackers`) to track both `DeliveryVan` and all live players' characters on foot, preserved `StartAreaGround` across depot relocations, rebuilt overlapping forest chunks cleanly as flat ground slabs on `ReserveAndRelocateDepot` (`updateStreaming(220)`), and sealed exposed south edges of `gz == 0` forest chunks outside `StartAreaGround`'s `X` span (`[-310..270]`).
+- **Verified (`Play Solo` on `The game part`):**
+  - Passed `loadstring` syntax checks on all 3 scripts (`true OK`).
+  - **Live Shift 1 Audit:** Confirmed `Forest_-1_0 = true`, `Forest_1_0 = true`, `missingWithin700 = 0`, `voidWithin700 = 0`.
+  - **Shift 2 Relocated Depot Sweep (`529` dense 25-stud raycast samples over `560×560` studs):** Confirmed `voidSamples = 0`, `grassAboveApronInFactory = 0`, `propsInsideFactory = 0`, and `0` console errors. Returned Studio cleanly to `Edit` mode.
+- **Studio Paths Modified (`The game part`):**
+  - `ServerStorage.Modules.ProceduralRoadGraph`
+  - `ServerStorage.Modules.ChunkBuilder`
+  - `ServerScriptService.Server.Services.MapService`
+- **Repository Files Modified:**
+  - `DEVLOG.md`
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts (`ProceduralRoadGraph`, `ChunkBuilder`, `MapService`, alongside prior pending Drafts) in Studio's **Drafts** widget and **Save / Publish** `The game part`.
