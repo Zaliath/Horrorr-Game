@@ -2986,3 +2986,29 @@
   - None.
 - **Next Steps / Known Issues:**
   - None.
+
+---
+
+## 2026-11-24 — Antigravity (Lobby 16-Bit Pixel CRT `SurfaceGui` & `BillboardGui` Overhaul)
+- **Summary of Changes (`THE horror driving game`, `placeId: 124598324996118`):**
+  - Reused the 59 Group-authorized pixel-art assets in `ReplicatedStorage.Assets.PixelUI.AssetCatalog` (`Frame_Modal_Amber/Green/Crimson`, `Frame_Card_Dark/Locked`, `Btn_Primary_Amber`, `Badge_Tag`, `Tile_DitherHeader_*`, `Tile_HazardStripe_*`, `Tile_CRTScanlines`, `Divider_Pixel`, `Pip_*`, `Icon_ParcelWireframe`, and 16×16 station icons) to upgrade every outdoor `SurfaceGui` and `BillboardGui` in `Workspace.LobbyMap` while preserving the existing dark-obsidian + amber/green/crimson aesthetic, `ZIndexBehavior = Sibling`, and `MaxDistance = 500` (leaving cab interior gauges/monitors untouched):
+    - **7 Outdoor Marquees & Boards (`Shops`, `Borders`):** Upgraded `P.A.R.A.L.L.A.X. // NIGHT DISPATCH`, `VAN SKINS & GARAGE`, `PRE-GAME SUPPLY CAGE`, `CREW EMOTES LOUNGE`, `ROUTE 09 — SHIFT EXIT`, `MasterDispatchBoard.DispatchSurface`, and `DepotEspressoMachine.Marquee.SurfaceGui` with 9-slice pixel frames, header dither bands, hazard strips, pixel icons, `Badge_Tag`s, pixel dividers, and CRT scanlines.
+    - **12 Departure Bay Signs (`Bay_01..Bay_06` Front & Back + `HubLobbyService`):** Added pixel bezels, `Icon_Van`/`Icon_Lock`/`Icon_Warning`, dynamic 4-pip `CrewPips` meters, and live `STANDARD` (`Amber`) ↔ `HARDCORE`/`LOCKED` (`Crimson`) ↔ `LAUNCHING` (`Green`) asset swapping in `HubLobbyService.updateBayVisuals`.
+    - **Courtyard Boards (`DepotBoard_Leaderboard`, `DepotBoard_Dossier` + `HubLobbyService.mountBoardDisplay`):** Upgraded both Edit-mode previews and runtime server boards with `Frame_Modal_Amber`, `Frame_Card_Dark`, header icons, `TOP 05` / `12 FILES` tags, live green status footers, and CRT scanlines.
+    - **Van Exterior Livery (`ShowcaseVan`, `Bay_01..Bay_03.DepartureVan`, `LobbyVanTemplate`):** Upgraded `Details.SignL.SurfaceGui` (`Frame_Modal_Amber` + `Icon_ParcelWireframe` + `Arcade`/`Code` typography) and `SlidingDoor.DoorPanel.SurfaceGui` (`Arcade` stencil + `UNIT 04` badge).
+    - **BillboardGuis (`PixelStationMarker` + `LobbyPromptController`):** Added 4 distance-gated (`MaxDistance = 85`) `PixelStationMarker` `BillboardGui`s (`ESPRESSO +SPD`, `[H] TEST HORN`, `FIELD GUIDE`, `TOP COURIERS`) and upgraded `PixelLobbyPrompt_*` `BillboardGui`s with `Frame_Modal_Amber`, `Tile_DitherHeader_Amber`, `Divider_Pixel`, per-station `StationIcon`, CRT scanlines, and automatic `PixelStationMarker` hide-on-show.
+- **Verified (`Edit` & `Play Solo` on `THE horror driving game`):**
+  - Passed `loadstring` syntax checks on `HubLobbyService` and `LobbyPromptController` (`"OK"`).
+  - Visual `screen_capture` inspection (`PixelSigns_Storefronts`, `PixelSigns_CourtyardBoards`, `PixelSigns_BaysFront`) confirmed crisp pixel frames, icons, pips, and text readability.
+  - Play Solo confirmed `PixelLobbyPrompt_EspressoPrompt` renders with `StationIcon`/`Divider`/`Scanlines` while hiding `PixelStationMarker` (and restores `MarkerRestored = true` on exit), `Bay_01` `BayStatusGui` dynamically swaps `Amber` -> `Crimson` across `FrameImg`, `HeaderDither`, and `CrewPips.Pip_1` when toggling `SetDifficulty = "HARDCORE"`, and console output showed **0 warnings and 0 errors** (`68/68` assets preloaded). Studio returned cleanly to `Edit` mode.
+- **Studio Paths Modified (`THE horror driving game`):**
+  - `Workspace.LobbyMap.{Shops,Borders,DepartureBays,LotProps}` (`SurfaceGui`s + `PixelStationMarker` `BillboardGui`s)
+  - `ReplicatedStorage.Assets.LobbyKit.LobbyVanTemplate.{Details.SignL,SlidingDoor.DoorPanel}.SurfaceGui`
+  - `ServerScriptService.Server.Services.HubLobbyService`
+  - `StarterPlayer.StarterPlayerScripts.Client.Controllers.LobbyPromptController`
+- **Repository Files Modified:**
+  - `GAME_DESIGN.md`, `DEVLOG.md`
+- **New Dependencies:**
+  - `PixelStationMarker` `BillboardGui`s under interactive Lobby station parts; `HubLobbyService` now requires `ReplicatedStorage.Assets.PixelUI.AssetCatalog`.
+- **Next Steps / Known Issues:**
+  - Commit open script Drafts (`HubLobbyService`, `LobbyPromptController`) in Studio's **Drafts** widget and **Save / Publish** `THE horror driving game`.
