@@ -1,5 +1,16 @@
 # Devlog
 
+## 2026-11-25 — Antigravity (Riplatki) — Woodland Ambiance System (Deer, Rabbits, Birds, Fireflies & Night Forest SFX)
+- **Summary of Changes:** Added a 100% client-side, pre-pooled nocturnal woodland ambiance system (`WildlifeAmbianceController` registered in `ControllerList`) in `"The game part"` (`placeId: 93445054108906`):
+  1. **Zero-Lag `BulkMoveTo` Pooling (`Workspace.ClientWildlifeAmbiance`):** Pre-allocated `165` anchored, non-collidable, shadowless parts (`0` Humanoids, `0` physics constraints) driven by a single `Workspace:BulkMoveTo` call per `Heartbeat`, with `Factory.Main_Floor_Slab` (+24-stud margin) exclusion so no wildlife spawns inside the warehouse.
+  2. **Interactive Deer, Rabbits & Birds:**
+     - **4 Deer (2 Antlered Stags + 2 Does):** Graze at the treeline, snap to `AlertFreeze` with glowing `Neon` headlight/flashlight eye-shine, occasionally trot across the road ahead (`CrossRoad`), and bolt into the woods (`Flee`) on approach or van horn (`VanBumpHonkSeq`).
+     - **5 Cottontail Rabbits:** Ear-twitching sit idle, parabolic hopping arcs, and rapid bush darting when approached.
+     - **7 Forest Birds:** `4` perching crows that flush skyward with `14 Hz` flapping wings and spatial caws when startled, plus `3` high circling night canopy gliders.
+  3. **Small Forest Details & Self-Ducking Audio (`SoundService.WildlifeAmbianceAudio`):** Added `16` pulsing woodland firefly clusters, `8` wind-blown leaves, `6` headlight moths, and self-ducking ProSoundEffects night audio (`CricketsNightLoop`: `9112764891`, `LeavesRustleLoop`: `9116258071`, plus sparse 3D owl hoots `9117181540`/`9117182187` and crow caws `9118442066`) that mute inside the Factory and during monster chases.
+- **Verification:** `loadstring` passed on `WildlifeAmbianceController` and `ControllerList`; Play Solo verified `165` parts (`0` Humanoids, `0` `CanCollide` parts), `0` active creatures and `~0` audio volume inside the Factory, `4` deer + `5` rabbits + `7` birds + `16` fireflies + `8` leaves + `6` moths (`46` moving, `0` NaNs) outdoors on the forest road, `VanBumpHonkSeq` startle reactivity, and `0` game errors in console.
+- **Studio Paths Modified:** `StarterPlayer.StarterPlayerScripts.Client.Controllers.WildlifeAmbianceController` (new), `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`.
+
 ## 2026-11-24 — justhyne1205 (via Antigravity) — Corporate Shift Quota & Double-Down Extraction Loop (Idea #6)
 - **Summary of Changes:** Implemented the escalating **Corporate Shift Quota & "Extract & Bank vs. Push Deeper" Double-Down Loop** in `"The game part"` (`placeId: 93445054108906`):
   1. **Authorized Extraction Tax Waiver & Tax-Free Streak Jackpot (`TaxConfig`, `TaxService`):** Extended `SettlementParams` and `TaxConfig.ComputeSettlement` / `TaxService` with `BaseTeamTaxOverride`, `BasePersonalTaxOverride`, and `StreakBonusNet`. Cleanly extracting after clearing Quota slashes base corporate tax from the standard `90% / 80%` audit rate down to `55% / 45% -> 40% / 32% -> 25% / 20% -> 12% / 10%` across cleared shifts while paying out the accumulated `StreakJackpot` `100%` tax-free into `DataService` `LobbyCurrency` (flushed via `DataService:FlushPlayer` before teleport).
