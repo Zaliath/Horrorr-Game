@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Floating Backgroundless `BillboardGui` VHS Radio & First-Person Cursor Unlock
+- **Summary of Changes:** Converted the Van `[F]` VHS Radio UI in `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanImmersionController` from a `ScreenGui` panel into a backgroundless floating 3D `BillboardGui` with first-person cursor unlock:
+  1. **Floating 3D `BillboardGui` (`VanVhsRadioBillboard`):** Anchored in `PlayerGui` to `VhsRadioFloatAttachment` on `DeliveryVan.PrimaryPart` (`(0.62, 3.14, -9.05)` beside `CabDetail.Dash.RadioDisplay`), with `AlwaysOnTop = true`, `Active = true`, `MaxDistance = 18`, and `VhsRadioRoot.BackgroundTransparency = 1` (zero outer container/background/header—only the 3 clipped transparent orange VHS song buttons + CRT scanlines + active tracking bar + floating `SideSliderTrack`/`SideSliderThumb`). Clicking the active song row toggles radio off (`[■ OFF]`).
+  2. **First-Person Cursor Unlock (`VanRadioCursorUnlockGui`):** Added a `1x1` invisible `Modal = true` `TextButton` (`CursorModalBtn`) and `RenderStepped` `MouseBehavior = Enum.MouseBehavior.Default` + `MouseIconEnabled = true` guard while `VanVhsRadioBillboard.Enabled == true` (while still allowing Right-Click camera look), restoring normal `LockFirstPerson` mouse lock as soon as `[F]` closes the radio or the player exits the front cab.
+- **Verification:** `loadstring` passed; Play Solo (`LockFirstPerson` in `DriverSeat`) verified `[F]` opens `VanVhsRadioBillboard` (`Adornee = VhsRadioFloatAttachment`, `VhsRadioRoot.BackgroundTransparency = 1`, `5` unlocked `SongRow_*` rows, `CursorModalBtn.Modal = true`, `MouseBehavior = Default`, `MouseIconEnabled = true`), `[F]` closes both `VanVhsRadioBillboard` and `VanRadioCursorUnlockGui`, and `0` game errors in console.
+- **Studio Paths Modified:** `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanImmersionController`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Fix `[F]` Van VHS Radio Keybind vs. `[C]` Switch Seat Prompt
 - **Root Cause:** `SeatPrompt` on `DriverSeat` / `FrontPassengerSeat` kept `KeyboardKeyCode = Enum.KeyCode.F` even while `PromptUIController` relabeled the empty cab seat prompt to `[C] Switch seat`. Pressing `[F]` inside the van caused `ProximityPromptService` to consume `F` (`gp = true`), flashing the `[C] Switch seat` ring and aborting `VanImmersionController`'s `[F]` radio toggle.
 - **Fix (`PromptUIController`, `VanImmersionController`):**
