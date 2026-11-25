@@ -1,5 +1,23 @@
 # Devlog
 
+## 2026-11-25 — Antigravity — Enlarge `BayHUD` Text, Remove `PixelLobby_` UI Prefixes & Add Store Promo Codes (`THE horror driving game`)
+- **Summary of Changes:**
+  1. **Larger `BayHUD` Typography & Vertical Layout (`StarterGui.BayHUD.BayPanel`):**
+     - Expanded `HeaderBar`, `StatusBanner`, `CrewRoster`, `HostControlsRow`, and `ActionRow` to fill `Y = 0.03..0.945`, trimmed excessive vertical `UIPadding` (`0.28–0.33` -> `0.10`), and enforced `TextScaled = true` across all `BayPanel` labels.
+  2. **Stripped `PixelLobby_` Prefix from All 10 Lobby `ScreenGui`s:**
+     - Renamed `TopBar`, `Garage`, `Items`, `Emotes`, `Dossier`, `DailyLogin`, `BayHUD`, `Settlement`, `Settings`, and `Notification` in `StarterGui` and updated all references across `HubLobbyController`, `SettingsController`, `CurrencyController`, `NotificationController`, `LobbyPlayerController`, `DailyLoginController`, and `UITheme` (`0` leftover `PixelLobby_` matches).
+  3. **16-Bit Pixel Art Promo Codes System (`CodeDefs`, `NetDefs`, `DataService`, `HubLobbyService`, `SettingsController`, `StarterGui.Settings`):**
+     - Created `ReplicatedStorage.Shared.CodeDefs` with `DiscordPrompt` (`"JOIN THE DISCORD SERVER TO FIND MORE CODES!"`), `NextLikesPrompt` (`"NEXT CODE AT 1,000 LIKES!"`), and starter codes (`RELEASE` `+$250 CR`, `GRAVEYARD` `+$100 CR & +1 Revive`, `PARALLAX` `+$150 CR`).
+     - Added `RedeemedCodes` persistence in `DataService`, `DataService:RedeemCode`, `HubAction("RedeemCode")`, and `NetDefs.CodeResult`.
+     - Built a 16-bit Pixel CRT `CodesSection` (`Frame_Card_Dark`, `Tile_DitherHeader_Amber`, `Badge_Tag`, `Icon_PDA`, `Frame_Card_Locked`, `Btn_Primary_Amber`, `Arcade`/`Code` fonts) at the top of `StarterGui.Settings.ModalRoot.SupplyScroll` (`LayoutOrder = 0`) and wired live validation/redemption in `SettingsController`.
+- **Verification (`Edit` & `Play Solo` on `THE horror driving game`, `placeId: 124598324996118`):**
+  - Edit-mode `script_grep` confirmed `0` `"PixelLobby_"` matches; `loadstring` syntax checks passed on all `11` touched/created scripts; Edit `screen_capture` (`BayHUD_Enlarged_Preview`, `Store_Codes_Preview`) verified crisp enlarged `BayHUD` text and the pixel-art `>> PROMO CODES` card inside the Store tab.
+  - Play Solo verified all `10` renamed `ScreenGui`s present in `PlayerGui`, `68/68` preloaded assets (`0` failed), `"BADCODE123"` rejected, `"RELEASE"` redeemed (`+$250 CR`), duplicate `"RELEASE"` blocked, and `0` console errors/warnings. Studio returned cleanly to `Edit` mode.
+- **Studio Paths Modified/Created:** `ReplicatedStorage.Shared.{CodeDefs,NetDefs,UITheme}`, `ServerScriptService.Server.Services.{DataService,HubLobbyService}`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.{SettingsController,HubLobbyController,CurrencyController,NotificationController,LobbyPlayerController,DailyLoginController}`, `StarterGui.{TopBar,Garage,Items,Emotes,Dossier,DailyLogin,BayHUD,Settlement,Settings,Notification}`.
+- **New Dependencies:** Remote `CodeResult`; Profile field `Clockwork_Acc_v1.RedeemedCodes`.
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **Next Steps / Known Issues:** Commit open script Drafts in Studio's **Drafts** widget and **Save / Publish** `THE horror driving game`.
+
 ## 2026-11-25 — Antigravity — Fix Lobby Van Skin Reset ("Turns White on Leave") & Fix `PartyService` Lobby-to-Game Teleport (`THE horror driving game`)
 - **Summary of Changes:**
   1. **Lobby `DepartureVan` Skin Snapshot, Panel Targeting & Clean Reset (`ServerScriptService.Server.Services.HubLobbyService`):**
