@@ -1,5 +1,13 @@
 # Devlog
 
+## 2026-11-24 — Antigravity (Riplatki) — Fix `[F]` Van VHS Radio Keybind vs. `[C]` Switch Seat Prompt
+- **Root Cause:** `SeatPrompt` on `DriverSeat` / `FrontPassengerSeat` kept `KeyboardKeyCode = Enum.KeyCode.F` even while `PromptUIController` relabeled the empty cab seat prompt to `[C] Switch seat`. Pressing `[F]` inside the van caused `ProximityPromptService` to consume `F` (`gp = true`), flashing the `[C] Switch seat` ring and aborting `VanImmersionController`'s `[F]` radio toggle.
+- **Fix (`PromptUIController`, `VanImmersionController`):**
+  1. `PromptUIController.syncSwitchSeatKeyCode` sets `KeyboardKeyCode = Enum.KeyCode.Unknown` locally while in `[C] Switch seat` mode and restores `Enum.KeyCode.F` on `PromptHidden` / `VanSeatRole` exit; `PromptButtonHoldBegan` / `PromptButtonHoldEnded` / `PromptTriggered` ignore switch-seat prompts, and `RenderStepped` highlights the ring only on `C`.
+  2. `VanImmersionController` no longer drops `Enum.KeyCode.F` on `gp` while `isLocalFrontCabOccupant()` is true, and debounces `ToggleRadioMenu()` (`0.18s`).
+- **Verification:** `loadstring` syntax checks passed; Play Solo with `user_keyboard_input` (`F`) verified `FrontPassengerSeat.SeatPrompt.KeyboardKeyCode = None` while seated in `DriverSeat`, `[F]` toggles `VhsRadioBox.Visible` (`true -> false`) with `gp = false`, passenger seat `[F]` opens `VhsRadioBox`, unseating restores both `DriverSeat` and `FrontPassengerSeat` `SeatPrompt.KeyboardKeyCode` to `F`, and `0` game errors in console.
+- **Studio Paths Modified:** `StarterPlayer.StarterPlayerScripts.Client.Controllers.PromptUIController`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.VanImmersionController`.
+
 ## 2026-11-24 — Antigravity (Riplatki) — Van-Only `[F]` Transparent Orange VHS Radio Overhaul
 - **Summary of Changes:** Replaced the old radio UI and `[R]` conflict with a sleek van-only `[F]` transparent orange VHS radio system synced between Driver and Passenger in `"The game part"` (`placeId: 93445054108906`):
   1. **Removed Old Radio UI & `[R]` Conflict (`VanImmersionController`, `VanController`, `ShiftService`):** Removed `CassetteRadioMenuGui`, `[R]` radio keybinds, and outside-van radio playback so `[R]` exclusively controls windows and the radio only plays while seated inside `DeliveryVan` (auto-closing and muting on exit).
