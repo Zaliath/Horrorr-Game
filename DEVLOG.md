@@ -1,5 +1,23 @@
 # Devlog
 
+## 2026-11-25 — Antigravity (Riplatki) — 20-Item Gameplay, Physics, UI & Lobby Polish Batch (`Graveyard Express` & `The game part`)
+- **Lobby (`Graveyard Express`, `placeId: 124598324996118`, saved `v169`):**
+  - **4-Slot Live Avatar Emote Wheel (`StarterGui.Emotes`, `HubLobbyController`, `LobbyPlayerController`, `DataService`, `HubLobbyService`):** Replaced the old emote button/modal with `[B]` 4-Slot Live Avatar Emote Wheel (`ViewportFrame` + runtime `Camera` + `SolveEmotePoseForRig`), center `EDIT SLOTS` modal (`SetEmoteWheelSlot`), and Shop `Section_Emotes`.
+  - **Merged `CREDITS & CODES` Shop Tab (`StarterGui.Settings`, `SettingsController`):** Rebuilt `StoreTabsBar` to 5 tabs (`ALL`, `FEATURED`, `BUNDLES`, `EMOTES`, `CREDITS & CODES`).
+  - **Lobby Collisions, Honk Removal, Custom Animate & Van Sync:** Enabled `CanCollide` on `2,652` solid parts + `31` invisible box colliders in `LobbyMap.Colliders`; removed honk sounds (`LobbyAtmosphereController`, `HubLobbyService`); synced `The game part` custom `Animate` + updated `DeliveryVan` detail parts (`3,192` parts) onto `ShowcaseVan` and `Bay_01..03.DepartureVan`.
+  - **Dev Max Players Button (`TopBar.NavButtons.DevMaxBtn`, `HubLobbyController`, `HubLobbyService`):** Cycles `maxCrewSize` (`4 -> 6 -> 8 -> 12`) for devs/admins.
+- **Main Game (`The game part`, `placeId: 93445054108906`):**
+  - **Live Quota UI & Return Chute Lost-Package Report (`ShiftService`):** Updated `getStateSnapshot()` to report `QuotaEarned = quotaCycleEarned + shiftEarnedThisShift` live during deliveries; updated `MissedPackagesChute` to detect, write off, and notify when missed packages fell out of the van on the road and couldn't be found.
+  - **Chaser Respawn, 4-Revive Cap & Crew Restart Voting (`DeathService`, `MonsterService`, `DeathScreenController`):** Blocked respawning when `VanSwallowed == true`, capped revives at `4` per run, fixed `VoteRestart` so 1 player (even dev or swallowed van) cannot force-restart the crew, and cleanly reset Chaser on normal respawn.
+  - **Equipped Van Skins (`DataService`):** Updated `applyVanCosmeticsFromData` to recolor exterior `SmoothPlastic` panels across `Cab`, `Cargo`, `SlidingDoor`, `RearDoors`, and `Body` while preserving glass/lights/trim/interior.
+  - **Runtime Studio Reference Cleanup (`ServerScriptService.RuntimeStudioCleanup`):** Deletes `Baseplate`, `MonsterModels`, `MapModels`, `TrafficSedan`, `Drawing`, and unnamed Studio models on player join while keeping them intact in Edit mode.
+  - **Smooth River Bank Slopes (`ChunkBuilder`):** Replaced vertical-wall `RiverBank` `Part`s with gentle `WedgePart` ramps (~8° slope) on both `BridgeWaterChannel` and `BridgeRiverExtension`.
+  - **Van Physics & Rear Exit (`Workspace.DeliveryVan.VanDrive`):** Preserved heavy `Chassis` density (`>= 8.0`) with `Elasticity = 0, ElasticityWeight = 100` across van parts to stop player pushing, light-tap flings, and roof flings; centered rear seat `exitCF` in the cargo aisle with delayed un-ghosting (`0.15s`) so exiting from the back no longer hops the van.
+  - **Phantom Semi & Creepie Crawlies (`PhantomSemiMonster`, `CreepyCrawlieMonster`, `CreepyCrawlieController`):** Slowed `PhantomSemiMonster` (`ApproachSpeed = 62`) and required actual collision (`latOff <= 11.5` at `ImpactDist <= 14`) instead of stalling on ditch swerves; gated `CreepyCrawlieController` limb pulling on `IsAttacking` + `PlatformStand` and cleared grab attributes when struggles end.
+  - **Forced Monster Look-At Toggle (`WristMenuController`, `WindowMonsterController`, `DoorMonsterController`, `DataService`):** Added `MONSTER LOOK-AT` toggle (`SettingForceMonsterLook`) in Wrist Settings.
+  - **Chaser UI Overhaul & Emote Wheel Port (`ChaseMonsterController`, `NetDefs`, `LobbyEmoteDefs`, `EmoteService`, `EmoteController`):** Restyled `ChaseBanner` into 16-bit Pixel CRT layout with zero overlap and ported `[B]` 4-Slot Live Avatar Emote Wheel + server replication.
+- **Verification:** `loadstring` passed on all `21` modified/created scripts in `The game part`; Play Solo verified `0` script errors, `RuntimeStudioCleanup` removed `Baseplate`/`MonsterModels`/`MapModels`/`TrafficSedan` at runtime, `DeliveryVan.PrimaryPart` (`Mass = 1546.7`, `Elasticity = 0.00`), and `97/97` preloaded assets.
+
 ## 2026-11-25 — Antigravity (Riplatki) — Bento Shop UI Redesign & Stash Quest Board (`THE horror driving game`)
 - **Shop UI Redesign (`StarterGui.Settings`, `SettingsController`):**
   - Added `StoreTabsBar` with 5 category jump-tabs (`ALL`, `FEATURED`, `BUNDLES`, `CREDITS`, `CODES`) that smoothly tween `SupplyScroll.CanvasPosition` to each section and auto-highlight the active section on scroll.
