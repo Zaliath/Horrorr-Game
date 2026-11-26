@@ -1,5 +1,13 @@
 # Devlog
 
+## 2026-11-26 — Antigravity (Riplatki) — Terraria-Style Guiding Firefly for The Wulver (`The game part`)
+- **Guiding Firefly (`WulverController`, `WulverMonster`):**
+  - Added a Terraria-inspired glowing golden firefly (`WulverGuidingFirefly`) driven by `Workspace` attributes (`WulverActive`, `WulverSanctuaryPos`) so it works at any distance regardless of fog or StreamingEnabled.
+  - Features a glowing `Neon` body & pulsing halo, rapidly flapping wings, warm `PointLight`, golden `Trail`, `FairyDust` sparkles, and subtle attention chimes.
+  - **4-State Guiding AI:** Buzzes around the player (or in front of the van windshield while driving) and darts toward The Wulver to get attention (`Circling`), flies 16–20 studs ahead along the route once followed (`Leading`), pauses/re-circles if the player falls behind (`Waiting`), and peacefully orbits The Wulver's campfire pond on arrival (`Arrived`).
+  - Updated `WulverMonster` (`findRiverSpawnCFrame`) to prefer deep-forest rivers closer to `DeliveryVan` so the trek is reachable.
+- **Verification:** `loadstring` passed (`WULVER_MON_SYNTAX_OK`, `FIREFLY_CTRL_SYNTAX_OK`); Play Solo verified `FF_IN_WS=true`, `distFromPlayer=20.1`, spawn at `(-451, 0, -370)`, and `0` script errors.
+
 ## 2026-11-26 — Antigravity (Riplatki) — Deeper Forests, Deep-Forest Wulver Spawn & AlwaysOnTop Highlight Beacons (`The game part`)
 - **Deeper Forests & Deep-Forest River Spawning (`ChunkBuilder`, `WulverMonster`):**
   - Expanded `ChunkBuilder.FOREST_BORDER_RADIUS` from `4` (400 studs) to `6` (600 studs deep on every side of the road) and extended river carving (`math.abs(rel.X) <= 650`) into the deeper forest.
