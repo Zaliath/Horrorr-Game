@@ -1,5 +1,16 @@
 # Devlog
 
+## 2026-11-26 — Antigravity (Riplatki) — Add The Wulver (Rare Passive River-Sanctuary Entity) (`The game part`)
+- **Detailed Model & Sanctuary (`ReplicatedStorage.Assets.Monsters.Monster12_Wulver`, 137 parts):**
+  - Built the brown-furred, wolf-headed humanoid seated on his mossy rock (*Wulver's Stane*) with pointed ears, snout, dangling pink tongue, glowing amber eyes, clawed hands, bent curved wooden fishing pole + `Beam` line + floating bobber, and 3 caught coalfish beside him.
+  - Built a medium-sized moonlit forest fishing pond (`PondBed_Main`, `PondWater_Main`, `WaterRipple_1..3`, 22 mossy shore rocks, reeds & cattails) and a stone-ringed **Campfire** with flickering `CampfireLight`, crackling `Sound`, `EmberSparks`, and a tall skyward `CampfireSmoke` column visible from the highway when looking up above the treeline.
+- **Rare 1-in-10 River Spawning & Passive Sanctuary (`WulverMonster`, `MonsterService`, `ForestHunter`, `CreepyCrawlieMonster`, `FogMonster`):**
+  - Rolls **once per shift at 1-in-10 (10%) odds** and spawns deep in the forest along procedural rivers (`BridgeRiverExtension` / offset from `BridgeWaterChannel`), unlocking the `Wulver` (`PASSIVE`) Bestiary entry on approach.
+  - Creates a **95-stud safe sanctuary radius** (`WulverSanctuaryPos` / `WulverSanctuaryRadius`) that suppresses `ForestHunter` (including forcing active encounters to retreat), `CreepyCrawlieMonster`, and `FogMonster`.
+- **Client Ambient Animation & Dev Command (`WulverController`, `ControllerList`, `BestiaryDefs`, `Cmdr.Commands.wulver`):**
+  - Added `WulverController` for campfire light/flame flickering, floating bobber & expanding pond ripples, and peaceful head-tracking toward nearby players; added Cmdr `wulver [spawn|clear]` for dev testing.
+- **Verification:** `loadstring` passed on all `10` new/modified scripts; Play Solo verified `0` script errors, `94/94` preloaded assets, `WulverActive = true`, `CampfireSmoke = true`, and `CampfireLight = true`.
+
 ## 2026-11-25 — Antigravity (Riplatki) — 20-Item Gameplay, Physics, UI & Lobby Polish Batch (`Graveyard Express` & `The game part`)
 - **Lobby (`Graveyard Express`, `placeId: 124598324996118`, saved `v169`):**
   - **4-Slot Live Avatar Emote Wheel (`StarterGui.Emotes`, `HubLobbyController`, `LobbyPlayerController`, `DataService`, `HubLobbyService`):** Replaced the old emote button/modal with `[B]` 4-Slot Live Avatar Emote Wheel (`ViewportFrame` + runtime `Camera` + `SolveEmotePoseForRig`), center `EDIT SLOTS` modal (`SetEmoteWheelSlot`), and Shop `Section_Emotes`.
