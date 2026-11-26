@@ -1,5 +1,29 @@
 # Devlog
 
+## 2026-11-25 — Antigravity — First-5-Minutes Onboarding, UX, Retention & Technical Polish (`THE horror driving game` & `The game part`)
+- **Summary of Changes (Tax rates/formulas in `TaxConfig`/`TaxService` left 100% untouched per user request):**
+  1. **Lobby Onboarding, Bay Camera & Starter Stipend (`THE horror driving game`, `placeId: 124598324996118`):**
+     - Added 16-bit Pixel CRT `StarterGui.TopBar.LobbyObjectiveBanner` (`>> STEP INTO AN AMBER VAN BAY (01-03) TO START A SHIFT <<`) wired in `HubLobbyController` to show on spawn and hide cleanly when any modal opens or when seated in a Departure Bay; reset Edit-mode `GarageBtn` highlight to `Btn_Secondary_Dark` and hid `BayHUD...MemberRowTemplate`.
+     - Added `LobbyBayShowcaseCam` in `HubLobbyController` when `InBay == true` to frame `DepartureVan` from an unobstructed exterior 3/4 street angle (`vanCF * CFrame.new(16, 7.2, 26)`) instead of trapping the 3rd-person camera behind the cab bulkhead, restoring `CameraType = Custom` on leave.
+     - Set `DataService` `ACCOUNT_TEMPLATE.LobbyCurrency = 150` across both places so brand-new accounts can try Lobby shops on visit #1.
+  2. **Main Game Spawn, Boarding, Controls & Dead-Prompt Fixes (`The game part`, `placeId: 93445054108906`):**
+     - Rotated `Workspace.SpawnLocation` 180° (`LookVector = (0, 0, +1)`) so players spawn facing `DeliveryVan`, `DeliveryChute`, and `PersonalUpgradeStation`.
+     - Disabled the 3 unimplemented `PersonalUpgradeStation` prompts (`WeaponPromptAnchor`, `StaminaPromptAnchor`, `GearPromptAnchor`, removing `"ShopPrompt"` tags) while leaving `TerminalScreen` and `DepotVendingPrompt` active.
+     - Widened `DeliveryVan` cab door & seat `MaxActivationDistance` (`5.5 -> 8.5`), widened `PackageService` `PickupBoxPrompt` (`10 -> 15`), shrunk `ChunkBuilder` `RefuelPrompt` (`18 -> 10` free depot / `14` roadside) so it stops stealing `[E]` from `DoorHandleL`, guarded `[F]` in `FlashlightController` near cab seats/`SeatPrompt`, aligned cab camera forward on `enterVanCamera`, expanded `VanSeatHint` to show `[L] LIGHTS | [H] HORN | [R] WINDOW | [F] RADIO | [V] CAM | [C] SEAT | [ALT] BACK`, and allowed `VanImmersionController` `CargoHopInPrompt` (`[E] CLIMB INTO CARGO BAY`) while parked or moving using pixel styling.
+  3. **Fairer Shift #1 Pacing, Tutorial, Stare Counterplay & First-Shift Bonus (`ShiftService`, `ShiftController`, `WristMenuController`, `StareMonsterController`, `DataService`):**
+     - Paused `VanDrive` fuel drain during `Prep` / idle (`flatSpd < 1.5`), held Shift road `timeRemaining` until `hasVanDepartedDepot == true`, relaxed warehouse Purge timers (`85s`/`110s` on Shift #1, `45s`/`65s` on Shift #2+, paused while driving out at `flatSpd > 5.0`), lowered Shift #1 Quota to `$200` (2/3 stops), added a one-time `+$150 CR` `FirstShift` lobby credit bonus (`DataService:GrantBonusCredits`), updated `DispatchPA` / `ObjectiveText` / `WristMenuController` `TutorialOverlay` (`[F] Radio`, `[R] Window`, opaque backdrop, chute steps) + added `DispatchPABanner` `UIPadding`, and added a 16-bit Pixel CRT `StareAlertBanner` in `StareMonsterController`.
+  4. **Console & Cross-Place Fixes (`LegacyCharacterFix`, `FlashlightController`, `NetDefs`, `VanController`, `CosmeticDefs`):**
+     - Preserved `AbilityManagerActor` with an empty `Abilities` folder in `LegacyCharacterFix` (eliminating `WaitForChild("Abilities")` infinite yield warnings), throttled `FlashlightAim` (`>= 0.08s`, `NetDefs` `MinInterval = 0.04`, `RateLimitPerSec = 20`) & `VanImpact` (`>= 0.22s`), and synced `PhosphorGreen` & `AshenSlate` into Main Game `CosmeticDefs`.
+- **Verification:**
+  - `loadstring` passed on all modified Lobby (`2`) and Main Game (`14`) scripts.
+  - **Lobby Play Solo (`60ece138-7eff-4a7c-9014-a6cf1714215d`):** Verified `68/68` preloaded assets (`0` console errors), `LobbyObjectiveBanner` hiding on modal/`Bay_01` entry and restoring on `LeaveBtn`, and clean exterior `LobbyBayShowcaseCam` framing (`Lobby_BayCam_Fixed`, `Lobby_AfterLeave_Fixed`).
+  - **Main Game Play Solo (`d5910e9f-5b9e-4dfb-9755-ad681c3164b0`):** Verified `97/97` preloaded assets (`0` `AbilityManagerActor` warnings, `0` `FlashlightAim`/`VanImpact` AntiExploit violations), spawn facing depot (`Look=(0,0,1)`), dead prompts disabled, `RefuelPrompt=10`, `$200` Shift #1 quota, opaque `[M]` tutorial text, clean `[E]`->`[F]` boarding without flashlight clash, `VanFuel=100`, forward cab camera (`CamLook=(1,0,0)`), timer hold (`04:15->04:15`) inside depot, and `StareAlertBanner` (`StareMonster`). Returned both Studios cleanly to `Edit` mode.
+- **Studio Paths Modified:**
+  - Lobby: `ServerScriptService.Server.Services.DataService`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.HubLobbyController`, `StarterGui.{TopBar,BayHUD}`.
+  - Main Game: `ServerScriptService.LegacyCharacterFix`, `ServerScriptService.Server.Services.{DataService,PackageService,ShiftService}`, `ServerStorage.Modules.ChunkBuilder`, `ReplicatedStorage.Shared.{NetDefs,CosmeticDefs}`, `Workspace.DeliveryVan.VanDrive`, `Workspace.SpawnLocation`, `Workspace.StartArea.PersonalUpgradeStation`, `Workspace.StartArea.DepotFuelPump`, `StarterGui.PixelGame_ShiftHUD.DispatchPABanner`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.{FlashlightController,VanController,VanImmersionController,ShiftController,WristMenuController,StareMonsterController}`.
+- **Repository Files Modified:** `GAME_DESIGN.md`, `DEVLOG.md`.
+- **Next Steps / Known Issues:** Commit open script Drafts in Roblox Studio's **Drafts** widget and **Save / Publish** both places (`THE horror driving game` and `The game part`).
+
 ## 2026-11-25 — Antigravity — Enlarge `BayHUD` Text, Remove `PixelLobby_` UI Prefixes & Add Store Promo Codes (`THE horror driving game`)
 - **Summary of Changes:**
   1. **Larger `BayHUD` Typography & Vertical Layout (`StarterGui.BayHUD.BayPanel`):**
