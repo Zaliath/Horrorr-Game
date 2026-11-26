@@ -45,7 +45,7 @@ Mandatory rules for all Blender (`bpy`) / 3D modeling tasks:
 - **Keep `UI_PLACEHOLDERS.md` Up to Date:** Whenever a placeholder UI element is added or replaced with final pixel art, add or remove its entry in `UI_PLACEHOLDERS.md`.
 - **Sync AI Instruction Files When Needed:** If a workflow convention, architectural rule, or cross-agent guideline changes in a way teammates' AIs should follow, update `GEMINI.md`, `CLAUDE.md`, and `README.md` together (preserving developer-specific notes like attribution lines). If no rule changes are needed, just continue updating `DEVLOG.md`.
 - **Self-Improvement Loop (`LESSONS.md`):** Every run or so, audit the saved logs of recent runs (`DEVLOG.md` plus your agent's saved run transcripts/logs when accessible) to find every place an agent failed, wasted tokens/time, or was corrected by the team. Add each new lesson to `LESSONS.md` as a short **rule + reason**. If an existing rule turns out wrong or outdated, fix or remove it—the next run should never repeat a mistake.
-- **Update `DEVLOG.md`:** Before finishing your response, append a concise entry to `DEVLOG.md` containing:
+- **Update `DEVLOG.md`:** Before finishing your response, **ALWAYS append a concise entry to the BOTTOM of `DEVLOG.md`** (oldest at top, newest at bottom — **NEVER prepend at the top**) containing:
   - **Date & Developer/Agent** (e.g., Antigravity or Claude)
   - **Summary of Changes** (what feature or fix was built)
   - **Studio Paths Modified/Created** (exact hierarchy paths in Studio)
