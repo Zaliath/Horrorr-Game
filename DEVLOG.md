@@ -1,5 +1,13 @@
 # Devlog
 
+## 2026-11-26 — Antigravity (Riplatki) — Deeper Forests, Deep-Forest Wulver Spawn & AlwaysOnTop Highlight Beacons (`The game part`)
+- **Deeper Forests & Deep-Forest River Spawning (`ChunkBuilder`, `WulverMonster`):**
+  - Expanded `ChunkBuilder.FOREST_BORDER_RADIUS` from `4` (400 studs) to `6` (600 studs deep on every side of the road) and extended river carving (`math.abs(rel.X) <= 650`) into the deeper forest.
+  - Updated `WulverMonster` (`findRiverSpawnCFrame`) to spawn specifically deep in the forest along procedural rivers (`240..520` studs off-road, `300` studs fallback on `BridgeWaterChannel`).
+- **`AlwaysOnTop` Highlight Beacons (`Monster12_Wulver`, `WulverController`):**
+  - Replaced distant billboards with `Highlight` (`DepthMode = Enum.HighlightDepthMode.AlwaysOnTop`) on `DistantSmokeSpheres` (`SmokeHighlight`) and `DistantFireGlow` (`FireGlowHighlight`) so the rising smoke column and flickering campfire light cut straight through night fog at any distance, and fade/disable cleanly (`Enabled = false`) once within `45..55` studs.
+- **Verification:** `loadstring` passed; Play Solo verified `FOREST_RAD=6`, spawn at `(-346, 0, -1650)`, `FAR_SMOKE_HL=true`, `FAR_FIRE_HL=true`, `CLOSE_SMOKE_HL=false`, `CLOSE_FIRE_HL=false`, and `0` script errors.
+
 ## 2026-11-26 — Antigravity (Riplatki) — Wulver Fog-Piercing Smoke & Firelight Beacons (`The game part`)
 - **Long-Distance Fog-Piercing Visibility (`Monster12_Wulver`, `WulverMonster`, `WulverController`):**
   - Tuned `WulverMonster`'s river spawn offset (`110..195` studs along `BridgeRiverExtension`, `130` studs fallback on `BridgeWaterChannel`) so he stays deep in the forest along the river while remaining within sightline of the highway.
