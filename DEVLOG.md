@@ -3337,3 +3337,13 @@
   - Built 1st-person viewmodel & 3rd-person shoulder aiming, mechanical `Motor6D` bolt/pump/slide/hammer animations, 4.5x CRT Sniper scope, layered `ProSoundEffects` audio (21 preloaded clips, zero pitched oofs), 3-value contrast muzzle flashes/tracers, and mobile/console aim assist (`8.5 deg` camera pull + `2.6 deg` ray magnetism).
   - Wired `MonsterService:ApplyCombatHit`, `ReportGunshotNoise`, `ReportActiveFlares`, `CheckBearTrapTriggers`, unkillable `ChaseMonster`/`PhantomSemi`/`FogMonster`/`StareMonster` immunity, weak-point counterplay, and late-shift toughness/speed scaling.
 - **Verification:** `loadstring` passed across all new/modified scripts (`0` errors); Play Solo verified `0` console errors and `94/94` preloaded assets.
+
+## 2026-11-26 — Antigravity — Armory Purchase & 6-Slot Hotbar Fix (`The game part`)
+- **Armory & Gear Shop Fixes (`PersonalUpgradeStation`, `CombatService`, `CombatShopController`, `PixelGame_Armory`):**
+  - Enabled and tagged `WeaponPromptAnchor.ProximityPrompt` (`ShopId = "Weapons"`) and `GearPromptAnchor.ProximityPrompt` (`ShopId = "Gear"`) with `"ShopPrompt"` so `ShopService` hooks them and opens `PixelGame_Armory`.
+  - Switched `CombatService` from raw `shopRf.OnServerInvoke` to `Net:On("CombatShopAction", handleShopAction)` so `Net`'s `RemoteFunction` dispatcher routes shop calls cleanly, and expanded `isNearArmory` (`<= 38` studs from station pivot or either prompt anchor).
+  - Enabled `Modal = true` across all `PixelGame_Armory` static and generated `BuyBtn` `GuiButton`s so the mouse cursor unlocks cleanly in `LockFirstPerson`, and added visible error feedback in `CombatShopController`.
+- **6-Slot Hotbar Fix (`StarterGui.PixelGame_Hotbar`, `HotbarController`):**
+  - Resized `Slot_1..Slot_6` to `UDim2.new(0.156, 0, 1, 0)` with `UIListLayout.Padding = UDim.new(0.012, 0)` inside `HotbarRoot` (`744x76`) so all 6 slots sit flush without overflowing.
+  - Fixed `Slot_5` and `Slot_6` `KeyBind` labels (`5` / `6`) and wired dynamic `AssetCatalog` icons (`Icon_Bolt`, `Icon_Flare`, `Icon_Wrench`).
+- **Verification:** Play Solo verified `WeaponsEnabled = true`, `GearEnabled = true`, `GetState` + `BuyItem` (`Flintlock`, `Crowbar`) + `BuyAmmo` all returned `Success = true` from Client, `15/15` Armory buttons had `Modal = true`, all 6 Hotbar slots rendered in-bounds (`W = 111.4`), and `0` console errors.
