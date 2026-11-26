@@ -3326,3 +3326,14 @@
   - **4-State Guiding AI:** Buzzes around the player (or in front of the van windshield while driving) and darts toward The Wulver to get attention (`Circling`), flies 16–20 studs ahead along the route once followed (`Leading`), pauses/re-circles if the player falls behind (`Waiting`), and peacefully orbits The Wulver's campfire pond on arrival (`Arrived`).
   - Updated `WulverMonster` (`findRiverSpawnCFrame`) to prefer deep-forest rivers closer to `DeliveryVan` so the trek is reachable.
 - **Verification:** `loadstring` passed (`WULVER_MON_SYNTAX_OK`, `FIREFLY_CTRL_SYNTAX_OK`); Play Solo verified `FF_IN_WS=true`, `distFromPlayer=20.1`, spawn at `(-451, 0, -370)`, and `0` script errors.
+
+## 2026-11-26 — Antigravity — Combat System & Blender 5.3 PBR Arsenal (`The game part`)
+- **8 Seamless Blender 5.3 PBR Weapons & Gear (`P.A.R.A.L.L.A.X\CombatWeapons\GraveyardExpress_CombatWeapons.blend` -> `ReplicatedStorage.Assets.Weapons`):**
+  - Sculpted, UV-atlas PBR textured (`Albedo` + `Roughness` + `Normal`), visually QA-verified (`Preview_CombatWeapons_QA_Grid.png`), and uploaded `Flintlock`, `Glock`, `Shotgun`, `Rifle`, `Sniper`, `Crowbar`, `Flare`, and `BearTrap` with articulated `Motor6D` joints (`HammerJoint`, `FrizzenJoint`, `SlideJoint`, `PumpJoint`, `BoltJoint`, `MagJoint`, `ShellJoint`, `CapJoint`, `JawLJoint`, `JawRJoint`) and Armory display racks on `PersonalUpgradeStation`.
+- **2-Slot Loadout, Paid Ammo, Armory UI & Flashlight Trade-Off (`WeaponDefs`, `NetDefs`, `CombatService`, `FlashlightService`, `CombatShopController`, `PixelGame_Armory`, `PixelGame_Hotbar`):**
+  - Added `CombatService` enforcing 2 carried weapons, Team-first/Personal-fallback cash purchases (`ShopId = "Weapons"` & `"Gear"`), limited paid ammo, burning `RoadFlare` props, and snapping reusable `BearTrap` props.
+  - Expanded `PixelGame_Hotbar` to 6 slots (`[5]`/`[6]` Weapons, `[Q]` quick-swap) and wired `FlashlightService:ForceStowForWeapon` so holding a weapon takes a hand away from your flashlight.
+- **Procedural Animations, Verified ProSoundEffects Audio, Aim Assist & Monster Weaknesses (`CombatController`, `PixelGame_CombatHUD`, `MonsterService`, `ForestHunter`, `PorchMonster`, `CreepyCrawlieMonster`):**
+  - Built 1st-person viewmodel & 3rd-person shoulder aiming, mechanical `Motor6D` bolt/pump/slide/hammer animations, 4.5x CRT Sniper scope, layered `ProSoundEffects` audio (21 preloaded clips, zero pitched oofs), 3-value contrast muzzle flashes/tracers, and mobile/console aim assist (`8.5 deg` camera pull + `2.6 deg` ray magnetism).
+  - Wired `MonsterService:ApplyCombatHit`, `ReportGunshotNoise`, `ReportActiveFlares`, `CheckBearTrapTriggers`, unkillable `ChaseMonster`/`PhantomSemi`/`FogMonster`/`StareMonster` immunity, weak-point counterplay, and late-shift toughness/speed scaling.
+- **Verification:** `loadstring` passed across all new/modified scripts (`0` errors); Play Solo verified `0` console errors and `94/94` preloaded assets.

@@ -185,7 +185,7 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - `Notification` (top-right `CanvasGroup` toast queue cloning `Popup` + `Message`)
 - **Main-Game Studio `ScreenGui` Templates (`StarterGui.PixelGame_*` in `The game part` — 10 active pixel templates wired alongside reverted procedural `DeathScreenGui`):**
   - `PixelGame_ShiftHUD` (`TopStatusBar`, `ObjectiveBar`, `ActionRow`, `MenuHintFrame`, `DispatchPABanner`, `PackageConditionHUD`, `TerminalReceiptBox`, `[Tab] CargoManifestOverlay`, `PaystubModal`, `ToastFrame`)
-  - `PixelGame_Hotbar` (`HotbarRoot` 4-slot bar, `WalkieCalloutWheel` `[C]`, `WalkieSubtitle`)
+  - `PixelGame_Hotbar` (`HotbarRoot` 6-slot bar (Slots 1-4 core + Slots 5-6 Weapon Loadout), `WalkieCalloutWheel` `[C]`, `WalkieSubtitle`)
   - `PixelGame_Stamina` (`StaminaBarContainer` with smooth calibrated `BarTrack`, `DrainGhost`, `SliderThumb`, and `35%` `RecoveryTick`; `MobileSprintBtn`)
   - `PixelGame_Speedometer` (`SpeedoPanel` with MPH/Gear/smooth calibrated `BoostTrack` & `FuelTrack`/`CabRadioBtn`, `FlipVanContainer` with `RolloverStrip` + `FlipVanBtn`, `VanControlsHint`, `VanSeatHint`)
   - `PixelGame_VanUpgrades` (`UpgradesContainer` + `RepairsContainer` with `Graphic_VanWireframe` & 6 zone pips + `RepairAllBtn`)
@@ -194,5 +194,27 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - `PixelGame_WristPDA` (`BottomRightDock` `PARALLAX_WRIST_OS v4.2` with 5 tabs: `Page_Status` w/ `Graphic_ECGHeartbeat`, smooth `HpTrack`, + `Graphic_VanWireframe`, `Page_Guide`, `Page_Supply`, `Page_Settings`, `Page_Admin` w/ `VanChaseViewport` + `TutorialOverlay`)
   - `DeathScreenGui` (`DeathScreenController` — reverted procedural P.A.R.A.L.L.A.X. CRT terminal `Phase0Intro`, `Phase1Terminal`, 4-quadrant `Phase2Overview`, and `SpectatorOverlay`)
   - `PixelGame_MonsterAlerts` (`TopAlertStack`: `ChaseBanner` w/ `MeterBg`, `WindowAlert`, `CargoLatchAlert`; `BottomAlertStack`: `CrawlieStrugglePrompt` w/ 8-pip QTE, `DoorMashHUD` w/ `MashBarFrame` + `TouchMashButton`)
+  - `PixelGame_Armory` (Depot Armory & Gear Locker modal: 2-slot loadout selector, paid ammo refills, 3D `ViewportFrame` weapon previews, noise & weakness hints)
+  - `PixelGame_CombatHUD` (dynamic 4-tick CRT crosshair, 4.5x Sniper CRT scope, reload progress bar, tactical hit callouts, and mobile touch controls)
   - `PixelGame_Notification` (top-right `CanvasGroup` toast template `Popup` + `Message`)
   - **Animations, SFX & Placeholder Tracking:** Animations/SFX via `ReplicatedStorage.Shared.UITheme` (`WirePixelButton`, `StylePixelButton`, `SetPixelButtonText`, `SetPixelButtonAlwaysAnimate`, `WirePixelRowHover`, `SetPixelPips`, `RegisterBlinkPip`, `PulsePop`, `PlayPixelModalOpen`, `AttachPhosphorSweep`), with `TextScaled` + `UITextSizeConstraint` label scaling and deferred/reverted UI tracking in `UI_PLACEHOLDERS.md`. (`ResponsiveUIController` `UIScale` scaler removed.)
+
+
+## Combat & Depot Armory System (`The game part`)
+- **2-Slot Loadout (`CombatService`, `WeaponDefs`, `PixelGame_Hotbar` Slots `[5]`/`[6]` + `[Q]` Quick-Swap):**
+  - Players carry up to **2 weapons/utility items** at once, purchased at `Workspace.StartArea.PersonalUpgradeStation` (`ShopId = "Weapons"` Armory & `ShopId = "Gear"` Locker) using Team Cash first, then Personal Cash.
+  - **8 Articulated Blender 5.3 PBR Models (`ReplicatedStorage.Assets.Weapons`):**
+    1. **Flintlock (`Flintlock`):** `$85` (`$25 / 6 rds`). Single slow, devastating black-powder shot (`135 DMG`, `2.4x` weak point, `2.75s` reload, `220` stud noise).
+    2. **Glock (`Glock`):** `$160` (`$35 / 15 rds`). Reliable 15-round semi-auto backup (`28 DMG`, quieter `95` stud noise).
+    3. **Shotgun (`Shotgun`):** `$285` (`$45 / 8 shells`). 12ga 8-pellet crowd shredder (`24 x 8 DMG`, close-range, interruptible shell-by-shell reload, `175` stud noise).
+    4. **Rifle (`Rifle`):** `$340` (`$55 / 24 rds`). Select-fire 5.56 carbine (`34 DMG`, steady mid-range, `145` stud noise).
+    5. **Sniper (`Sniper`):** `$440` (`$60 / 5 rds`). 4.5x scoped bolt-action rifle (`180 DMG`, `2.6x` weak-point multiplier, `3.1s` reload, `230` stud noise).
+    6. **Crowbar (`Crowbar`):** `$45` (zero ammo). Silent melee pry bar (`65 DMG`, breaks Crawlie QTE grabs, 2-hits Cargo Imp).
+    7. **Road Flare (`Flare`):** `$40` (`$25 / 2 flares`). Thrown magnesium flare (`28s` crimson `PointLight`, scatters Crawlies & Fogwardens, drives back Porch Lurker).
+    8. **Bear Trap (`BearTrap`):** `$65` (`$45 / 1 trap`). Ground-deployed serrated trap (silently crushes Crawlies, snares charging Forest Hunter for up to `4.6s`, reusable if un-sprung).
+- **What Keeps Combat Scary:**
+  - **Flashlight Hand Trade-Off (`FlashlightService:ForceStowForWeapon`):** Drawing any weapon immediately stows/turns off your Flashlight (`FlashlightOn = false`, `FlashlightShoulderClip = false`); toggling `[F]`/`[1]` Flashlight holsters your weapon.
+  - **Loud Shots Attract Monsters (`MonsterService:ReportGunshotNoise`):** Firearms shave `MonsterService` `directorCooldown` and road-threat timers, alert/draw `CreepyCrawlie` swarms, pull stalking `ForestHunter`s closer, and nudge `ChaseMonster` loiter tension.
+  - **Weaknesses & Unkillable Entities (`MonsterService:ApplyCombatHit`):** `ChaseMonster` (body immune; Sniper/Flintlock eye-shot gives brief `1.45s` flinch on `10s` cooldown), `PhantomSemi`, `FogMonster`, and `StareMonster` **cannot be killed**. `ForestHunter` resists body spray (`0.25x`) but retreats on glowing-eye weak-point hits; `CreepyCrawlie` & `PorchMonster` are weak to Shotgun/Flares; `CargoMonster` is weak to Crowbar/Shotgun.
+  - **Late-Shift Scaling:** Monster toughness (`1 + (shift - 1) * 0.22 + DoubleDownTier * 0.25`), `ForestHunter` charge speed, and `PorchMonster` spawn rate scale up on later shifts.
+  - **Mobile & Console Aim Assist (`CombatController`):** Automatic `8.5 deg` soft camera pull + `2.6 deg` ray magnetism on Touch & Gamepad, plus dedicated mobile touch buttons and `R2`/`L2`/`X`/`Y` gamepad bindings.
