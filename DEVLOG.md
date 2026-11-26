@@ -1,5 +1,18 @@
 # Devlog
 
+## 2026-11-25 — Antigravity (Riplatki) — Bento Shop UI Redesign & Stash Quest Board (`THE horror driving game`)
+- **Shop UI Redesign (`StarterGui.Settings`, `SettingsController`):**
+  - Added `StoreTabsBar` with 5 category jump-tabs (`ALL`, `FEATURED`, `BUNDLES`, `CREDITS`, `CODES`) that smoothly tween `SupplyScroll.CanvasPosition` to each section and auto-highlight the active section on scroll.
+  - Rebuilt `SupplyScroll` into a structured 16-bit Pixel CRT Bento grid:
+    - `Section_Featured`: Big left Hero card (`REINFORCED HAZARD SUIT`, `★ MOST BOUGHT`), 3 stacked middle cards, and 2 stacked right cards.
+    - `Section_Bundles`: 3 stacked left cards, big center Hero card (`+3 STORED REVIVES`, `★ BEST VALUE`), and 3 stacked right cards.
+    - `Section_Credits`: 3 bottom cards with a wider featured `+$1,250 CREDITS CRATE` card on the right, followed by `CodesSection`.
+  - Updated `SettingsController:RefreshSupplyStore()` to hydrate all Bento cards live from `GamepassCatalog`/`ProductCatalog` + `GP_*` ownership attributes without duplicating click connections.
+- **Stash Quest Board (`DepotBoard_DailyLogin`):**
+  - Safely moved `Workspace.LobbyMap.LotProps.DepotBoard_DailyLogin` into `ServerStorage.StashedWIP` (preserving `OriginalParentPath` and `OriginalCFrame` attributes for future updates, without deleting it).
+- **Verification:** `loadstring` passed on `SettingsController`; Play Solo verified `DepotBoard_DailyLogin` absent from Workspace and preserved in `ServerStorage.StashedWIP`, `STORE` modal opened cleanly with live Robux prices and `OWNED` states, `BUNDLES` and `CODES` jump-tabs scrolled smoothly to each section, and `0` game errors in console.
+- **Studio Paths Modified:** `StarterGui.Settings`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.SettingsController`, `ServerStorage.StashedWIP.DepotBoard_DailyLogin`.
+
 ## 2026-11-25 — Antigravity (Riplatki) — Fix Chaser Sinking Underground After Eating Van (`ChaseMonsterController`)
 - **Root Cause:** When `ChaseMonster:_setVanSwallowedCollision(van, true)` swallows `DeliveryVan`, it stashes the van 160 studs below the road (`Y ≈ -150`). `ChaseMonsterController` previously raycasted from `chCF.Position.Y + 18` and fell back to `chCF.Position.Y - 3.0`, pulling `c.smoothGroundY` and the Chaser 150+ studs underground during `HuntingPlayers`.
 - **Fix (`ChaseMonsterController`):** Guarded `refY` in `stepChaserRender` whenever `VanSwallowed == true`, `isHuntingPlayers`, or `chCF.Position.Y < -30` to use `c.smoothWorldPos.Y`, `ChaseDevourAnchor.Position.Y`, `HumanoidRootPart.Position.Y`, or `c.smoothGroundY` (never the stashed van Y), with a `-65` raycast and safe above-ground fallback.
