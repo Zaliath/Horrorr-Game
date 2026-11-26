@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-26 — Antigravity (Riplatki) — Wulver Fog-Piercing Smoke & Firelight Beacons (`The game part`)
+- **Long-Distance Fog-Piercing Visibility (`Monster12_Wulver`, `WulverMonster`, `WulverController`):**
+  - Tuned `WulverMonster`'s river spawn offset (`110..195` studs along `BridgeRiverExtension`, `130` studs fallback on `BridgeWaterChannel`) so he stays deep in the forest along the river while remaining within sightline of the highway.
+  - Added `LightInfluence = 0` `SmokeBillboard`s on all `14` `DistantSmokeSpheres` (`MaxDistance = 450`, `Neon` soft grey) and `FireGlowBillboard` on `DistantFireGlow` (`MaxDistance = 360`) so the rising smoke plume above the trees and flickering campfire glow pierce `Lighting.FogEnd = 185` while still being occluded by foreground trees.
+  - Updated `WulverController` to animate, flicker, and fade out both billboards cleanly when within `45` studs.
+- **Verification:** `loadstring` passed; Play Solo verified spawn at `(164, 0, -550)`, `FAR_SMOKE_BB=true`, `FAR_FIRE_BB=true`, `CLOSE_SMOKE_BB=false`, `CLOSE_FIRE_BB=false`, and `0` script errors.
+
 ## 2026-11-26 — Antigravity (Riplatki) — Fix Wulver Lake Height, Sanctuary Tree Clearing & River Bank Slopes (`The game part`)
 - **Wulver Ground Snapping & Tree Clearing (`WulverMonster`, `ChunkBuilder`):**
   - Added `findGroundYAt(x, z)` raycasting against procedural ground slabs (`GROUND_TOP_Y = 0.86` + forest offset) and pivoted `WulverSanctuary` at `groundY + 0.65` (accounting for `SanctuaryAnchor` local `Y = 0.5`) so the pond water sits cleanly above the grass (`WATER_Y = 1.06`).
