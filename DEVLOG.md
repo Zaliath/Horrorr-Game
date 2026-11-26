@@ -1,5 +1,12 @@
 # Devlog
 
+## 2026-11-26 — Antigravity (Riplatki) — Wulver Distant 3D Smoke Spheres & Streaming Persistence (`The game part`)
+- **Long-Distance Visibility (`Monster12_Wulver`, `WulverController`):**
+  - Set `Monster12_Wulver.ModelStreamingMode = Enum.ModelStreamingMode.Persistent` so Roblox Streaming never unloads the Wulver sanctuary at road distances.
+  - Added `Campfire.DistantSmokeSpheres` (`14` animated rising/expanding `Part` spheres up to `+195` studs above the treeline) and `Campfire.DistantFireGlow` (`Neon` flickering glow sphere) so the smoke column and faint flickering firelight are clearly visible from the highway.
+  - Updated `WulverController` to animate the rising smoke spheres and smoothly fade both the 3D smoke spheres and `DistantFireGlow` to `Transparency = 1.00` as the player approaches (`<= 45` studs), letting the close-up `ParticleEmitter` take over.
+- **Verification:** `loadstring` passed; Play Solo verified `PERSIST=true`, `SPHERES=14`, `FAR_SMOKE_T=0.44` / `FAR_GLOW_T=0.57` at road distance, `CLOSE_SMOKE_T=1.00` / `CLOSE_GLOW_T=1.00` up close, and `0` script errors.
+
 ## 2026-11-26 — Antigravity (Riplatki) — Add The Wulver (Rare Passive River-Sanctuary Entity) (`The game part`)
 - **Detailed Model & Sanctuary (`ReplicatedStorage.Assets.Monsters.Monster12_Wulver`, 137 parts):**
   - Built the brown-furred, wolf-headed humanoid seated on his mossy rock (*Wulver's Stane*) with pointed ears, snout, dangling pink tongue, glowing amber eyes, clawed hands, bent curved wooden fishing pole + `Beam` line + floating bobber, and 3 caught coalfish beside him.
