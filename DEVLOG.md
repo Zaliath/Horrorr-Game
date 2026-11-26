@@ -1,5 +1,11 @@
 # Devlog
 
+## 2026-11-25 — Antigravity (Riplatki) — Fix Chaser Sinking Underground After Eating Van (`ChaseMonsterController`)
+- **Root Cause:** When `ChaseMonster:_setVanSwallowedCollision(van, true)` swallows `DeliveryVan`, it stashes the van 160 studs below the road (`Y ≈ -150`). `ChaseMonsterController` previously raycasted from `chCF.Position.Y + 18` and fell back to `chCF.Position.Y - 3.0`, pulling `c.smoothGroundY` and the Chaser 150+ studs underground during `HuntingPlayers`.
+- **Fix (`ChaseMonsterController`):** Guarded `refY` in `stepChaserRender` whenever `VanSwallowed == true`, `isHuntingPlayers`, or `chCF.Position.Y < -30` to use `c.smoothWorldPos.Y`, `ChaseDevourAnchor.Position.Y`, `HumanoidRootPart.Position.Y`, or `c.smoothGroundY` (never the stashed van Y), with a `-65` raycast and safe above-ground fallback.
+- **Verification:** `loadstring` passed; Play Solo (`chasemonster ram` -> `VanSwallowed = true`, `vanY = -149.8`, `ChaseState = "HuntingPlayers"`) verified all `136` visible Chaser parts stayed above the road (`minY = 1.58`, `maxY = 52.35`) with `0` game errors in console.
+- **Studio Paths Modified:** `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChaseMonsterController`.
+
 ## 2026-11-25 — Antigravity — Enlarge `BayHUD` Text, Remove `PixelLobby_` UI Prefixes & Add Store Promo Codes (`THE horror driving game`)
 - **Summary of Changes:**
   1. **Larger `BayHUD` Typography & Vertical Layout (`StarterGui.BayHUD.BayPanel`):**
