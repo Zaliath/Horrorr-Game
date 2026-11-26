@@ -1,5 +1,13 @@
 # Devlog
 
+## 2026-11-26 — Antigravity (Riplatki) — Fix Wulver Lake Height, Sanctuary Tree Clearing & River Bank Slopes (`The game part`)
+- **Wulver Ground Snapping & Tree Clearing (`WulverMonster`, `ChunkBuilder`):**
+  - Added `findGroundYAt(x, z)` raycasting against procedural ground slabs (`GROUND_TOP_Y = 0.86` + forest offset) and pivoted `WulverSanctuary` at `groundY + 0.65` (accounting for `SanctuaryAnchor` local `Y = 0.5`) so the pond water sits cleanly above the grass (`WATER_Y = 1.06`).
+  - Added `clearTreesInSanctuary` in `WulverMonster` and a `34`-stud `WulverSanctuaryPos` exclusion check inside `ChunkBuilder`'s `isClear` so trees, bushes, and props never spawn inside Wulver's lake or on him.
+- **River Bank Slopes (`ChunkBuilder`):**
+  - Moved `RiverBank` `WedgePart` ramps in `BridgeWaterChannel` and `BridgeRiverExtension` from `sideZ = ±36` (which was buried inside `GrassGroundNorth`/`South`) to `sideZ = ±18` with `Size.Z = 16`, spanning `Z = ±10..±26` seamlessly from `RiverBed` up to `GROUND_TOP_Y`.
+- **Verification:** `loadstring` passed; Play Solo verified `WATER_Y = 1.06`, `TREES_IN_30 = 0`, `RIVER_WEDGES = 12 (SPAN16 = 12)`, and `0` script errors.
+
 ## 2026-11-26 — Antigravity (Riplatki) — Wulver Distant 3D Smoke Spheres & Streaming Persistence (`The game part`)
 - **Long-Distance Visibility (`Monster12_Wulver`, `WulverController`):**
   - Set `Monster12_Wulver.ModelStreamingMode = Enum.ModelStreamingMode.Persistent` so Roblox Streaming never unloads the Wulver sanctuary at road distances.
