@@ -3381,3 +3381,20 @@
 - **Studio Paths Modified/Created:** `Workspace.StartArea.ChuteShop`, `ReplicatedStorage.Assets.ChuteShop`, `ServerStorage.ShopUpdateReference_Backup`.
 - **New Dependencies:** Attributes `RaisedY`/`LoweredY` on `DropShroudBody`, `ShopItemId`/`Price` on shelf display items.
 - **Next Steps / Known Issues:** Wire interactive Buy/Sell chute scripting, `DropShroud` tweening, AI phone voice lines, Bounty Board, and Trophy Wall in a follow-up pass.
+
+
+## 2026-11-27 — Antigravity — Functional Chute Shop (Lighting, Live Screens, Shelf Pickup, Buy/Sell & Tiered Flashlights) (`The game part`)
+- **Summary of Changes:**
+  - **Mode-Reactive Lighting & Shelf Illumination:** Upgraded `Workspace.StartArea.ChuteShop` and `ReplicatedStorage.Assets.ChuteShop` with bright `SpotLight`/`PointLight` rigs across the Chute, `ControlConsole`, and all 4 shelving bays (`WeaponsRackBay`, `ItemsGearRackBay`, `VanUpgradesRackBay`, `VanHeavyPartsBay`), shifting dynamically between Warm Amber (`BUY`) and Phosphor Green (`SELL`).
+  - **Physical Shelf Pickup, Drop/Throw & Live 4-Screen Appraisal (`ChuteShopDefs`, `ChuteShopService`, `ChuteShopController`, `CarryAnimController`, `ShiftController`, `HotbarController`):** Added `[E]` shelf grabs across all 23 items (`ItemTemplates` cloned & welded in 2-handed carry pose, 1.5s auto-restock blink), `[G]` drop / `[LMB]` toss onto `PaymentPad`, and live itemized `$TOTAL` / `+$TOTAL` updates across `TotalReadoutScreen`, `MarqueeScreenPart`, `InnerAIScreenPart`, and `OuterScreenPart`.
+  - **Buy & Sell Extraction + Tiered Flashlights + Pepper Spray + AI Operator:** Wired `ModeSwitchButton` (`BUY` ↔ `SELL`), `ConfirmPayButton` (`[E]`), `CheckoutPullLever` (`[F]`), and `AIPhoneUnit` (`[R]` shift-gated lore/hints) with full `DropShroudBody` hydraulic slam/extraction:
+    - **BUY:** Purchases Weapons & Ammo Crates (`CombatService`), Tiered Flashlights (`Tier 0` basic spawn light → `Tier 1–3` upgraded optics in `FlashlightController`), Medkits, `[X]` Pepper Spray cone stun/repel, Adrenaline Stamina Kits, `[T]` Shoulder Clips, and Physical Van Upgrades (`UpgradeService` + `VanDamageService`).
+    - **SELL:** Appraises and extracts monster ragdoll corpses (`BioSalvageService:GetCorpsesInRegion` / `SellCorpseFromChute`, dropped or carried on `PaymentPad`) and `[E]` deposited Specimen Pouch parts (`DepositPouchPrompt` -> `SellDepositedPartFromChute`).
+- **Studio Paths Modified/Created:**
+  - `ReplicatedStorage.Shared.NetDefs`, `ReplicatedStorage.Shared.ChuteShopDefs` (new)
+  - `ServerScriptService.Server.Core.ServiceList`, `ServerScriptService.Server.Services.ChuteShopService` (new), `ServerScriptService.Server.Services.{UpgradeService,CombatService,BioSalvageService,FlashlightService}`
+  - `StarterPlayer.StarterPlayerScripts.Client.Core.ControllerList`, `StarterPlayer.StarterPlayerScripts.Client.Controllers.ChuteShopController` (new), `StarterPlayer.StarterPlayerScripts.Client.Controllers.{FlashlightController,CarryAnimController,ShiftController,HotbarController}`
+  - `Workspace.StartArea.ChuteShop`, `ReplicatedStorage.Assets.ChuteShop` (`ItemTemplates` + lights)
+- **New Dependencies:** `NetDefs` (`ChuteShopAction`, `ChuteShopFX`), Player attributes (`FlashlightTier`, `CarryingShopItem`, `CarriedShopItemId`, `CarriedShopItemName`, `CarriedShopItemPrice`, `PepperSprayCharges`), Van attribute (`UpgCCTV`).
+- **Verification:** `loadstring` passed on all 14 modified/created scripts; Play Solo verified `42` shelf prompts, multi-item cart appraisal (`$695`), `BUY` checkout granting Weapons/FlashlightTier/VanUpgrades (`Crowbar` & `Shotgun`/`UVAnomalyLight`/`UpgEngine`), `SELL` mode lighting (`SellModeLamp = Neon`, `PadLED_G = 229`) & corpse extraction, `DropShroudBody` zero-drift return (`Y = 42.09`, `UpY = 1.0000`), and `0` game script errors in `get_console_output`.
+- **Next Steps / Known Issues:** Build the **Bounty Board** and **Trophy Wall** in a follow-up pass.

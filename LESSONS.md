@@ -43,6 +43,8 @@
 
 - **`require(Loader)` inside `execute_luau` gives an isolated copy, so `Loader.Get("SomeService")` fails with "Module ... is not registered" even when the live service is running:** Verify services through remotes, `leaderstats`, attributes, or the Cmdr `CmdrFunction:InvokeServer("setcash 1000")` instead.  *Reason:* Wasted two Server calls concluding a service had failed to boot while it was healthy.
 
+- **Never pass `replace_all: true` to `Roblox_Studio.multi_edit` when `old_string` contains Luau pattern characters (`(`, `)`, `.`, `+`, `-`, `*`, `?`, `[`, `%`):** `replace_all` uses `string.gsub` without escaping and silently matches 0 times while reporting success; keep `replace_all: false` (plain substring match) with unique context lines instead. — *Reason:* Two `replace_all: true` edits on `ChuteShopService` left `shroudBaseOffsetY` unchanged and threw a Play Solo nil-arithmetic error until patched with `replace_all: false`.
+
 ## Game Architecture & Live Place Gotchas
 - **Check existing frameworks (`Loader`, `Cmdr`, `ProfileStore`, `AntiCheat`) before designing a feature:** Build admin commands inside `Cmdr`, and build game systems as `Loader`-managed Services/Controllers (`Loader.Get(...)`) instead of standalone `Script`/`LocalScript` instances. — *Reason:* The user had to clarify using `Cmdr` for admin commands and later asked to refactor standalone van/shop/chute scripts into modular Services and Controllers.
 - **Exempt new movement/vehicle mechanics in `AntiExploitService`:** Any boost, high-speed driving (van boost `140` > `120` cap), server-set `WalkSpeed`, or admin flight (`AdminFly`) must be explicitly exempted. — *Reason:* Otherwise `AntiExploitService` falsely flags or rubber-bands legitimate gameplay and admin testing.
