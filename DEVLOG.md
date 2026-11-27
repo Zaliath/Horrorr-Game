@@ -3370,3 +3370,14 @@
 - **Waist-Only R6 Upper-Body Animations (`BioSalvageController`):**
   - Rewrote `stepR6BioAnims` to pivot ONLY `Torso`, `Head`, and `Arms` from the waist while applying `W:Inverse() * HipDef` to `Left Hip` & `Right Hip` without touching `Hip.Transform`, keeping normal upright Roblox leg walk animations completely intact.
 - **Verification:** Play Solo verified `BallSockets=7`, `ShotgunTravel=24.72 studs`, `GrabRes=true`, `WalkSpeed=8.32`, `TorsoUpY=0.9740`, `RightArmUpY=-0.1490`, `LeftLegUpY=0.9976`, `RightLegUpY=0.9975`, `GrindRes DailyEarned=384`, and `0` game script errors.
+
+## 2026-11-27 — Antigravity — Warehouse Chute Shop Blender 5.3 PBR Remodel & Stocked Shelving (`The game part`)
+- **Summary of Changes:**
+  - Built a 1024×1024 12-strip industrial PBR atlas (`ChuteShop_Albedo.png`, `ChuteShop_Roughness.png`, `ChuteShop_Normal.png`) and remodeled the entire `ShopUpdateReference` into 3 modular Blender 5.3 collections (`< 3,200` tris/mesh) in `e:\Documents\P.A.R.A.L.L.A.X\ChuteShop\GraveyardExpress_ChuteShop.blend`.
+  - Uploaded via `roblox-blender-plugin` to Group `382676491` (`ChuteShop_CoreArchitecture`: `96679229401760`, `ChuteShop_ShelfRackUnit`: `121439831629875`, `ChuteShop_MerchandiseProps`: `131180033413246`), backed up `Workspace.ShopUpdateReference` to `ServerStorage.ShopUpdateReference_Backup`, and assembled `Workspace.StartArea.ChuteShop` (`384` descendants) + `ReplicatedStorage.Assets.ChuteShop`:
+    - **`BayBase` & `ControlConsole`:** Service-bay diamond-plate deck with center drainage grate, front ramp, vented R.E.P.O. side curbs, `RunwayLEDs`, and front-right `ControlConsole` featuring separate interactive `ModeSwitchButton` (Buy/Sell lamps), `ConfirmPayButton`, `CheckoutPullLever`, `AIPhoneUnit`, and `$00,000` readout.
+    - **`UpperTower`, `DropShroud` & `MonitorsAndAI`:** Hollow I-beam & bolted yellow chute tower with hazard collar, hydraulics, ladder, coiled hoses, telescoping `DropShroudBody` (`RaisedY = 41.96`, `LoweredY = 18.70`), `OuterMonitorFrame`, tilted `InnerAIMonitorAndPhone` + overhead marquee + twin floodlights.
+    - **`LeftShelves` & `RightShelves`:** 4 stocked industrial shelving bays (`WeaponsRackBay` with all 8 weapons + ammo crates, `ItemsGearRackBay` with upgraded flashlights/medkits/pepper spray/stamina/batteries, `VanUpgradesRackBay` + `VanHeavyPartsBay` with supercharger crates, nitrous tanks, armor shutters, off-road tires, cargo racks, CCTV, and headlight/horn kits).
+- **Studio Paths Modified/Created:** `Workspace.StartArea.ChuteShop`, `ReplicatedStorage.Assets.ChuteShop`, `ServerStorage.ShopUpdateReference_Backup`.
+- **New Dependencies:** Attributes `RaisedY`/`LoweredY` on `DropShroudBody`, `ShopItemId`/`Price` on shelf display items.
+- **Next Steps / Known Issues:** Wire interactive Buy/Sell chute scripting, `DropShroud` tweening, AI phone voice lines, Bounty Board, and Trophy Wall in a follow-up pass.

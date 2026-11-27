@@ -218,3 +218,12 @@ Two players: a driver and a navigator. The navigator sees the map and calls out 
   - **Weaknesses & Unkillable Entities (`MonsterService:ApplyCombatHit`):** `ChaseMonster` (body immune; Sniper/Flintlock eye-shot gives brief `1.45s` flinch on `10s` cooldown), `PhantomSemi`, `FogMonster`, and `StareMonster` **cannot be killed**. `ForestHunter` resists body spray (`0.25x`) but retreats on glowing-eye weak-point hits; `CreepyCrawlie` & `PorchMonster` are weak to Shotgun/Flares; `CargoMonster` is weak to Crowbar/Shotgun.
   - **Late-Shift Scaling:** Monster toughness (`1 + (shift - 1) * 0.22 + DoubleDownTier * 0.25`), `ForestHunter` charge speed, and `PorchMonster` spawn rate scale up on later shifts.
   - **Mobile & Console Aim Assist (`CombatController`):** Automatic `8.5 deg` soft camera pull + `2.6 deg` ray magnetism on Touch & Gamepad, plus dedicated mobile touch buttons and `R2`/`L2`/`X`/`Y` gamepad bindings.
+
+## Warehouse Overhaul — The Chute Shop (3D Station Built, Systems Planned)
+- **Observed (`Workspace.StartArea.ChuteShop` & `ReplicatedStorage.Assets.ChuteShop`):**
+  - Custom Blender 5.3 PBR R.E.P.O.-style chute shop (`BayBase` diamond-plate service deck + front ramp + drainage grate + vented curbs + `RunwayLEDs`, hollow `UpperTower` with hazard collar/hydraulics/ladder/coiled hoses, telescoping `DropShroud` with `RaisedY`/`LoweredY`, `OuterMonitor` + tilted `InnerAIMonitor` + `MarqueeScreenPart` + twin floodlights, and front-right `ControlConsole` with separate `ModeSwitchButton`, `ConfirmPayButton`, `CheckoutPullLever`, `AIPhoneUnit`, and `$00,000` readout).
+  - **Left & Right Stocked Shelving Wings:** `LeftShelves` (`WeaponsRackBay` with all 8 weapons + `Prop_AmmoCrateMetal`, `ItemsGearRackBay` with upgraded flashlights, medkits, pepper spray, stamina injectors, batteries) and `RightShelves` (`VanUpgradesRackBay` + `VanHeavyPartsBay` with engine supercharger crates, nitrous boost tanks, armor shutter kits, off-road tire stacks, cargo racks, CCTV kits, headlight/horn kits).
+- **Planned:**
+  - **R.E.P.O.-Style Chute Checkout & Sell Mode:** Place items on `PaymentPad` and pay via `ControlConsole`, or flip `ModeSwitchButton` to **Sell Mode** to sell monster corpses/parts.
+  - **Mysterious AI Voice Operator (`AIPhoneUnit` / `InnerAIMonitor`):** Gives tips, tutorial hints, bounties, and a multi-shift secret revealed gradually.
+  - **Bounty Board & Trophy Wall:** Daily contracts for specific monsters/parts and a display wall for rare drops.
