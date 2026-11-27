@@ -3359,3 +3359,14 @@
 - **Full-Body 6-Joint R6 Animations, VFX & Terminal UI (`BioSalvageController`, `PixelGame_BioSalvage`):**
   - Authored multi-joint `Motor6D` R6 animations (`HeavePickup`, `EncumberedCarry`, `CorpseHurl`, `PartHarvest`), death collapse/twitch + rot tinting + carrion flies/mist + hydraulic grinder VFX, pulsing `FearVignette` + heartbeat, and `PixelGame_BioSalvage` terminal & codex (`Modal = true` on all buttons).
 - **Verification:** `loadstring` passed on all new/modified scripts; Play Solo verified `BioSalvageStation` (`WeighPrompt`, `TerminalPrompt`, `BioMonitorGui`, `ShopPrompt` tag), `BioSalvageAction:InvokeServer("GetState")`, `7/7` assets, `Modal = true` on all `PixelGame_BioSalvage` buttons, and `0` game script errors.
+
+## 2026-11-26 — Antigravity — Bio-Salvage Ragdoll Deaths, Shotgun Knockback, Waist-Only R6 Carry & Shredder V2 (`The game part`)
+- **Industrial Bone-Shredder V2 (`P.A.R.A.L.L.A.X\BioSalvage\rebuild_shredder_v2.py` -> `Workspace.StartArea.BioSalvageStation`):**
+  - Rebuilt the Bio-Salvage Station in Blender 5.3 with an open flared V-hopper, exposed interlocking serrated ripper drums (`GrinderRollerL`, `GrinderRollerR`), hydraulically tilting feed cradle (`WeighPan`), twin exhaust stacks, bio-slurry vat, and boom-mounted CRT monitor (`Preview_Shredder_V2_QA.png`).
+  - Upgraded `BioSalvageController` (`playGrindStationFX`) to tilt `WeighPan` `48°` around its hopper-lip hinge, counter-spin both serrated drums, and shred corpses into blood/bone particle bursts.
+- **Articulated `BallSocketConstraint` Ragdoll Corpses & Shotgun Knockback (`BioSalvageService`, `MonsterService`, `CreepyCrawlieMonster`):**
+  - Fixed `PivotTo` ordering so corpses always spawn visibly at the exact monster death location at real monster scale, and added lethal corpse spawns for `CargoMonster`, `DoorMonster`, and `WindowMonster` as well as `ForestHunter`, `PorchMonster`, `GremlinMonster`, and `CreepyCrawlie` (hiding the flat squashed mesh on death).
+  - Built multi-limb `BallSocketConstraint` ragdolls (`CorpseRagdoll` collision group) with weapon-specific physics impulses: **Shotgun blasts launch ragdolls backward/upward**, Sniper shots snap heads back with knee-buckle collapse, and thrown/dropped corpses re-ragdoll naturally.
+- **Waist-Only R6 Upper-Body Animations (`BioSalvageController`):**
+  - Rewrote `stepR6BioAnims` to pivot ONLY `Torso`, `Head`, and `Arms` from the waist while applying `W:Inverse() * HipDef` to `Left Hip` & `Right Hip` without touching `Hip.Transform`, keeping normal upright Roblox leg walk animations completely intact.
+- **Verification:** Play Solo verified `BallSockets=7`, `ShotgunTravel=24.72 studs`, `GrabRes=true`, `WalkSpeed=8.32`, `TorsoUpY=0.9740`, `RightArmUpY=-0.1490`, `LeftLegUpY=0.9976`, `RightLegUpY=0.9975`, `GrindRes DailyEarned=384`, and `0` game script errors.
