@@ -3414,3 +3414,12 @@
   - Rebuilt `ControlConsole` & `BayCurbs_REPO` in Blender 5.3 (`e:\Documents\P.A.R.A.L.L.A.X\ChuteShop\build_console_fix.py`, Package `107574371623586`) as a watertight trapezoidal cabinet with zero wedge gaps, zero floating bars/lamps, a bolted gearbox-mounted `CheckoutPullLever` pivoting cleanly around its `AxleLocalOffset`, flush `TotalReadoutScreen` (`$0`), rear `ConduitBridge`, and flush `BayCurbs_REPO` top hazard caps.
   - Added a raised backlit **`ModeHeaderScreen`** (`> BUY GEAR < | SELL BODIES`, `[R] SWITCH BUY / SELL | [E] PAY / EXTRACT`) and moved `ModeSwitchPrompt` to **`[R]`** (plus `ClickDetector`s on `ModeSwitchButton`, `ConfirmPayButton`, and `CheckoutPullLever`) so it never conflicts with **`[E]`** `CheckoutPrompt`.
 - **Verification:** `Edit` screenshots confirmed zero gaps/floating parts and crisp dual `ModeHeaderScreen` + `TotalReadoutScreen`; Play Solo verified `HasPhone = false`, `ModeKey = R`, `PayKey = E`, `SellBoxG = 229`, `SellNeon = true`, `ModeTilted = true`, `LevPulled = 0.48 -> LevReturn = 0.000`, `W1 = Crowbar`, and `0` game script errors.
+
+
+## 2026-11-27 — Antigravity — `Monster13_Thumper` (The Screen-Breacher) 3D Studio Model (`The game part`)
+- **Summary of Changes:**
+  - Built **`Monster13_Thumper`** (*The Thumper / Screen-Breacher*, model-only, zero scripts) in Roblox Studio following the 15-bone `<BoneName>Pivot` articulated rig standard (`Root`, `Torso`, `Head`, `Jaw`, `UpperArmL/R`, `ForearmL/R`, `HandL/R`, `UpperLegL/R`, `LowerLegL/R`, `FootL/R`, `244` sculpted parts, `10.78` studs tall).
+  - Features a hunched S-curved spine with dorsal spurs, exposed 6-pair ribcage, hollow matte-black eye sockets with recessed static pinpricks, unhinged jaw with jagged teeth, curled black hair, 10 brass-ringed bio-mechanical neck/cranial tubes + severed coaxial cables, stick-thin twin-bone limbs ending in needle claws, and shattered CRT bezel/glass shards on the left shoulder and right forearm.
+- **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster13_Thumper`, `Workspace.MonsterModels.Monster13_Thumper` (at `(272.50, 5.40, -77.80)`).
+- **New Dependencies:** None (model only, unscripted).
+- **Verification:** Verified via 3 `screen_capture` angles (`Thumper_Full_Front`, `Thumper_Face_Tubes`, `Thumper_Side_Back`) and live 3D preview (`244` parts).

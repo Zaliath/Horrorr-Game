@@ -118,6 +118,7 @@ it down a forest road to deliver packages to houses.
   - `Monster9_PorchLurker` (6 bones, 107 parts)
   - `Monster10_PhantomBus` (13 bones, 252 parts), `Monster10_PhantomSemi` (13 bones, 232 parts), `Monster10_PhantomVan` (13 bones, 220 parts)
   - `Monster11_Hitchhiker_Middle` (1 bone, 27 parts), `Monster11_Hitchhiker_Shoulder` (1 bone, 101 parts)
+  - `Monster13_Thumper` (15 bones, 244 parts — model built, unscripted)
 
 ## Planned: Upgrades (bought between shifts)
 - **Built (v1):** garage shop GUI (`VanUpgrades` shop) with Engine Tuning (+top speed), Boost Tank (slower boost drain) and Cargo Rack (+package capacity), 3 levels each, bought with team cash between shifts. Levels are not saved yet. Everything below is still planned.
