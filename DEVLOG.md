@@ -3398,3 +3398,11 @@
 - **New Dependencies:** `NetDefs` (`ChuteShopAction`, `ChuteShopFX`), Player attributes (`FlashlightTier`, `CarryingShopItem`, `CarriedShopItemId`, `CarriedShopItemName`, `CarriedShopItemPrice`, `PepperSprayCharges`), Van attribute (`UpgCCTV`).
 - **Verification:** `loadstring` passed on all 14 modified/created scripts; Play Solo verified `42` shelf prompts, multi-item cart appraisal (`$695`), `BUY` checkout granting Weapons/FlashlightTier/VanUpgrades (`Crowbar` & `Shotgun`/`UVAnomalyLight`/`UpgEngine`), `SELL` mode lighting (`SellModeLamp = Neon`, `PadLED_G = 229`) & corpse extraction, `DropShroudBody` zero-drift return (`Y = 42.09`, `UpY = 1.0000`), and `0` game script errors in `get_console_output`.
 - **Next Steps / Known Issues:** Build the **Bounty Board** and **Trophy Wall** in a follow-up pass.
+
+
+## 2026-11-27 — Antigravity — ChuteShop Scale Down (`0.68×`) & Collider Fixes (`The game part`)
+- **Summary of Changes:**
+  - Scaled `BayBase`, `UpperTower`, `DropShroud`, and `MonitorsAndAI` to `0.68×` (`Size ≈ 23 × 59 × 20` studs, cleanly below the `87.28` warehouse roof with `10.4` studs of open walkway behind `ConveyorBelt`), scaled `ControlConsole` to `0.82×` at the front-right pad corner, and shifted `LeftShelves` (`-5.2` X) / `RightShelves` (`+5.2` X) inward to frame the chute symmetrically.
+  - Enabled `BayFloorDeck.CanCollide = true`, rebuilt `BayColliders` (`PaymentPadFloor`, sloped `WedgePart` `FrontRampCollider`, `CurbColliderL/R`), added `UpperTower.TowerColliders` (4 corner columns + 3 upper throat walls), added 4 welded hollow `DropShroud` wall colliders (`ShroudWallF/B/L/R`), and enabled `CanCollide = true` on `RightShelves.VanHeavyPartsBay` floor props (`Upg_OffRoadTireStack`, `Upg_ArmorShutterKit`, `Upg_CargoRackBundle`).
+  - Updated `ChuteShopService` (`getPadHalfExtents`) to compute pad scan bounds dynamically from `BayFloorDeck.Size` and synced `ReplicatedStorage.Assets.ChuteShop`.
+- **Verification:** Edit raycasts confirmed `PadY = 3.09` (`PaymentPadFloor`), sloped `FrontRampCollider` (`2.64 -> 3.09`), and `CurbLY/RY = 4.61`; Play Solo verified standing on pad (`StandY = 6.09`, `DeckCol = true`), `DropShroudBody` cycle (`29.24 -> 21.90 -> 29.24`, `PosDiff = 0.000`), `Crowbar` purchase, and `0` game script errors.
