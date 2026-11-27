@@ -3423,3 +3423,12 @@
 - **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster13_Thumper`, `Workspace.MonsterModels.Monster13_Thumper` (at `(272.50, 5.40, -77.80)`).
 - **New Dependencies:** None (model only, unscripted).
 - **Verification:** Verified via 3 `screen_capture` angles (`Thumper_Full_Front`, `Thumper_Face_Tubes`, `Thumper_Side_Back`) and live 3D preview (`244` parts).
+
+
+## 2026-11-27 — Antigravity — `Monster14_TimberMaw` (The Rooted Goliath) 3D Colossal Studio Model (`The game part`)
+- **Summary of Changes:**
+  - Built **`Monster14_TimberMaw`** (*The Timber-Maw / The Rooted Goliath*, model-only, zero scripts) in Roblox Studio following the 18-bone `<BoneName>Pivot` colossal rig standard (`Root`, `TrunkCore`, `CanopyHead`, `FurnaceDoorL/R`, `RootBaseL/R`, and 6 two-segment spider-branch arms `Arm_L1..L3_U/L`, `Arm_R1..R3_U/L`, `223` sculpted parts, `31.47 × 32.39 × 23.34` studs).
+  - Features 3 fused dead-pine trunks up to `Y = 32` with bare upper pine boughs & hanging moss, hinged split-bark chest maw doors framing a glowing 3-value molten amber sap-furnace core + dripping sap, gnarl-bark `CanopyHead` with blazing amber eyes & splintered fangs, uprooted basalt boulders in splayed root legs, and 6 spider-branch limbs ending in scythe-claws and tarsus spikes.
+- **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster14_TimberMaw`, `Workspace.MonsterModels.Monster14_TimberMaw` (at `(342.0, 0.0, -42.5)`).
+- **New Dependencies:** None (model only, unscripted).
+- **Verification:** Verified via 4 `screen_capture` angles (`TimberMaw_Full_Front`, `TimberMaw_Furnace_Fixed`, `TimberMaw_Wide_Arms`) and live 3D preview (`223` parts).
