@@ -3434,10 +3434,10 @@
 - **Verification:** Verified via 4 `screen_capture` angles (`TimberMaw_Full_Front`, `TimberMaw_Furnace_Fixed`, `TimberMaw_Wide_Arms`) and live 3D preview (`223` parts).
 
 
-## 2026-11-27 — Antigravity — `Monster15_Mothman` (Omen of Disaster) 3D Studio Model (`The game part`)
+## 2026-11-27 — Antigravity — `Monster15_Mothman` (Omen of Disaster) High-Detail Blender 5.3 PBR Model (`The game part`)
 - **Summary of Changes:**
-  - Built **`Monster15_Mothman`** (*Mothman — Omen of Disaster*, model-only, zero scripts) in Roblox Studio following the `<BoneName>Pivot` articulated rig standard (**36 bones**: `Root`, `Torso`, `Head`, `AntennaL/R`, starved `UpperArm/Forearm/Hand L/R`, `UpperLeg/LowerLeg/Foot L/R`, and **4×5-section cape-wings** `WingUL_1..5`, `WingUR_1..5`, `WingLL_1..5`, `WingLR_1..5`; `315` sculpted parts, `~10.39` studs tall to antennae tips).
-  - Features big circular glowing crimson eyes with concentric **Makima-style dark/scarlet target rings** inside hollowed dark eyebags & furrowed brow arches, 14-pair plumose feathery antennae, a lush two-tone charcoal/ash fur scarf, starved limbs with claw hands, raptorial feet (**3 front talons + 1 back hallux talon**), and 4 tattered eye-patterned wings draped like a cloak.
-- **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster15_Mothman`, `Workspace.MonsterModels.Monster15_Mothman` (at `(274.5, 0.0, -77.8)`).
+  - Sculpted **`Monster15_Mothman`** in Blender 5.3 (`e:\Documents\P.A.R.A.L.L.A.X\Mothman\build_mothman.py` -> `GraveyardExpress_Mothman.blend`) with a custom 1024×1024 PBR texture atlas (`Mothman_Albedo.png`, `Mothman_Roughness.png`, `Mothman_Normal.png`) and uploaded both collections to Group `382676491` (`Mothman_BodyRig`: `101499464987228`, `Mothman_WingsRig`: `104817002433499`).
+  - Assembled the 33-bone `<BoneName>Pivot` rig (`Root`, `Torso` + thick 360° shaggy `FurScarf`, `Head` with hollowed dark eyebags & stepped concentric glowing crimson Makima eye rings, `AntennaL/R` feathery plumose antennae, starved `UpperArm/Forearm/Hand L/R` & `UpperLeg/LowerLeg/Foot L/R` with 3-front/1-back raptorial talons, and 4 cape-draped wings split into **5 articulated sections per wing** [`WingUpperL/R_S1..S5`, `WingLowerL/R_S1..S5`] with crimson-ringed eyespots on `S3`/`S4`).
+- **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster15_Mothman`, `Workspace.MonsterModels.Monster15_Mothman` (at `(272.50, 0.00, -77.80)`).
 - **New Dependencies:** None (model only, unscripted).
-- **Verification:** Verified via 6 `screen_capture` angles and live 3D preview (`315` parts).
+- **Verification:** Verified `37/37` textured Blender PBR `MeshPart`s (`max_tris = 1,196`), bounding box `6.65 × 10.99 × 3.66` studs (`MinY = 0.00`), and streamed 65-part 3D preview.
