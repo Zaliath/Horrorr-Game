@@ -120,6 +120,7 @@ it down a forest road to deliver packages to houses.
   - `Monster11_Hitchhiker_Middle` (1 bone, 27 parts), `Monster11_Hitchhiker_Shoulder` (1 bone, 101 parts)
   - `Monster13_Thumper` (15 bones, 244 parts — model built, unscripted)
   - `Monster14_TimberMaw` (18 bones, 223 parts — colossal model built, unscripted)
+  - `Monster15_Mothman` (15 bones, 156 parts — model built, unscripted)
 
 ## Planned: Upgrades (bought between shifts)
 - **Built (v1):** garage shop GUI (`VanUpgrades` shop) with Engine Tuning (+top speed), Boost Tank (slower boost drain) and Cargo Rack (+package capacity), 3 levels each, bought with team cash between shifts. Levels are not saved yet. Everything below is still planned.

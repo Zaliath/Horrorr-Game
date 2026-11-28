@@ -3432,3 +3432,12 @@
 - **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster14_TimberMaw`, `Workspace.MonsterModels.Monster14_TimberMaw` (at `(342.0, 0.0, -42.5)`).
 - **New Dependencies:** None (model only, unscripted).
 - **Verification:** Verified via 4 `screen_capture` angles (`TimberMaw_Full_Front`, `TimberMaw_Furnace_Fixed`, `TimberMaw_Wide_Arms`) and live 3D preview (`223` parts).
+
+
+## 2026-11-27 — Antigravity — `Monster15_Mothman` (The Omen) 3D Studio Model (`The game part`)
+- **Summary of Changes:**
+  - Built **`Monster15_Mothman`** (*Mothman — The Omen*, model-only, zero scripts) in Roblox Studio following the 15-bone `<BoneName>Pivot` articulated rig standard (`Root`, `Torso`, `Head`, `UpperArmL/R`, `ForearmL/R`, `HandL/R`, `LegL/R`, `FootL/R`, `WingUpperL/R`, `WingLowerL/R`, `158` sculpted parts, `7.83 × 11.29 × 4.49` studs).
+  - Features a broad-shouldered pitch-black chitinous torso wrapped in a layered fluffy charcoal **fur scarf/mane**, big circular glowing crimson-red eyes framed by curved **dark hollowed eyebags** + feathered antennae, **4 jagged cape-folded moth wings** (`WingUpperL/R`, `WingLowerL/R`) each bearing glowing crimson **moth eyespots**, and digitigrade legs ending in **3-tong/talon feet** flush at `Y = 0.00`.
+- **Studio Paths Modified/Created:** `ReplicatedStorage.Assets.Monsters.Monster15_Mothman`, `Workspace.MonsterModels.Monster15_Mothman` (at `(273.50, 0.00, -77.80)`).
+- **New Dependencies:** None (model only, unscripted).
+- **Verification:** Verified via `screen_capture` (`Mothman_Face_Scarf_v3`, `Mothman_Full_Front_v3`, `Mothman_Back_Wings_v2`) and live 3D preview (`158` parts).
